@@ -12,8 +12,9 @@ function Login() {
   const [passwordError, setPasswordError] = useState(false);
 
   async function onLogin() {
-    const ok = usernameOrEmail && password;
-    setUsernameError(!usernameOrEmail);
+    const usernameOk = usernameOrEmail && /^[0-9a-zA-Z_.\-@]*$/.test(usernameOrEmail);
+    const ok = usernameOk && password;
+    setUsernameError(!usernameOk);
     setPasswordError(!password);
     if (!ok)
       return;
@@ -32,12 +33,6 @@ function Login() {
       setErrorPrompt('用户名或密码错误');
   }
 
-  function onUsernameChanged(e) {
-    const v = e.target.value;
-    if (/^[0-9a-zA-Z_.\-@]*$/.test(v))
-      setUsernameOrEmail(v);
-  }
-
   console.log(usernameOrEmail, password, errorPrompt);
 
   return (
@@ -53,7 +48,7 @@ function Login() {
                 fluid icon='user' iconPosition='left' placeholder='用户名或邮箱'
                 error={usernameError}
                 value={usernameOrEmail}
-                onChange={onUsernameChanged}
+                onChange={e => setUsernameOrEmail(e.target.value)}
               />
               <Form.Input
                 fluid icon='lock' iconPosition='left' placeholder='密码' type='password'
