@@ -1,7 +1,14 @@
 const endpoint = 'http://localhost:8000';
 
+
 class Api {
+  ERR_FAILURE = 1
+  ERR_AUTH_REQUIRED = 2
+  ERR_DUPL_USERNAME = 3
+  ERR_DUPL_EMAIL = 4
+
   async post(path, data) {
+    console.log('POSTing', path, 'with', data);
     const url = endpoint + path;
     const options = {
       method: 'POST',
@@ -41,6 +48,11 @@ class Api {
   logout = () => this.get('/auth/logout/')
 
   user_info = () => this.get('/auth/info/')
+
+  register = (username, email, password, dname) =>
+    this.post('/auth/register/', {
+      username, email, password, dname
+    })
 }
 
 const api = new Api();
