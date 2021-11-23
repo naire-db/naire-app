@@ -1,7 +1,18 @@
 import React from 'react';
-import { Container, Icon, Menu } from 'semantic-ui-react';
+import { Container, Icon, Menu, Dropdown } from 'semantic-ui-react';
+import { observer } from 'mobx-react-lite';
 
-function Nav() {
+import appState from 'appState';
+import api from 'api';
+
+const Nav = observer(() => {
+  console.log('Rendering nav');
+  async function onLogout() {
+    await api.logout();
+    localStorage.removeItem('user_info');
+    window.location = '/';
+  }
+
   return (
     <Menu fixed='top'>
       <Container>
@@ -13,13 +24,22 @@ function Nav() {
           Demo
         </Menu.Item>
         <Menu.Menu position='right'>
-          <Menu.Item href='/login'>
-            登录
-          </Menu.Item>
+          {
+          appState.user_info ?
+            <Dropdown simple item text={appState.user_info.username}>
+              <Dropdown.Menu>
+                <Dropdown.Item as='a' href='/profile'>个人资料</Dropdown.Item>
+                <Dropdown.Item onClick={onLogout}>注销</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown> :
+            <Menu.Item href='/login'>
+              登录
+            </Menu.Item>
+        }
         </Menu.Menu>
       </Container>
     </Menu>
   );
-}
+});
 
 export default Nav;

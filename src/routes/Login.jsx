@@ -25,7 +25,9 @@ function Login() {
     }
     if (res.code === 0) {
       const user = res.data;
-      // TODO: store user to a global state and localStorage and redirect to home (or url in query param)
+      localStorage.setItem('user_info', JSON.stringify(user));
+      window.location = '/';
+      // TODO: redirect to url in the query param if existing
     } else
       setErrorPrompt('用户名或密码错误');
   }

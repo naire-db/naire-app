@@ -1,7 +1,7 @@
 const endpoint = 'http://localhost:8000';
 
-class api {
-  static async post(path, data) {
+class Api {
+  async post(path, data) {
     const url = endpoint + path;
     const options = {
       method: 'POST',
@@ -9,7 +9,8 @@ class api {
         Accept: 'application/json',
         'Content-Type': 'application/json; charset=UTF-8'
       },
-      body: data === undefined ? undefined : JSON.stringify(data)
+      body: data === undefined ? undefined : JSON.stringify(data),
+      credentials: 'include',
     };
     const resp = await fetch(url, options);
     const res = await resp.json();
@@ -17,13 +18,14 @@ class api {
     return res;
   }
 
-  static async get(path) {
+  async get(path) {
     const url = endpoint + path;
     const options = {
       method: 'GET',
       headers: {
         Accept: 'application/json'
-      }
+      },
+      credentials: 'include',
     };
     const resp = await fetch(url, options);
     const res = await resp.json();
@@ -31,11 +33,16 @@ class api {
     return res;
   }
 
-  static async login(username_or_email, password) {
-    return await this.post('/auth/login/', {
+  login = (username_or_email, password) =>
+    this.post('/auth/login/', {
       username_or_email, password
-    });
-  }
+    })
+
+  logout = () => this.get('/auth/logout/')
+
+  user_info = () => this.get('/auth/info/')
 }
+
+const api = new Api();
 
 export default api;
