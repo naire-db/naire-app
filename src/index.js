@@ -6,8 +6,8 @@ import './index.css';
 import AppRouter from './AppRouter';
 
 ReactDOM.render(
-  <React.StrictMode>
-    <AppRouter />
-  </React.StrictMode>,
+  <AppRouter />,
+  // <React.StrictMode>
+  // </React.StrictMode>,
   document.getElementById('root')
 );
