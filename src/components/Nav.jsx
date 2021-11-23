@@ -13,6 +13,8 @@ const Nav = observer(() => {
     window.location = '/';
   }
 
+  const info = appState.user_info;
+
   return (
     <Menu fixed='top'>
       <Container>
@@ -26,7 +28,7 @@ const Nav = observer(() => {
         <Menu.Menu position='right'>
           {
           appState.user_info ?
-            <Dropdown simple item text={appState.user_info.username}>
+            <Dropdown simple item text={info.dname ? info.dname : info.username}>
               <Dropdown.Menu>
                 <Dropdown.Item as='a' href='/profile'>个人资料</Dropdown.Item>
                 <Dropdown.Item onClick={onLogout}>注销</Dropdown.Item>
@@ -35,7 +37,7 @@ const Nav = observer(() => {
             <Menu.Item href='/login'>
               登录
             </Menu.Item>
-        }
+          }
         </Menu.Menu>
       </Container>
     </Menu>
