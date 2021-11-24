@@ -35,7 +35,7 @@ function FormSet() {
 
   return (
     <AppLayout>
-      <Container style={{marginTop: '6em'}}>
+      <Container style={{marginTop: '5.5em'}}>
         <Grid>
           <Grid.Row>
             <Grid.Column width={3}>
@@ -59,7 +59,7 @@ function FormSet() {
               <Grid>
                 <Grid.Row>
                   <Grid.Column>
-                    <Menu floated='left' pagination>
+                    <Menu pagination>
                       <Menu.Item as='a' icon>
                         <Icon name='chevron left' />
                       </Menu.Item>
