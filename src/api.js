@@ -1,4 +1,4 @@
-const endpoint = 'http://localhost:8000';
+const entry = 'http://localhost:8000';  // TODO: change in production environment
 
 class Api {
   ERR_FAILURE = 1;
@@ -8,7 +8,7 @@ class Api {
 
   async post(path, data) {
     console.log('POSTing', path, 'with', data);
-    const url = endpoint + path;
+    const url = entry + path;
     const options = {
       method: 'POST',
       headers: {
@@ -25,7 +25,7 @@ class Api {
   }
 
   async get(path) {
-    const url = endpoint + path;
+    const url = entry + path;
     const options = {
       method: 'GET',
       headers: {
