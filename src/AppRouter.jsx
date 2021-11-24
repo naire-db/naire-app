@@ -43,6 +43,7 @@ function AppRouter() {
         {mount('/login', () => import('routes/Login'))}
         {mount('/register', () => import('routes/Register'))}
         {mount('/form/all', () => import('routes/form/FormSet'))}
+        {mount('/form/create', () => import('routes/form/FormCreate'))}
         {mount('*', () => import('routes/Home'))}
       </Routes>
     </BrowserRouter>

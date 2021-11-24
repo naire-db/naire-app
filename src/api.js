@@ -55,7 +55,12 @@ class Api {
     })
 
   form = {
-    get_all: () => this.get('/form/get_all/')
+    get_all: () => this.get('/form/get_all/'),
+
+    create: (title, body) =>
+      this.post('/form/create/', {
+        title, body
+      })
   }
 }
 
