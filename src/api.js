@@ -53,6 +53,10 @@ class Api {
     this.post('/auth/register/', {
       username, email, password, dname
     })
+
+  form = {
+    get_all: () => this.get('/form/get_all/')
+  }
 }
 
 const api = new Api();
