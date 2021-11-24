@@ -47,8 +47,6 @@ function useQState(props) {
 function RadioEditor(props) {
   const [value, setValue] = useQState(props);
 
-  console.log('re rend');
-
   function addOption() {
     value.options.push(props.ctx.newOption());
     setValue(value);
