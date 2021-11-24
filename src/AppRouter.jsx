@@ -22,14 +22,16 @@ function AppRouter() {
 
   useEffect(() => {
     (async () => {
-      const res = await api.user_info();
       console.log('old user info', appState.user_info);
-      if (res.code === 0)
-        appState.user_info = await res.data;
-      else
+      const res = await api.user_info();
+      if (res.code === 0) {
+        appState.user_info = res.data;
+        localStorage.setItem('user_info', JSON.stringify(res.data));
+      } else {
         appState.user_info = null;
-      localStorage.setItem('user_info', JSON.stringify(appState.user_info));
-      console.log('got user info', appState.user_info);
+        localStorage.removeItem('user_info');
+      }
+      console.log('new user info', appState.user_info);
     })();
   }, []);
 
