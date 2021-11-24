@@ -41,6 +41,7 @@ function AppRouter() {
         {mount('/login', () => import('routes/Login'))}
         {mount('/register', () => import('routes/Register'))}
         {mount('/profile', () => import('routes/Profile'))}
+        {mount('/password', () => import('routes/Password'))}
         {mount('*', () => import('routes/Home'))}
       </Routes>
     </BrowserRouter>
