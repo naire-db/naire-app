@@ -7,26 +7,30 @@ interface Question { // abstract
   id: int;
 
   title: string;
-  image_ids: int[];  // for use in image src url
+  image_ids: int[];  // For use in image src url
   
   conds: Condition[];
-  cond_or: boolean;  // true means 'or', false means 'and'
+  cond_or: boolean;  // true for 'or', false for 'and'
   
-  type: 'text' | 'radio' | 'checkbox' |
+  type: 'input' | 'text' | 'radio' | 'checkbox' |
         'dropdown' | 'file' | 'date' | 'time' |
         'datetime' | 'comment';
-  // marks the derived type
+  // Marks the derived type
+}
+
+interface InputQuestion extends Question {
+  min_length: int;
+  max_length: int;
+  regex?: string;
 }
 
 interface TextQuestion extends Question {
   min_length: int;
   max_length: int;
-  regex?: string;
-  multi_lined: boolean;
 }
 
 interface RadioQuestion extends Question {
-  options: Option[];
+  options: Option[];  // May not be empty
 }
 
 interface CheckboxQuestion extends Question {
@@ -40,7 +44,7 @@ interface DropdownQuestion extends Question {
 }
 
 interface FileQuestion extends Question {
-  extensions: string[];  // accepts all extensions if empty
+  extensions: string[];  // Accepts all extensions if empty
 }
 
 // Other types have no specific fields
