@@ -110,6 +110,7 @@ function FormCreate() {
   const [nextOid, setNextOid] = useState(0);
   const [qids, setQids] = useState([]);
   const [title, setTitle] = useState('');
+  const [titleError, setTitleError] = useState(false);
 
   const ctx = {
     getOid() {
@@ -133,10 +134,12 @@ function FormCreate() {
   }
 
   async function onSubmit() {
+    if (!title.trim())
+      return setTitleError(true);
     const body = {
       questions: qids.map(qid => qMap[qid])
     };
-    const res = await api.form.create(title, body);
+    const res = await api.form.create(title.trim(), body);
     if (res.code === 0)
       window.location = '/form/all';
     else
@@ -163,9 +166,11 @@ function FormCreate() {
             </Grid.Column>
             <Grid.Column width={12}>
               <Input
+                error={titleError}
                 placeholder='问卷标题'
                 value={title}
                 onChange={e => {
+                  setTitleError(false);
                   const nv = e.target.value;
                   if (nv.length <= 200)
                     setTitle(nv);
