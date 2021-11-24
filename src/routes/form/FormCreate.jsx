@@ -11,7 +11,8 @@ import {
   Radio,
   Segment,
   Sticky,
-  Table
+  Table,
+  Transition
 } from 'semantic-ui-react';
 
 import AppLayout from 'layouts/AppLayout';
@@ -102,21 +103,21 @@ function CheckboxEditor(props) {
               </Table.Cell>
               <Table.Cell>
                 {
-                  options.length > 1 ?
-                    <Button
-                      icon='delete' size='mini'
-                      onClick={() => {
-                        removeOption(o.id);
-                      }}
-                      style={{marginRight: 5}}
-                    /> : null
+                  options.length > 1 &&
+                  <Button
+                    icon='delete' size='mini'
+                    onClick={() => {
+                      removeOption(o.id);
+                    }}
+                    style={{marginRight: 5}}
+                  />
                 }
                 {
-                  ind === options.length - 1 ?
-                    <Button
-                      primary icon='add' size='mini'
-                      onClick={addOption}
-                    /> : null
+                  ind === options.length - 1 &&
+                  <Button
+                    primary icon='add' size='mini'
+                    onClick={addOption}
+                  />
                 }
               </Table.Cell>
             </Table.Row>
@@ -228,15 +229,17 @@ function FormCreate() {
               >
                 创建问卷
               </Button>
-              {qids.map(qid => {
-                const E = editorMap[qMap[qid].type];
-                return <Segment key={qid}>
-                  <Input placeholder='问题' onChange={e => {
-                    qMap[qid].title = e.target.value;
-                  }} />
-                  <E qid={qid} ctx={ctx} />
-                </Segment>;
-              })}
+              <Transition.Group duration={180}>
+                {qids.map(qid => {
+                  const E = editorMap[qMap[qid].type];
+                  return <Segment key={qid}>
+                    <Input placeholder='问题' onChange={e => {
+                      qMap[qid].title = e.target.value;
+                    }} />
+                    <E qid={qid} ctx={ctx} />
+                  </Segment>;
+                })}
+              </Transition.Group>
             </Grid.Column>
           </Grid.Row>
         </Grid>
