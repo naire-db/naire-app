@@ -24,7 +24,7 @@ function FormSet() {
       href={'/form/' + form.id}
       key={form.id}
     >
-      <Card.Content header={form.name} meta={
+      <Card.Content header={form.title} meta={
         '创建于 ' + formatTimestamp(form.ctime)
       } />
       <Card.Content extra>
