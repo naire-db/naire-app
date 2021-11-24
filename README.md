@@ -10,6 +10,7 @@ $ yarn
 
 ```
 $ git checkout main
+$ git pull
 $ git checkout -b dev-[feature or patch name]  # 切换到新分支 
 $ webstorm .  # 在新的分支上修改
 $ git add [files ..]
