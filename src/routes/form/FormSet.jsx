@@ -17,7 +17,7 @@ function FormSet() {
       const res = await api.form.get_all();
       setForms(res.data);
     })();
-  }, [])
+  }, []);
 
   const cards = forms.map(form =>
     <Card

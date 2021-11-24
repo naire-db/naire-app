@@ -53,7 +53,7 @@ function RadioEditor(props) {
   }
 
   return <>
-    <Table className="no-table-border" basic="very" compact="very" collapsing>
+    <Table className='no-table-border' basic='very' compact='very' collapsing>
       <Table.Body>
         {
           value.options.map(o => (
@@ -63,7 +63,7 @@ function RadioEditor(props) {
               </Table.Cell>
               <Table.Cell>
                 <Input
-                  size="small" placeholder="选项"
+                  size='small' placeholder='选项'
                   onChange={e => {
                     o.text = e.target.value;
                   }}
@@ -147,7 +147,7 @@ function FormCreate() {
                 <Segment>
                   <Header>添加题目</Header>
                   {qTypes.map(l => (
-                    <Label key={l[0]} as="a" onClick={() => addQuestion(l[0])} style={{'margin': 3}}>
+                    <Label key={l[0]} as='a' onClick={() => addQuestion(l[0])} style={{'margin': 3}}>
                       <Icon name={l[2]} />
                       {l[1]}
                     </Label>
@@ -157,7 +157,7 @@ function FormCreate() {
             </Grid.Column>
             <Grid.Column width={12}>
               <Input
-                placeholder="问卷标题"
+                placeholder='问卷标题'
                 value={title}
                 onChange={e => {
                   const nv = e.target.value;
@@ -166,7 +166,7 @@ function FormCreate() {
                 }}
               />
               <Button
-                primary floated="right"
+                primary floated='right'
                 onClick={onSubmit}
               >
                 创建问卷
@@ -175,7 +175,7 @@ function FormCreate() {
                 const v = qMap[qid];
                 const E = editorMap[v.type];
                 return <Segment key={qid}>
-                  <Input placeholder="问题" onChange={e => {
+                  <Input placeholder='问题' onChange={e => {
                     qMap[qid].title = e.target.value;
                   }} />
                   <E qid={qid} ctx={ctx} />

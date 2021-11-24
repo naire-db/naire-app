@@ -1,4 +1,4 @@
-import { makeAutoObservable } from 'mobx'
+import { makeAutoObservable } from 'mobx';
 
 function get_persist_store(key) {
   const v = localStorage.getItem(key);
