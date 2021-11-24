@@ -43,15 +43,15 @@ interface FileQuestion extends Question {
   extensions: string[];  // accepts all extensions if empty
 }
 
+// Other types have no specific fields
+
 interface Option {
   id: int;
   text: string;
 }
 
-// other types have no specific fields
-
 interface Condition {
-  qid: int;  // only radios / checkboxes can be referred
+  qid: int;  // Only radio / checkbox / dropdown questions can be referred
   oid: int;  // option id
   negated: boolean;
 }
