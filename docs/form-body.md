@@ -51,8 +51,7 @@ interface Option {
 }
 
 interface Condition {
-  qid: int;  // Only radio / checkbox / dropdown questions can be referred
-  oid: int;  // option id
+  oid: int;  // Option id; only radio / checkbox / dropdown questions can be referred
   negated: boolean;
 }
 ```
