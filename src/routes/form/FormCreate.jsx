@@ -1,5 +1,18 @@
 import React, { useState } from 'react';
-import { Button, Container, Grid, Header, Icon, Input, Label, Radio, Segment, Sticky, Table } from 'semantic-ui-react';
+import {
+  Button,
+  Checkbox,
+  Container,
+  Grid,
+  Header,
+  Icon,
+  Input,
+  Label,
+  Radio,
+  Segment,
+  Sticky,
+  Table
+} from 'semantic-ui-react';
 
 import AppLayout from 'layouts/AppLayout';
 import api from 'api';
@@ -31,41 +44,53 @@ class RadioQuestion extends BaseQuestion {
   }
 }
 
-class CheckboxQuestion {
+class CheckboxQuestion extends RadioQuestion {
   type = 'checkbox';
-  options = [];
 }
 
-function useQState(props) {
-  const [value, setValue] = useState(qMap[props.qid]);
+function useQState(key, props) {
+  const [value, setValue] = useState(qMap[props.qid][key]);
   return [value, v => {
-    qMap[props.qid] = v;
+    qMap[props.qid][key] = v;
     setValue(v);
   }];
 }
 
-function RadioEditor(props) {
-  const [value, setValue] = useQState(props);
+function CheckboxEditor(props) {
+  const [options, setOptions] = useQState('options', props);
   const [checkedOid, setCheckedOid] = useState(null);
 
   function addOption() {
-    value.options.push(props.ctx.newOption());
-    setValue(value);
+    options.push(props.ctx.newOption());
+    setOptions(options);
+  }
+
+  function removeOption(oid) {
+    for (let i = 0; i < options.length; ++i)
+      if (options[i].id === oid) {
+        console.log('rm', i, oid, 'from', options);
+        options.splice(i, 1);
+        setOptions([...options]);
+        break;
+      }
   }
 
   return <>
     <Table className='no-table-border' basic='very' compact='very' collapsing>
       <Table.Body>
         {
-          value.options.map(o => (
+          options.map((o, ind) => (
             <Table.Row key={o.id}>
-              <Table.Cell collapsing>
-                <Radio
-                  checked={o.id === checkedOid}
-                  onChange={() => {
-                    setCheckedOid(o.id);
-                  }}
-                />
+              <Table.Cell>
+                {
+                  props.radio ?
+                    <Radio
+                      checked={o.id === checkedOid}
+                      onChange={() => {
+                        setCheckedOid(o.id);
+                      }}
+                    /> : <Checkbox />
+                }
               </Table.Cell>
               <Table.Cell>
                 <Input
@@ -75,20 +100,41 @@ function RadioEditor(props) {
                   }}
                 />
               </Table.Cell>
+              <Table.Cell>
+                {
+                  options.length > 1 ?
+                    <Button
+                      icon='delete' size='mini'
+                      onClick={() => {
+                        removeOption(o.id);
+                      }}
+                      style={{marginRight: 5}}
+                    /> : null
+                }
+                {
+                  ind === options.length - 1 ?
+                    <Button
+                      primary icon='add' size='mini'
+                      onClick={addOption}
+                    /> : null
+                }
+              </Table.Cell>
             </Table.Row>
           ))
         }
       </Table.Body>
     </Table>
-    <Button onClick={addOption}>
-      添加选项
-    </Button>
   </>;
+}
+
+function RadioEditor(props) {
+  return <CheckboxEditor radio {...props} />;
 }
 
 // TODO: impl all types
 const editorMap = {
-  'radio': RadioEditor
+  'radio': RadioEditor,
+  'checkbox': CheckboxEditor
 };
 
 const typeMap = {
@@ -183,8 +229,7 @@ function FormCreate() {
                 创建问卷
               </Button>
               {qids.map(qid => {
-                const v = qMap[qid];
-                const E = editorMap[v.type];
+                const E = editorMap[qMap[qid].type];
                 return <Segment key={qid}>
                   <Input placeholder='问题' onChange={e => {
                     qMap[qid].title = e.target.value;
