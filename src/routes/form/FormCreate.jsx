@@ -46,6 +46,7 @@ function useQState(props) {
 
 function RadioEditor(props) {
   const [value, setValue] = useQState(props);
+  const [checkedOid, setCheckedOid] = useState(null);
 
   function addOption() {
     value.options.push(props.ctx.newOption());
@@ -59,7 +60,12 @@ function RadioEditor(props) {
           value.options.map(o => (
             <Table.Row key={o.id}>
               <Table.Cell collapsing>
-                <Radio />
+                <Radio
+                  checked={o.id === checkedOid}
+                  onChange={() => {
+                    setCheckedOid(o.id);
+                  }}
+                />
               </Table.Cell>
               <Table.Cell>
                 <Input
