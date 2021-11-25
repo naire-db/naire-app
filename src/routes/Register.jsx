@@ -55,9 +55,7 @@ function Register() {
               />
               <Form.Input
                 fluid icon='lock' iconPosition='left' placeholder='密码' type='password' required
-                error={passwordField.renderError()}
-                value={passwordField.value}
-                onChange={passwordField.handler}
+                {...passwordField.toProps()}
               />
               <Form.Input
                 fluid icon='lock' iconPosition='left' placeholder='确认密码' type='password' required
