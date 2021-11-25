@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Icon, Menu, Dropdown } from 'semantic-ui-react';
+import { Container, Dropdown, Icon, Menu } from 'semantic-ui-react';
 import { observer } from 'mobx-react-lite';
 
 import appState from 'appState';
@@ -7,6 +7,7 @@ import api from 'api';
 
 const Nav = observer(() => {
   console.log('Rendering nav');
+
   async function onLogout() {
     await api.logout();
     localStorage.removeItem('user_info');

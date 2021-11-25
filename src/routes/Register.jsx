@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Grid, Header, Form, Segment, Button, Message } from "semantic-ui-react";
+import { Button, Form, Grid, Header, Message, Segment } from 'semantic-ui-react';
 
 import AppLayout from 'layouts/AppLayout';
 import api from 'api';
@@ -31,7 +31,7 @@ function useField(checker) {
         'position': 'bottom'
       };
     }
-  }
+  };
 }
 
 function checkUsername(v) {
@@ -106,8 +106,8 @@ function Register() {
 
   return (
     <AppLayout>
-      <Grid centered style={{ height: '100vh' }} verticalAlign='middle'>
-        <Grid.Column style={{ maxWidth: 450 }}>
+      <Grid centered style={{height: '100vh'}} verticalAlign='middle'>
+        <Grid.Column style={{maxWidth: 450}}>
           <Header as='h2' className='text-center'>
             注册
           </Header>

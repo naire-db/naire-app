@@ -1,15 +1,14 @@
-const endpoint = 'http://localhost:8000';
-
+const entry = 'http://localhost:8000';  // TODO: change in production environment
 
 class Api {
-  ERR_FAILURE = 1
-  ERR_AUTH_REQUIRED = 2
-  ERR_DUPL_USERNAME = 3
-  ERR_DUPL_EMAIL = 4
+  ERR_FAILURE = 1;
+  ERR_AUTH_REQUIRED = 2;
+  ERR_DUPL_USERNAME = 3;
+  ERR_DUPL_EMAIL = 4;
 
   async post(path, data) {
     console.log('POSTing', path, 'with', data);
-    const url = endpoint + path;
+    const url = entry + path;
     const options = {
       method: 'POST',
       headers: {
@@ -26,7 +25,7 @@ class Api {
   }
 
   async get(path) {
-    const url = endpoint + path;
+    const url = entry + path;
     const options = {
       method: 'GET',
       headers: {
@@ -43,20 +42,25 @@ class Api {
   login = (username_or_email, password) =>
     this.post('/auth/login/', {
       username_or_email, password
-    })
+    });
 
-  logout = () => this.get('/auth/logout/')
+  logout = () => this.get('/auth/logout/');
 
-  user_info = () => this.get('/auth/info/')
+  user_info = () => this.get('/auth/info/');
 
   register = (username, email, password, dname) =>
     this.post('/auth/register/', {
       username, email, password, dname
-    })
+    });
 
   form = {
-    get_all: () => this.get('/form/get_all/')
-  }
+    get_all: () => this.get('/form/get_all/'),
+
+    create: (title, body) =>
+      this.post('/form/create/', {
+        title, body
+      })
+  };
 }
 
 const api = new Api();

@@ -20,6 +20,10 @@ $ git push -u origin dev-[feature or patch name]
 $ # 开启 Pull Request
 ```
 
+### WebStorm Code Style
+
+从 [docs/Default.xml](docs/Default.xml) 导入
+
 ## CRA
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

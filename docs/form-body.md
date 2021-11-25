@@ -8,13 +8,14 @@ interface Question { // abstract
 
   title: string;
   image_ids: int[];  // For use in image src url
-  
+
   conds: Condition[];
   cond_or: boolean;  // true for 'or', false for 'and'
-  
+
   type: 'input' | 'text' | 'radio' | 'checkbox' |
         'dropdown' | 'file' | 'date' | 'time' |
-        'datetime' | 'comment';
+        'datetime' | 'comment' |
+        'geo' | 'fuzzy_geo' | 'ip';
   // Marks the derived type
 }
 
@@ -30,11 +31,11 @@ interface TextQuestion extends Question {
 }
 
 interface RadioQuestion extends Question {
-  options: Option[];  // May not be empty
+  options: Option[];  // Non-empty
 }
 
 interface CheckboxQuestion extends Question {
-  options: Option[];
+  options: Option[];  // Non-empty
   min_choices: int;
   max_choices: int;
 }
