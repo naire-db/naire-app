@@ -69,7 +69,7 @@ class Api {
       }),
 
     change_password: (password, new_password) =>
-      this.post('/auth/change_password', {
+      this.post('/auth/change_password/', {
         password, new_password
       })
   };
