@@ -40,7 +40,9 @@ function Profile() {
       return;
     let res;
     try {
-      res = await api.user.save_profile(emailField.value, dnameField.value);
+      res = await api.user.save_profile(
+        emailField.value === '' ? currentInfo.email : emailField.value,
+        dnameField.value === '' ? currentInfo.dname : dnameField.value);
     } catch (e) {
       return setErrorPrompt(e.toString());
     }
@@ -51,6 +53,8 @@ function Profile() {
     else
       setErrorPrompt(res.code);
   }
+
+  let emailError = emailField.value === '' ? false : emailField.renderError();
 
   return (
     <AppLayout>
@@ -86,13 +90,13 @@ function Profile() {
                 label={'邮箱'}
                 placeholder={currentInfo.email}
                 onChange={emailField.handler}
-                error={emailField.renderError()}
+                error={emailError}
               />
               <Message error header='修改失败' content={errorPrompt} />
               <Form.Button
                 fluid
                 onClick={onSubmit}
-                disabled={emailField.renderError()}
+                disabled={emailError}
               >
                 保存修改
               </Form.Button>
