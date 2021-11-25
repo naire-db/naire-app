@@ -1,68 +1,38 @@
 import React, { useState } from 'react';
-import {Checkbox, Container, Form, Grid, Icon, Menu, Message} from 'semantic-ui-react';
+import { Checkbox, Container, Form, Grid, Icon, Menu, Message } from 'semantic-ui-react';
 
-import api from "../api";
+import api from 'api';
 import AppLayout from 'layouts/AppLayout';
+import { useField } from '../utils';
 
 function checkPassword(v) {
   return v ? null : '';
 }
 
-function usePasswordField() {
-  const [value, setValue] = useState('');
-  const [error, setError] = useState(undefined);
-  return {
-    value,
-    error,
-    handler(e) {
-      const v = e.target.value;
-      setValue(v);
-      setError(checkPassword(v));
-    },
-    validate() {
-      if (error === undefined) {
-        setError(checkPassword(value));
-        return false;
-      }
-      return error === null;
-    },
-    renderError() {
-      if (error === null || error === undefined)
-        return null;
-      if (!error)
-        return true;
-      return {
-        'content': error,
-        'position': 'bottom'
-      };
-    }
-  };
-}
-
 function Profile() {
   const [checked, setChecked] = useState(false);
-
-  const passwordField = usePasswordField();
-
   const [errorPrompt, setErrorPrompt] = useState(null);
+  const [repeatedPassword, setRepeatedPassword] = useState('');
+
+  const passwordField = useField(checkPassword);
+  const newPasswordField = useField(checkPassword);
+
+  const repeatedMisMatchError = newPasswordField.value !== repeatedPassword;
 
   async function onSubmit() {
-    let ok = passwordField.validate();
-    if (!ok)
+    if (!passwordField.validate())
       return;
 
     let res;
     try {
-      res = await api.register()
+      res = await api.user.change_password(passwordField.value, newPasswordField.value);
     } catch (e) {
       return setErrorPrompt(e.toString());
     }
     if (res.code === 0)
-      window.location = '/password';
-    else if (res.code === api.ERR_PASSWORD_RESET_INCORRECT)
-      setErrorPrompt('当前密码输入错误')
-    else if (res.code === api.ERR_PASSWORD_RESET_MISMATCH)
-      setErrorPrompt('新密码两次输入不一致')
+      window.location = '/login';
+    else if (res.code === api.ERR_FAILURE)
+      setErrorPrompt('当前密码输入错误');
     else
       setErrorPrompt(res.code);
   }
@@ -71,7 +41,7 @@ function Profile() {
 
   return (
     <AppLayout>
-      <Container text style={{marginTop : '7em'}}>
+      <Container text style={{marginTop: '7em'}}>
         <Grid>
           <Grid.Column width={6}>
             <Menu secondary vertical>
@@ -91,19 +61,17 @@ function Profile() {
               <Form.Input
                 label={'当前密码'}
                 type={'password'}
-                error={passwordField.renderError()}
                 onChange={passwordField.handler}
               />
               <Form.Input
                 label={'新密码'}
                 type={'password'}
-                error={passwordField.renderError()}
-                onChange={passwordField.handler}
+                onChange={newPasswordField.handler}
               />
               <Form.Input
                 label={'确认新密码'}
-                error={passwordField.renderError()}
-                onChange={passwordField.handler}
+                error={repeatedMisMatchError}
+                onChange={e => setRepeatedPassword(e.target.value)}
                 type={checked ? 'text' : 'password'}
               />
               <Form.Field>
@@ -116,7 +84,9 @@ function Profile() {
               <Message error header={'修改失败'} content={errorPrompt} />
               <Form.Button
                 fluid
-                onClick={onSubmit}>
+                onClick={onSubmit}
+                disabled={repeatedMisMatchError}
+              >
                 确认修改
               </Form.Button>
             </Form>
