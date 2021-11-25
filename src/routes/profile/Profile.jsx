@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import api from 'api';
 import appState from 'appState';
 import { checkDname, checkEmail, useField } from 'utils';
-import ProfileLayout from '../../layouts/ProfileLayout';
+import ProfileLayout from 'layouts/ProfileLayout';
 import { Form, Message } from 'semantic-ui-react';
 
 function Profile() {
@@ -57,9 +57,10 @@ function Profile() {
         />
         <Message error header='修改失败' content={errorPrompt} />
         <Form.Button
-          fluid
+          primary fluid
           onClick={onSubmit}
           disabled={emailError}
+          className='profile-submit'
         >
           保存修改
         </Form.Button>

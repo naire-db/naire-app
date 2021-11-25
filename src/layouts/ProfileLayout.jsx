@@ -3,6 +3,8 @@ import React from 'react';
 import Nav from 'components/Nav';
 import { Container, Grid, Icon, Menu } from 'semantic-ui-react';
 
+import './profile.css';
+
 function ProfileLayout(props) {
   return <>
     <Nav />
@@ -10,11 +12,11 @@ function ProfileLayout(props) {
       <Grid>
         <Grid.Column width={6}>
           <Menu secondary vertical>
-            <Menu.Item active={props.page === 'profile'} href='../profile'>
+            <Menu.Item active={props.page === 'profile'} href='/user/profile'>
               <Icon name='user' />
               个人信息
             </Menu.Item>
-            <Menu.Item active={props.page === 'password'} href='../password'>
+            <Menu.Item active={props.page === 'password'} href='/user/password'>
               <Icon name='lock' />
               修改密码
             </Menu.Item>

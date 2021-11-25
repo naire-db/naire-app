@@ -3,7 +3,7 @@ import { Checkbox, Form, Message } from 'semantic-ui-react';
 
 import api from 'api';
 import { checkPassword, useField } from 'utils';
-import ProfileLayout from '../../layouts/ProfileLayout';
+import ProfileLayout from 'layouts/ProfileLayout';
 
 function ChangePassword() {
   const [checked, setChecked] = useState(false);
@@ -63,9 +63,10 @@ function ChangePassword() {
         </Form.Field>
         <Message error header={'修改失败'} content={errorPrompt} />
         <Form.Button
-          fluid
+          primary fluid
           onClick={onSubmit}
           disabled={repeatedMisMatchError}
+          className='profile-submit'
         >
           确认修改
         </Form.Button>
