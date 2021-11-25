@@ -26,6 +26,16 @@ function useField(checker, errorPosition = 'bottom') {
         'content': error,
         'position': errorPosition
       };
+    },
+    toProps() {
+      return {
+        value: value,
+        onChange: this.handler,
+        error: this.renderError()
+      };
+    },
+    visuallyValid() {
+      return error !== undefined && error !== null;
     }
   };
 }
