@@ -46,6 +46,7 @@ function AppRouter() {
         {mount('/user/password', () => import('routes/profile/ChangePassword'))}
         {mount('/form/all', () => import('routes/form/FormSet'))}
         {mount('/form/create', () => import('routes/form/FormCreate'))}
+        {mount('/f/:fid', () => import('routes/form/FormFill'))}
         {mount('*', () => import('routes/Home'))}
       </Routes>
     </BrowserRouter>

@@ -59,6 +59,11 @@ class Api {
     create: (title, body) =>
       this.post('/form/create/', {
         title, body
+      }),
+
+    get_detail: fid =>
+      this.post('/form/get_detail/', {
+        fid
       })
   };
 
