@@ -9,8 +9,8 @@ import { Form, Message } from 'semantic-ui-react';
 function Profile() {
   const currentInfo = appState.user_info;
 
-  const dnameField = useField(checkDname);
-  const emailField = useField(checkEmail);
+  const emailField = useField(checkEmail, currentInfo.email);
+  const dnameField = useField(checkDname, currentInfo.dname);
 
   const [errorPrompt, setErrorPrompt] = useState(null);
 
@@ -19,9 +19,7 @@ function Profile() {
       return;
     let res;
     try {
-      res = await api.user.save_profile(
-        emailField.value === '' ? currentInfo.email : emailField.value,
-        dnameField.value === '' ? currentInfo.dname : dnameField.value);
+      res = await api.user.save_profile(emailField.value, dnameField.value);
     } catch (e) {
       return setErrorPrompt(e.toString());
     }
@@ -33,7 +31,6 @@ function Profile() {
       setErrorPrompt(res.code);
   }
 
-  let emailError = emailField.value === '' ? false : emailField.renderError();
 
   return (
     <ProfileLayout page={'profile'}>
@@ -45,21 +42,19 @@ function Profile() {
           <p>{currentInfo.username}</p>
         </Message>
         <Form.Input
-          label={'显示名称'}
-          placeholder={currentInfo.dname}
-          onChange={dnameField.handler}
+          label={'邮箱'}
+          {...emailField.toProps()}
         />
         <Form.Input
-          label={'邮箱'}
-          placeholder={currentInfo.email}
-          onChange={emailField.handler}
-          error={emailError}
+          label={'显示名称'}
+          {...dnameField.toProps()}
         />
         <Message error header='修改失败' content={errorPrompt} />
         <Form.Button
           primary fluid
           onClick={onSubmit}
-          disabled={emailError}
+          disabled={!(emailField.visuallyValid() && dnameField.visuallyValid()) ||
+          (currentInfo.email === emailField.value && currentInfo.dname === dnameField.value)}
           className='profile-submit'
         >
           保存修改

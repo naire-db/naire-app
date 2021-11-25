@@ -35,7 +35,7 @@ function useField(checker, initialValue = '', errorPosition = 'bottom') {
       };
     },
     visuallyValid() {
-      return error !== undefined && error !== null;
+      return error === undefined || error === null;
     }
   };
 }
