@@ -6,8 +6,6 @@ class Api {
   ERR_DUPL_USERNAME = 3;
   ERR_DUPL_EMAIL = 4;
 
-  ERR_PASSWORD_RESET_MISMATCH = 6;
-
   async post(path, data) {
     console.log('POSTing', path, 'with', data);
     const url = entry + path;

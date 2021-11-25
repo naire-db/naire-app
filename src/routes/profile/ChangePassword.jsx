@@ -3,13 +3,13 @@ import { Checkbox, Container, Form, Grid, Icon, Menu, Message } from 'semantic-u
 
 import api from 'api';
 import AppLayout from 'layouts/AppLayout';
-import { useField } from '../utils';
+import { useField } from '../../utils';
 
 function checkPassword(v) {
   return v ? null : '';
 }
 
-function Profile() {
+function ChangePassword() {
   const [checked, setChecked] = useState(false);
   const [errorPrompt, setErrorPrompt] = useState(null);
   const [repeatedPassword, setRepeatedPassword] = useState('');
@@ -97,4 +97,4 @@ function Profile() {
   );
 }
 
-export default Profile;
+export default ChangePassword;
