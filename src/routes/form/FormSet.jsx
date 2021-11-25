@@ -31,7 +31,7 @@ function FormSet() {
     const fid = form.id;
     window.sharingUrl = getFormUrl(fid);
     window.sharingFormTitle = form.title;
-    setSharingFid(fid);
+    setSharingFid(fid);  // TODO: clear this when navigated to another page
   }
 
   async function copy() {
@@ -47,33 +47,37 @@ function FormSet() {
     window.location = getFormUrl(form.id);
   }
 
-  const sharingMessage = (
-    <Transition visible={sharingFid !== null} animation='scale' duration={100}>
-      {
-        sharingFid !== null ?
-          <Message success>
-            <Message.Header>{'分享问卷：' + window.sharingFormTitle}</Message.Header>
-            <Form className='share-link-form'>
-              <Form.Field inline>
-                <label>问卷地址：</label>
-                <Input
-                  className='share-link-input'
-                  size='small'
-                  value={window.sharingUrl}
-                />
-                <Button
-                  className='share-link-btn'
-                  positive={sharingSuccessToken !== null}
-                  icon labelPosition='left' size='small'
-                  onClick={copy}
-                >
-                  <Icon name={sharingSuccessToken === null ? 'copy' : 'checkmark'} />
-                  复制
-                </Button>
-              </Form.Field>
-            </Form>
-          </Message> : <></>
-      }
+  const sharingMessageRow = (
+    <Transition visible={sharingFid !== null} animation='fade' duration={80}>
+      <Grid.Row>
+        <Grid.Column>
+          {
+            sharingFid !== null ?
+              <Message success>
+                <Message.Header>{'分享问卷：' + window.sharingFormTitle}</Message.Header>
+                <Form className='share-link-form'>
+                  <Form.Field inline>
+                    <label>问卷地址：</label>
+                    <Input
+                      className='share-link-input'
+                      size='small'
+                      value={window.sharingUrl}
+                    />
+                    <Button
+                      className='share-link-btn'
+                      positive={sharingSuccessToken !== null}
+                      icon labelPosition='left' size='small'
+                      onClick={copy}
+                    >
+                      <Icon name={sharingSuccessToken === null ? 'copy' : 'checkmark'} />
+                      复制
+                    </Button>
+                  </Form.Field>
+                </Form>
+              </Message> : <></>
+          }
+        </Grid.Column>
+      </Grid.Row>
     </Transition>
   );
 
@@ -164,11 +168,7 @@ function FormSet() {
                   </Button>
                 </Grid.Column>
               </Grid.Row>
-              <Grid.Row>
-                <Grid.Column>
-                  {sharingMessage}
-                </Grid.Column>
-              </Grid.Row>
+              {sharingMessageRow}
               <Grid.Row>
                 <Grid.Column>
                   <Card.Group itemsPerRow={3}>
