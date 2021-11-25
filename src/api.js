@@ -61,6 +61,18 @@ class Api {
         title, body
       })
   };
+
+  user = {
+    save_profile: (email, dname) =>
+      this.post('/auth/save_profile/', {
+        email, dname
+      }),
+
+    change_password: (password, new_password) =>
+      this.post('/auth/change_password', {
+        password, new_password
+      })
+  };
 }
 
 const api = new Api();
