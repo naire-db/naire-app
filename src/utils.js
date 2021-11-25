@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
-function useField(checker, errorPosition = 'bottom') {
-  const [value, setValue] = useState('');
+function useField(checker, initialValue = '', errorPosition = 'bottom') {
+  const [value, setValue] = useState(initialValue);
   const [error, setError] = useState(undefined);
   return {
     value, error,
@@ -35,7 +35,7 @@ function useField(checker, errorPosition = 'bottom') {
       };
     },
     visuallyValid() {
-      return error !== undefined && error !== null;
+      return error === undefined || error === null;
     }
   };
 }
