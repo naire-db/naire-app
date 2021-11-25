@@ -42,6 +42,8 @@ function AppRouter() {
         {mount('/demo', () => import('routes/Demo'))}
         {mount('/login', () => import('routes/Login'))}
         {mount('/register', () => import('routes/Register'))}
+        {mount('/user/profile', () => import('routes/profile/Profile'))}
+        {mount('/user/password', () => import('routes/profile/ChangePassword'))}
         {mount('/form/all', () => import('routes/form/FormSet'))}
         {mount('/form/create', () => import('routes/form/FormCreate'))}
         {mount('*', () => import('routes/Home'))}
