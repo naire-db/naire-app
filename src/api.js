@@ -6,6 +6,9 @@ class Api {
   ERR_DUPL_USERNAME = 3;
   ERR_DUPL_EMAIL = 4;
 
+  ERR_PASSWORD_RESET_INCORRECT = 5;
+  ERR_PASSWORD_RESET_MISMATCH = 6;
+
   async post(path, data) {
     console.log('POSTing', path, 'with', data);
     const url = entry + path;
@@ -52,6 +55,11 @@ class Api {
     this.post('/auth/register/', {
       username, email, password, dname
     });
+
+  edit_profile = (dname, email) =>
+    this.post('/auth/profile', {
+      dname, email
+    })
 
   form = {
     get_all: () => this.get('/form/get_all/'),
