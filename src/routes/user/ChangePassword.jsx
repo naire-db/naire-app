@@ -33,7 +33,7 @@ function ChangePassword() {
       setErrorPrompt(res.code);
   }
 
-  let toggle = () => setChecked(!checked);
+  let toggle = () => setChecked(v => !v);
 
   return (
     <ProfileLayout page={'password'}>
@@ -56,19 +56,18 @@ function ChangePassword() {
         />
         <Form.Field>
           <Checkbox
-            slider
             label='显示新密码'
             onChange={toggle}
           />
         </Form.Field>
-        <Message error header={'修改失败'} content={errorPrompt} />
+        <Message error header={'保存失败'} content={errorPrompt} />
         <Form.Button
           primary fluid
           onClick={onSubmit}
           disabled={repeatedMisMatchError}
           className='profile-submit'
         >
-          确认修改
+          保存
         </Form.Button>
       </Form>
     </ProfileLayout>
