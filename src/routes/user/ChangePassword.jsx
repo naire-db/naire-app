@@ -37,7 +37,7 @@ function ChangePassword() {
 
   return (
     <ProfileLayout page={'password'}>
-      <Form>
+      <Form error={errorPrompt !== null}>
         <Form.Input
           label={'当前密码'}
           type={'password'}
