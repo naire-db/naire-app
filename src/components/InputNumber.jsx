@@ -7,7 +7,7 @@ function InputNumber(props) {
 
   function onChange(e) {
     const v = e.target.value;
-    if (!v) {
+    if (v === '') {
       setEmpty(true);
       return props.onChange(props.defaultValue);
     }
@@ -35,4 +35,4 @@ function InputNumber(props) {
   );
 }
 
-export { InputNumber };
+export default InputNumber;
