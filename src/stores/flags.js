@@ -13,7 +13,14 @@ class FlagStore {
     return {
       set: action(() => that.tokens.set(token, true)),
       unset: action(() => that.tokens.delete(token)),
-      get: action(() => that.tokens.has(token))
+      get: action(() => that.tokens.has(token)),
+      set_to: action(v => {
+        console.log('set to', v);
+        if (v)
+          that.tokens.set(token, true);
+        else
+          that.tokens.delete(token);
+      })
     };
   }
 
