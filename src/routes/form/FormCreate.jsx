@@ -3,7 +3,8 @@ import { Button, Grid, Header, Icon, Input, Label, Segment, Sticky, Transition }
 
 import AppLayout from 'layouts/AppLayout';
 import api from 'api';
-import { editorMap, qMap, typeMap } from './types';
+import { editorMap, errorFlags, qMap, typeMap } from './types';
+import { observer } from 'mobx-react-lite';
 
 class Option {
   text = '';
@@ -22,7 +23,7 @@ const qTypes = [
   ['file', '文件上传', 'file']
 ];
 
-function FormCreate() {
+const FormCreate = observer(() => {
   const [nextQid, setNextQid] = useState(0);
   const [nextOid, setNextOid] = useState(0);
   const [qids, setQids] = useState([]);
@@ -95,6 +96,7 @@ function FormCreate() {
             <Button
               primary floated='right'
               onClick={onSubmit}
+              disabled={titleError || errorFlags.dirty()}
             >
               创建问卷
             </Button>
@@ -114,6 +116,6 @@ function FormCreate() {
       </Grid>
     </AppLayout>
   );
-}
+});
 
 export default FormCreate;
