@@ -1,8 +1,9 @@
 import { useState } from 'react';
 
-import FlagStore from 'stores/flags';
+import makeErrorContext from '../errorContext';
 
-const errorFlags = new FlagStore();
+const {errorFlags, useErrorFlag, useErrorState} = makeErrorContext();
+
 const qMap = {};
 
 class BaseQuestion {
@@ -11,10 +12,6 @@ class BaseQuestion {
   constructor(id) {
     this.id = id;
   }
-}
-
-function useErrorFlag(props) {
-  return errorFlags.make(props.qid);
 }
 
 function useQState(key, props) {
@@ -33,4 +30,14 @@ function registerQuestionType(type, Question, Editor) {
   editorMap[type] = Editor;
 }
 
-export { BaseQuestion, useQState, qMap, editorMap, typeMap, registerQuestionType, errorFlags, useErrorFlag };
+export {
+  BaseQuestion,
+  useQState,
+  qMap,
+  editorMap,
+  typeMap,
+  registerQuestionType,
+  errorFlags,
+  useErrorFlag,
+  useErrorState
+};
