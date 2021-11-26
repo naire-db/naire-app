@@ -88,13 +88,13 @@ function CheckboxOptionTable(props) {
 
 function CheckboxEditor(props) {
   const [options, setOptions] = useQState('options', props);
-  const [minLength, setMinLength] = useQState('min_length', props);
-  const [maxLength, setMaxLength] = useQState('max_length', props);
+  const [minChoices, setMinChoices] = useQState('min_choices', props);
+  const [maxChoices, setMaxChoices] = useQState('max_choices', props);
 
   const flag = useErrorFlag(props);
   const error = flag.get();
   const [minProps, maxProps] = makeRangeNumberInputProps(
-    minLength, setMinLength, 0, maxLength, setMaxLength, options.length, flag
+    minChoices, setMinChoices, 0, maxChoices, setMaxChoices, options.length, flag
   );
 
   return <>
