@@ -1,14 +1,24 @@
 import React from 'react';
 
-import { registerQuestionType } from './base';
-import { CheckboxEditor, CheckboxQuestion } from './checkbox';
+import { registerQuestionType, useQState } from './base';
+import { CheckboxOptionTable, CheckboxQuestion } from './checkbox';
+
 
 class RadioQuestion extends CheckboxQuestion {
   type = 'radio';
 }
 
 function RadioEditor(props) {
-  return <CheckboxEditor radio {...props} />;
+  const [options, setOptions] = useQState('options', props);
+
+  return (
+    <CheckboxOptionTable
+      options={options}
+      setOptions={setOptions}
+      ctx={props.ctx}
+      radio
+    />
+  );
 }
 
 registerQuestionType('radio', RadioQuestion, RadioEditor);

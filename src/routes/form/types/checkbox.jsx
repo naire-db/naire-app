@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { Button, Checkbox, Input, Radio, Table } from 'semantic-ui-react';
+import { Button, Checkbox, Form, Input, Radio, Table } from 'semantic-ui-react';
 
-import { BaseQuestion, registerQuestionType, useQState } from './base';
+import { BaseQuestion, registerQuestionType, useErrorFlag, useQState } from './base';
+import NumberInput from 'components/NumberInput';
+import { makeRangeNumberInputProps } from './utils';
 
 class CheckboxQuestion extends BaseQuestion {
   type = 'checkbox';
@@ -13,8 +15,8 @@ class CheckboxQuestion extends BaseQuestion {
   }
 }
 
-function CheckboxEditor(props) {
-  const [options, setOptions] = useQState('options', props);
+function CheckboxOptionTable(props) {
+  const {options, setOptions} = props;
   const [checkedOid, setCheckedOid] = useState(null);
 
   function addOption() {
@@ -32,7 +34,7 @@ function CheckboxEditor(props) {
       }
   }
 
-  return <>
+  return (
     <Table className='no-table-border' basic='very' compact='very' collapsing>
       <Table.Body>
         {
@@ -81,9 +83,45 @@ function CheckboxEditor(props) {
         }
       </Table.Body>
     </Table>
+  );
+}
+
+function CheckboxEditor(props) {
+  const [options, setOptions] = useQState('options', props);
+  const [minLength, setMinLength] = useQState('min_length', props);
+  const [maxLength, setMaxLength] = useQState('max_length', props);
+
+  const flag = useErrorFlag(props);
+  const error = flag.get();
+  const [minProps, maxProps] = makeRangeNumberInputProps(
+    minLength, setMinLength, 0, maxLength, setMaxLength, options.length, flag
+  );
+
+  return <>
+    <CheckboxOptionTable
+      options={options}
+      setOptions={setOptions}
+      ctx={props.ctx}
+    />
+    <Form>
+      <Form.Group widths='equal'>
+        <NumberInput
+          label='最小选择数量'
+          error={error}
+          {...minProps}
+        />
+        <NumberInput
+          label='最大选择数量'
+          error={error}
+          {...maxProps}
+        />
+      </Form.Group>
+    </Form>
   </>;
 }
 
 registerQuestionType('checkbox', CheckboxQuestion, CheckboxEditor);
 
-export { CheckboxQuestion, CheckboxEditor };
+export {
+  CheckboxQuestion, CheckboxEditor, CheckboxOptionTable
+};
