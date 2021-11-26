@@ -12,11 +12,11 @@ interface Question { // abstract
   conds: Condition[];
   cond_or: boolean;  // true for 'or', false for 'and'
 
-  type: 'input' | 'text' | 'radio' | 'checkbox' |
-        'dropdown' | 'file' | 'date' | 'time' |
-        'datetime' | 'comment' |
-        'geo' | 'fuzzy_geo' | 'ip';
   // Marks the derived type
+  type: 'input' | 'text' | 'radio' | 'checkbox' |
+        'dropdown' | 'file' | 'date' | 'datetime' |
+        'comment';
+  // TBD: 'time' | 'geo' | 'fuzzy_geo' | 'ip' | 'stack'
 }
 
 interface InputQuestion extends Question {
@@ -46,6 +46,8 @@ interface DropdownQuestion extends Question {
 
 interface FileQuestion extends Question {
   extensions: string[];  // Accepts all extensions if empty
+  max_size: int;  // in KB
+  optional: boolean;
 }
 
 // Other types have no specific fields
