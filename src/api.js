@@ -61,8 +61,47 @@ class Api {
         title, body
       }),
 
+    /*
+     Following operations requires user's READ permission on the Form
+     TODO: Before we work on Form visibility, this means no permission limitations
+     */
+
     get_detail: fid =>
       this.post('/form/get_detail/', {
+        fid
+      }),
+
+    save_resp: (fid, resp_body) =>
+      this.post('/form/save_resp/', {
+        fid, resp_body
+      }),
+
+    /*
+     Following operations requires user's MODIFY permission on the Form
+     TODO: Before we work on Orgs, this simply means current user is the owner of the Form
+     */
+
+    /*
+     (We assume) requests from our frontend never violate the permission limits or access a
+     nonexistent Form id, so the backend should simply return HTTP 403 / 404 to an API abuser
+     rather than choose from our predefined code.
+     (get_detail is an exception since the Form url can be shared randomly)
+     */
+
+    save_title: (fid, title) =>
+      this.post('/form/save_title/', {
+        fid, title
+      }),
+
+    // Following 2 operations will remove all the existing responses of the form at the same time
+
+    change_body: (fid, body) =>
+      this.post('/form/change_body/', {
+        fid, body
+      }),
+
+    remove: fid =>
+      this.post('/form/remove/', {
         fid
       })
   };
