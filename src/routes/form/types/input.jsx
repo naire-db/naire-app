@@ -5,12 +5,10 @@ import NumberInput from 'components/NumberInput';
 import { BaseQuestion, registerQuestionType, useErrorFlag, useQState } from './base';
 import { makeRangeNumberInputProps } from './utils';
 
-import './question.css';
-
 class InputQuestion extends BaseQuestion {
   type = 'input';
 
-  min_length = 1;
+  min_length = 0;
   max_length = 200;
   regex = '';
 }
@@ -23,11 +21,11 @@ function InputEditor(props) {
   const flag = useErrorFlag(props);
   const error = flag.get();
   const [minProps, maxProps] = makeRangeNumberInputProps(
-    minLength, setMinLength, 1, maxLength, setMaxLength, 200, flag
+    minLength, setMinLength, 0, maxLength, setMaxLength, 200, flag
   );
 
-  return <>
-    <Form className='input-body'>
+  return (
+    <Form>
       <Form.Group widths='equal'>
         <NumberInput
           label='最小输入长度'
@@ -45,7 +43,7 @@ function InputEditor(props) {
         label='正则表达式（可选）'
       />
     </Form>
-  </>;
+  );
 }
 
 registerQuestionType('input', InputQuestion, InputEditor);

@@ -6,6 +6,8 @@ import api from 'api';
 import { editorMap, errorFlags, qMap, typeMap } from './types';
 import { observer } from 'mobx-react-lite';
 
+import './form.css';
+
 class Option {
   text = '';
 
@@ -104,10 +106,20 @@ const FormCreate = observer(() => {
               {qids.map(qid => {
                 const E = editorMap[qMap[qid].type];
                 return <Segment key={qid}>
-                  <Input placeholder='问题' onChange={e => {
-                    qMap[qid].title = e.target.value;
-                  }} />
-                  <E qid={qid} ctx={ctx} />
+                  <Grid>
+                    <Grid.Row className='question-editor-meta-row'>
+                      <Grid.Column>
+                        <Input placeholder='问题' onChange={e => {
+                          qMap[qid].title = e.target.value;
+                        }} />
+                      </Grid.Column>
+                    </Grid.Row>
+                    <Grid.Row>
+                      <Grid.Column>
+                        <E qid={qid} ctx={ctx} />
+                      </Grid.Column>
+                    </Grid.Row>
+                  </Grid>
                 </Segment>;
               })}
             </Transition.Group>
