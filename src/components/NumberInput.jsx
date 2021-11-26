@@ -2,23 +2,24 @@ import React, { useState } from 'react';
 
 import { Form } from 'semantic-ui-react';
 
-function InputNumber(props) {
+function NumberInput(props) {
   const [empty, setEmpty] = useState(props.defaultValue !== null);
+  const handler = props.onChanged;
 
   function onChange(e) {
     const v = e.target.value;
     if (v === '') {
       setEmpty(true);
-      return props.onChange(props.defaultValue);
+      return handler(props.defaultValue);
     }
     if (empty)
       setEmpty(false);
     const x = parseInt(v, 10);
     if (x < props.min)
-      return props.onChange(props.min);
+      return handler(props.min);
     if (x > props.max)
-      return props.onChange(props.max);
-    return props.onChange(x);
+      return handler(props.max);
+    return handler(x);
   }
 
   return (
@@ -35,4 +36,4 @@ function InputNumber(props) {
   );
 }
 
-export default InputNumber;
+export default NumberInput;

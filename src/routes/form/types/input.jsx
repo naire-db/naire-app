@@ -1,8 +1,9 @@
 import React from 'react';
 import { Form } from 'semantic-ui-react';
 
+import NumberInput from 'components/NumberInput';
 import { BaseQuestion, registerQuestionType, useErrorFlag, useQState } from './base';
-import InputNumber from 'components/InputNumber';
+import { makeRangeNumberInputProps } from './utils';
 
 import './question.css';
 
@@ -20,35 +21,20 @@ function InputEditor(props) {
   const [, setRegex] = useQState('regex', props);
 
   const flag = useErrorFlag(props);
-
-  function onMinLengthChanged(v) {
-    flag.set_to(v > maxLength);
-    setMinLength(v);
-  }
-
-  function onMaxLengthChanged(v) {
-    flag.set_to(minLength > v);
-    setMaxLength(v);
-  }
+  const [minProps, maxProps] = makeRangeNumberInputProps(
+    minLength, setMinLength, 1, maxLength, setMaxLength, 200, flag
+  );
 
   return <>
     <Form className='input-body'>
       <Form.Group widths='equal'>
-        <InputNumber
-          min={1}
-          max={200}
-          defaultValue={1}
+        <NumberInput
           label='最小输入长度'
-          value={minLength}
-          onChange={onMinLengthChanged}
+          {...minProps}
         />
-        <InputNumber
-          min={1}
-          max={200}
-          defaultValue={200}
+        <NumberInput
           label='最大输入长度'
-          value={maxLength}
-          onChange={onMaxLengthChanged}
+          {...maxProps}
         />
       </Form.Group>
       <Form.Input
