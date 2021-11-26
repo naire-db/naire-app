@@ -21,6 +21,7 @@ function InputEditor(props) {
   const [, setRegex] = useQState('regex', props);
 
   const flag = useErrorFlag(props);
+  const error = flag.get();
   const [minProps, maxProps] = makeRangeNumberInputProps(
     minLength, setMinLength, 1, maxLength, setMaxLength, 200, flag
   );
@@ -30,12 +31,12 @@ function InputEditor(props) {
       <Form.Group widths='equal'>
         <NumberInput
           label='最小输入长度'
-          error={flag.get()}
+          error={error}
           {...minProps}
         />
         <NumberInput
           label='最大输入长度'
-          error={flag.get()}
+          error={error}
           {...maxProps}
         />
       </Form.Group>
