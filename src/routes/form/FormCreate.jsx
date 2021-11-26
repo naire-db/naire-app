@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
+import { observer } from 'mobx-react-lite';
 import { Button, Grid, Header, Icon, Input, Label, Segment, Sticky, Transition } from 'semantic-ui-react';
 
 import AppLayout from 'layouts/AppLayout';
 import api from 'api';
 import { editorMap, errorFlags, qMap, typeMap } from './types';
-import { observer } from 'mobx-react-lite';
 
 import './form.css';
 
