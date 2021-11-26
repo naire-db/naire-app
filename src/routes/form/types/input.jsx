@@ -30,10 +30,12 @@ function InputEditor(props) {
       <Form.Group widths='equal'>
         <NumberInput
           label='最小输入长度'
+          error={flag.get()}
           {...minProps}
         />
         <NumberInput
           label='最大输入长度'
+          error={flag.get()}
           {...maxProps}
         />
       </Form.Group>

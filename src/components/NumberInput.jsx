@@ -31,6 +31,7 @@ function NumberInput(props) {
       placeholder={`${props.defaultValue}`}
       onChange={onChange}
       value={empty ? '' : `${props.value}`}
+      error={props.error}
     >
     </Form.Input>
   );
