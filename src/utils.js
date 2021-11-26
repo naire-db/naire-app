@@ -12,8 +12,9 @@ function useField(checker, initialValue = '', errorPosition = 'bottom') {
     },
     validate() {
       if (error === undefined) {
-        setError(checker(value));
-        return false;
+        const v = checker(value);
+        setError(v);
+        return v === null;
       }
       return error === null;
     },
@@ -66,6 +67,8 @@ function checkEmail(v) {
 }
 
 function checkDname(v) {
+  if (!v)
+    return '';
   if (v.length > 120)
     return '显示名称最多包含 120 个字符';
   return null;
@@ -75,4 +78,8 @@ function checkPassword(v) {
   return v ? null : '';
 }
 
-export { useField, checkUsername, checkPassword, checkEmail, checkDname };
+function validateFields(...fields) {
+  return fields.map(f => f.validate()).every(t => t);
+}
+
+export { useField, checkUsername, checkPassword, checkEmail, checkDname, validateFields };
