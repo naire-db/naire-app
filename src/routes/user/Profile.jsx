@@ -49,12 +49,12 @@ function Profile() {
         <Message error header='保存失败' content={errorPrompt} />
         <Form.Button
           primary fluid
+          className='profile-submit'
           onClick={onSubmit}
           disabled={
             !(emailField.visuallyValid() && dnameField.visuallyValid()) ||
             (currentInfo.email === emailField.value && currentInfo.dname === dnameField.value)
           }
-          className='profile-submit'
         >
           保存
         </Form.Button>
