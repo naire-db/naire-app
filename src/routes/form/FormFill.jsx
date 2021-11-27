@@ -97,7 +97,7 @@ function FormFill() {
         window.location = '/';
       }
     })();
-  }, []);  // TODO: fix the warning
+  }, [fid]);  // TODO: fix the warning
 
   return (detail &&
     <AppLayout offset>

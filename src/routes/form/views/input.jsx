@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Label } from 'semantic-ui-react';
+import { Form } from 'semantic-ui-react';
 
 import { registerQuestionView, useAState } from './base';
 import { QLabel } from './utils';
@@ -20,10 +20,6 @@ function InputView(props) {
   }
 
   // TODO: regex
-
-  function makeLabel(text, error) {
-    return <Label basic color={error ? 'red' : undefined}>{text}</Label>;
-  }
 
   return <Form>
     <Form.Input
