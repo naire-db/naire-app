@@ -19,3 +19,7 @@
 .question-editor-meta-row {
   padding-bottom: 0 !important;
 }
+
+.modal-input {
+  margin-top: 5px;
+}

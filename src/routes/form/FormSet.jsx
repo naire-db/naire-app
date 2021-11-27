@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Card, Dropdown, Form, Grid, Icon, Input, Label, Menu, Message, Transition } from 'semantic-ui-react';
+import { Button, Card, Dropdown, Grid, Icon, Label, Menu } from 'semantic-ui-react';
 
 import AppLayout from 'layouts/AppLayout';
 import api from 'api';
 
+import ShareRow from './tools/ShareRow';
+
 import './form.css';
+import RetitleModal from './tools/RetitleModal';
+import RemoveModal from './tools/RemoveModal';
 
 function formatTimestamp(ts) {
   const dt = new Date(ts * 1000);
@@ -15,14 +19,21 @@ function getFormUrl(fid) {
   return window.location.origin + '/f/' + fid;
 }
 
+const formMap = new Map();
+
 function FormSet() {
   const [forms, setForms] = useState([]);
   const [sharingFid, setSharingFid] = useState(null);
-  const [sharingSuccessToken, setSharingSuccessToken] = useState(null);
+
+  const [retitlingFid, setRetitlingFid] = useState(null);
+  const [removingFid, setRemovingFid] = useState(null);
 
   useEffect(() => {
     (async () => {
       const res = await api.form.get_all();
+      formMap.clear();
+      for (const form of res.data)
+        formMap.set(form.id, form);
       setForms(res.data);
     })();
   }, []);
@@ -34,52 +45,9 @@ function FormSet() {
     setSharingFid(fid);  // TODO: clear this when navigated to another page
   }
 
-  async function copy() {
-    const tk = Math.random();
-    setSharingSuccessToken(tk);
-    setTimeout(() => {
-      setSharingSuccessToken(tk_cur => (tk === tk_cur ? null : tk_cur));
-    }, 1000);
-    await navigator.clipboard.writeText(window.sharingUrl);
-  }
-
   function open(form) {
     window.location = getFormUrl(form.id);
   }
-
-  const sharingMessageRow = (
-    <Transition visible={sharingFid !== null} animation='fade' duration={80}>
-      <Grid.Row>
-        <Grid.Column>
-          {
-            sharingFid !== null ?
-              <Message success>
-                <Message.Header>{'分享问卷：' + window.sharingFormTitle}</Message.Header>
-                <Form className='share-link-form'>
-                  <Form.Field inline>
-                    <label>问卷地址：</label>
-                    <Input
-                      className='share-link-input'
-                      size='small'
-                      value={window.sharingUrl}
-                    />
-                    <Button
-                      className='share-link-btn'
-                      positive={sharingSuccessToken !== null}
-                      icon labelPosition='left' size='small'
-                      onClick={copy}
-                    >
-                      <Icon name={sharingSuccessToken === null ? 'copy' : 'checkmark'} />
-                      复制
-                    </Button>
-                  </Form.Field>
-                </Form>
-              </Message> : <></>
-          }
-        </Grid.Column>
-      </Grid.Row>
-    </Transition>
-  );
 
   const cards = forms.map(form =>
     <Card
@@ -110,11 +78,19 @@ function FormSet() {
                   icon='fire' text='打开'
                   onClick={() => open(form)}
                 />
-                <Dropdown.Item icon='i cursor' text='重命名' />
-                <Dropdown.Item icon='edit' text='编辑' />
+                <Dropdown.Item
+                  icon='i cursor' text='重命名'
+                  onClick={() => setRetitlingFid(form.id)}
+                />
+                <Dropdown.Item
+                  icon='edit' text='编辑'
+                />
                 <Dropdown.Item icon='copy' text='复制' />
                 <Dropdown.Item icon='folder' text='移动' />
-                <Dropdown.Item className='ui negative' icon='delete' text='删除' />
+                <Dropdown.Item
+                  className='ui negative' icon='delete' text='删除'
+                  onClick={() => setRemovingFid(form.id)}
+                />
               </Dropdown.Menu>
             </Dropdown>
           </Grid.Column>
@@ -122,6 +98,15 @@ function FormSet() {
       </Card.Content>
     </Card>
   );
+
+  function buildModal(E, fid, setFid) {
+    return fid !== null && <E fid={fid} form={formMap.get(fid)} onClosed={() => setFid(null)} />;
+  }
+
+  const modals = [
+    buildModal(RetitleModal, retitlingFid, setRetitlingFid),
+    buildModal(RemoveModal, removingFid, setRemovingFid)
+  ];
 
   return (
     <AppLayout offset>
@@ -168,7 +153,9 @@ function FormSet() {
                   </Button>
                 </Grid.Column>
               </Grid.Row>
-              {sharingMessageRow}
+              <ShareRow
+                fid={sharingFid}
+              />
               <Grid.Row>
                 <Grid.Column>
                   <Card.Group itemsPerRow={3}>
@@ -180,6 +167,7 @@ function FormSet() {
           </Grid.Column>
         </Grid.Row>
       </Grid>
+      {modals}
     </AppLayout>
   );
 }
