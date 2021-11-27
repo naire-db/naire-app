@@ -22,7 +22,7 @@ function RetitleModal(props) {
   return (
     <Modal
       open={fid !== null}
-      size='mini'
+      size='small'
     >
       <Header>
         重命名问卷
