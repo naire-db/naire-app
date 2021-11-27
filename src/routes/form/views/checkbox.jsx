@@ -1,11 +1,12 @@
-import React, { useMemo } from 'react';
-import { Form, Label } from 'semantic-ui-react';
+import React from 'react';
+import { Form } from 'semantic-ui-react';
 
 import { registerQuestionView, useAState } from './base';
+import { QLabel } from './utils';
 
 function CheckboxView(props) {
   const q = props.question;
-  const [, setSelectedOids] = useAState(q);
+  const [selectedOids, setSelectedOids] = useAState(q);
   const {min_choices, max_choices} = q;
 
   const [error, setError] = props.useErrorState(() => min_choices > 0);
@@ -32,16 +33,6 @@ function CheckboxView(props) {
     });
   }
 
-  function getPrompt() {
-    const mn = min_choices !== 0 && `至少选择 ${min_choices} 项`;
-    const mx = max_choices !== q.options.length && `最多选择 ${max_choices} 项`;
-    if (mn && mx)
-      return mn + '，' + mx;
-    return mn || mx;
-  }
-
-  const prompt = useMemo(getPrompt, [q]);
-
   return <Form>
     {
       q.options.map(o => (
@@ -53,7 +44,14 @@ function CheckboxView(props) {
         />
       ))
     }
-    <Label>{prompt}</Label>
+    {min_choices !== 0 && <QLabel
+      text={`至少选择 ${min_choices} 项`}
+      error={selectedOids.length < min_choices}
+    />}
+    {max_choices !== q.options.length && <QLabel
+      text={`最多选择 ${max_choices} 项`}
+      error={selectedOids.length > max_choices}
+    />}
   </Form>;
 }
 
