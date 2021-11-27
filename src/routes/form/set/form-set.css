@@ -1,3 +1,21 @@
+.form-card-dropdown {
+  box-shadow: none !important;
+  float: right;
+  margin: -10px -10px -10px -10px !important;
+}
+
+.share-link-form {
+  margin-top: 10px;
+}
+
+.share-link-input {
+  width: 220px !important;
+}
+
+.share-link-btn {
+  margin-left: 20px !important;
+}
+
 .modal-input {
   margin-top: 5px;
 }
