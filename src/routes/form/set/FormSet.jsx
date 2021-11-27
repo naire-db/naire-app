@@ -87,7 +87,7 @@ function FormSet() {
                   onClick={() => share(form)}
                 />
                 <Dropdown.Item
-                  icon='fire' text='答卷'
+                  icon='fire' text='作答'
                   onClick={() => open(form)}
                 />
                 <Dropdown.Item
