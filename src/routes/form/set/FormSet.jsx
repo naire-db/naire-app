@@ -19,6 +19,10 @@ function getFormUrl(fid) {
   return window.location.origin + '/f/' + fid;
 }
 
+function getFormDetailUrl(fid) {
+  return window.location.origin + '/form/' + fid;
+}
+
 const formMap = new Map();
 
 function FormSet() {
@@ -49,6 +53,10 @@ function FormSet() {
     window.location = getFormUrl(form.id);
   }
 
+  function detail(form) {
+    window.location = getFormDetailUrl(form.id);
+  }
+
   const cards = forms.map(form =>
     <Card
       href={'/form/' + form.id}
@@ -71,11 +79,15 @@ function FormSet() {
             >
               <Dropdown.Menu>
                 <Dropdown.Item
+                  icon='setting' text='打开'
+                  onClick={() => detail(form)}
+                />
+                <Dropdown.Item
                   icon='share alternate' text='分享'
                   onClick={() => share(form)}
                 />
                 <Dropdown.Item
-                  icon='fire' text='打开'
+                  icon='fire' text='答卷'
                   onClick={() => open(form)}
                 />
                 <Dropdown.Item
