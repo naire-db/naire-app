@@ -34,6 +34,7 @@ class Api {
   }
 
   async get(path) {
+    console.log('GETing', path);
     const url = entry + path;
     const options = {
       method: 'GET',
