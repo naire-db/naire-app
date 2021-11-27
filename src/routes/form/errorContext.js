@@ -91,4 +91,27 @@ function useErrorContext() {
   })));
 }
 
-export { useErrorContext };
+const pass = () => undefined;
+
+function useDummyErrorContext() {
+  return {
+    createFlag() {
+      return {
+        set: pass,
+        unset: pass,
+        get: pass,
+        set_to: pass
+      };
+    },
+
+    createFlagHook() {
+      return () => this.createFlag();
+    },
+
+    createStateHook() {
+      return () => [false, pass];
+    }
+  };
+}
+
+export { useErrorContext, useDummyErrorContext };

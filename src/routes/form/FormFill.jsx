@@ -11,6 +11,35 @@ import { useErrorContext } from './errorContext';
 
 import './form.css';
 
+function QuestionView(props) {
+  const q = props.question;
+  const {tried, errorCtx} = props;
+
+  const E = viewMap[q.type];
+  return (
+    <Segment key={q.id}>
+      <Grid>
+        <Grid.Row className='question-editor-meta-row'>
+          <Grid.Column>
+            {q.title}
+          </Grid.Column>
+        </Grid.Row>
+        <Grid.Row>
+          <Grid.Column>
+            {E && <E
+              question={q}
+              qid={q.id}
+              tried={tried}
+              useErrorFlag={errorCtx.createFlagHook(q.id)}
+              useErrorState={errorCtx.createStateHook(q.id)}
+            />  /* TODO: remove the check */}
+          </Grid.Column>
+        </Grid.Row>
+      </Grid>
+    </Segment>
+  );
+}
+
 function FormView(props) {
   const [tried, setTried] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -40,31 +69,13 @@ function FormView(props) {
       <Header.Content>{title}</Header.Content>
     </Header>
     {
-      questions.map(q => {
-        const E = viewMap[q.type];
-        return (
-          <Segment key={q.id}>
-            <Grid>
-              <Grid.Row className='question-editor-meta-row'>
-                <Grid.Column>
-                  {q.title}
-                </Grid.Column>
-              </Grid.Row>
-              <Grid.Row>
-                <Grid.Column>
-                  {E && <E
-                    question={q}
-                    qid={q.id}
-                    tried={tried}
-                    useErrorFlag={errorCtx.createFlagHook(q.id)}
-                    useErrorState={errorCtx.createStateHook(q.id)}
-                  />  /* TODO: remove the check */}
-                </Grid.Column>
-              </Grid.Row>
-            </Grid>
-          </Segment>
-        );
-      })
+      questions.map(q => (
+        <QuestionView
+          question={q}
+          tried={tried}
+          errorCtx={errorCtx}
+        />
+      ))
     }
     <Container textAlign='center'>
       <Button
@@ -119,3 +130,4 @@ function FormFill() {
 }
 
 export default FormFill;
+export { QuestionView, aMap };
