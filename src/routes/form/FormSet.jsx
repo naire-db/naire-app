@@ -5,10 +5,10 @@ import AppLayout from 'layouts/AppLayout';
 import api from 'api';
 
 import ShareRow from './tools/ShareRow';
-
-import './form.css';
 import RetitleModal from './tools/RetitleModal';
 import RemoveModal from './tools/RemoveModal';
+
+import './form.css';
 
 function formatTimestamp(ts) {
   const dt = new Date(ts * 1000);
