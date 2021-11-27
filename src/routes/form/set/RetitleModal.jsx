@@ -2,11 +2,12 @@ import { Button, Form, Header, Modal } from 'semantic-ui-react';
 import { useState } from 'react';
 
 import api from 'api';
+
 import { FORM_TITLE_MAX_LENGTH } from '../config';
 
 function RetitleModal(props) {
   const {fid, form, onClosed} = props;
-  const oldTitle = form.title;
+  const oldTitle = form?.title;
   const [value, setValue] = useState('');
 
   async function onSubmit() {
@@ -23,6 +24,7 @@ function RetitleModal(props) {
     <Modal
       open={fid !== null}
       size='small'
+      onClose={onClosed}
     >
       <Header>
         重命名问卷

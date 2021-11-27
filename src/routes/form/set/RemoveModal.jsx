@@ -17,6 +17,7 @@ function RemoveModal(props) {
     <Modal
       open={fid !== null}
       size='mini'
+      onClose={onClosed}
     >
       <Header>
         删除问卷
