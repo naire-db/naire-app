@@ -6,10 +6,14 @@ import { FORM_TITLE_MAX_LENGTH } from '../config';
 
 function RetitleModal(props) {
   const {fid, form, onClosed} = props;
+  const oldTitle = form.title;
   const [value, setValue] = useState('');
 
   async function onSubmit() {
-    const res = await api.form.save_title(fid, value);
+    const v = value.trim();
+    if (!v)
+      return onClosed();
+    const res = await api.form.save_title(fid, v);
     if (res.code !== 0)
       console.error(res);
     window.location.reload();
@@ -23,7 +27,7 @@ function RetitleModal(props) {
       <Header>
         重命名问卷
         <Header.Subheader>
-          {form?.title}
+          {oldTitle}
         </Header.Subheader>
       </Header>
       <Modal.Content>
@@ -35,6 +39,7 @@ function RetitleModal(props) {
             value={value}
             onChange={e => setValue(e.target.value)}
             maxLength={FORM_TITLE_MAX_LENGTH}
+            placeholder={oldTitle}
           />
         </Form>
       </Modal.Content>
