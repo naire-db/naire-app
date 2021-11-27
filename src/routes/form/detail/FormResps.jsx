@@ -143,7 +143,7 @@ function FormRespsInner(props) {
       </Table.Header>
 
       <Table.Body>
-        {resps.map((r, i) => (
+        {resps.length ? resps.map((r, i) => (
           <Table.Row key={i}>
             <Table.Cell>{i + 1}</Table.Cell>
             <Table.Cell>{formatTimestamp(r.ctime)}</Table.Cell>
@@ -160,12 +160,21 @@ function FormRespsInner(props) {
               />
             </Table.Cell>
           </Table.Row>
-        ))}
+        )) : (
+          <Table.Row>
+            <Table.Cell>
+              暂无答卷
+            </Table.Cell>
+          </Table.Row>
+        )}
       </Table.Body>
 
       <Table.Footer>
         <Table.Row>
-          <Table.HeaderCell colSpan='4'>
+          <Table.HeaderCell colSpan='1'>
+            共 {resps.length} 份答卷
+          </Table.HeaderCell>
+          <Table.HeaderCell colSpan='3'>
             <Menu floated='right' pagination>
               <Menu.Item as='a' icon>
                 <Icon name='chevron left' />
