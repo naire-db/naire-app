@@ -12,32 +12,30 @@ import './form.css';
 function FormView(props) {
   const [tried, setTried] = useState(false);
   const errorCtx = useErrorContext();
+  const {title} = props;
+  const {questions} = props.body;
 
   async function onSubmit() {
     if (errorCtx.dirty())
       return setTried(true);
     alert(JSON.stringify(aMap));
 
-    /*
-    if (!title.trim())
-      return setTitleError(true);
     const body = {
-      questions: qids.map(qid => qMap[qid])
+      answers: questions.map(q => aMap[q.id])
     };
-    const res = await api.form.create_resp(title.trim(), body);
-    if (res.code === 0)
-      window.location = '/form/all';
-    else
+    const res = await api.form.save_resp(props.fid, body);
+    if (res.code !== 0)
       console.error(res);
-     */
+    window.location = '/';
+    // TODO: show some success message
   }
 
   return <>
     <Header as='h2' textAlign='center'>
-      <Header.Content>{props.title}</Header.Content>
+      <Header.Content>{title}</Header.Content>
     </Header>
     {
-      props.body.questions.map(q => {
+      questions.map(q => {
         const E = viewMap[q.type];
         return (
           <Segment key={q.id}>
@@ -71,9 +69,6 @@ function FormView(props) {
         提交
       </Button>
     </Container>
-    <Header>
-      {JSON.stringify(props.body)}
-    </Header>
   </>;
 }
 
@@ -91,6 +86,7 @@ function FormFill() {
           if (initialMap[q.type])  // TODO: drop checks
             aMap[q.id] = initialMap[q.type]();
         }
+        console.log('got details', JSON.stringify(res.data));
         setDetail(res.data);
       } else {
         // TODO: warn about unauthorized or nonexistent
@@ -101,7 +97,7 @@ function FormFill() {
 
   return (detail &&
     <AppLayout offset>
-      <FormView fid={fid} {...detail} />
+      <FormView fid={fid} title={detail.title} body={detail.body} />
     </AppLayout>
   );
 }
