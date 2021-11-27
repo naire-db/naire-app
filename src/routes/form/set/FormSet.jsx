@@ -4,11 +4,11 @@ import { Button, Card, Dropdown, Grid, Icon, Label, Menu } from 'semantic-ui-rea
 import AppLayout from 'layouts/AppLayout';
 import api from 'api';
 
-import ShareRow from './tools/ShareRow';
-import RetitleModal from './tools/RetitleModal';
-import RemoveModal from './tools/RemoveModal';
+import ShareRow from './ShareRow';
+import RetitleModal from './RetitleModal';
+import RemoveModal from './RemoveModal';
 
-import './form.css';
+import '../form.css';
 
 function formatTimestamp(ts) {
   const dt = new Date(ts * 1000);
