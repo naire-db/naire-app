@@ -7,7 +7,7 @@ class Api {
   ERR_DUPL_EMAIL = 4;
 
   async post(path, data) {
-    console.log('POSTing', path, 'with', data);
+    console.log('POSTing', path, 'with', JSON.stringify(data));
     const url = entry + path;
     const options = {
       method: 'POST',
@@ -20,7 +20,7 @@ class Api {
     };
     const resp = await fetch(url, options);
     const res = await resp.json();
-    console.log('POST', path, 'with', data, 'resp', res);
+    console.log('POST', path, 'with', JSON.stringify(data), 'resp', JSON.stringify(res));
     return res;
   }
 

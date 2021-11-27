@@ -13,6 +13,7 @@ function useAState(q) {
   const qid = q.id;
   const [value, setValue] = useState(aMap[qid]);
   return [value, v => {
+    console.log('upd', aMap, qid, 'with', v);
     if (typeof v === 'function')
       setValue(s => {
         const nv = v(s);
