@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Button, Container, Grid, Header, Modal, Segment, Transition } from 'semantic-ui-react';
+import { Button, Container, Grid, Header, Modal, Segment } from 'semantic-ui-react';
 
 import AppLayout from 'layouts/AppLayout';
+import { ModalTransition } from 'components/transitedModal';
 import api from 'api';
+
 import { aMap, initialMap, viewMap } from './views';
 import { useErrorContext } from './errorContext';
 
@@ -17,6 +19,7 @@ function FormView(props) {
   const errorCtx = useErrorContext();
   const {title} = props;
   const {questions} = props.body;
+  const onModalClosed = () => setModalOpen(false);
 
   async function onSubmit() {
     if (errorCtx.dirty())
@@ -72,15 +75,16 @@ function FormView(props) {
         提交
       </Button>
     </Container>
-    <Transition visible={modalOpen} unmountOnHide duration={80} animation='fade'>
+    <ModalTransition open={modalOpen}>
       <Modal
         open={modalOpen}
         size='mini'
         header='提交成功'
         content='答卷已提交。'
-        actions={[{key: 0, content: '完成', positive: true, onClick: () => setModalOpen(false)}]}
+        actions={[{key: 0, content: '完成', positive: true, onClick: onModalClosed}]}
+        onClose={onModalClosed}
       />
-    </Transition>
+    </ModalTransition>
   </>;
 }
 
