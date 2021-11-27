@@ -1,11 +1,15 @@
+function unwrap_nullable(v, d) {
+  return v === null ? d : v;
+}
+
 function makeRangeNumberInputProps(minValue, minSetter, minDefault, maxValue, maxSetter, maxDefault, setError) {
   function onMinChanged(v) {
-    setError(v > maxValue);
+    setError(unwrap_nullable(v, minDefault) > unwrap_nullable(maxValue, maxDefault));
     minSetter(v);
   }
 
   function onMaxChanged(v) {
-    setError(minValue > v);
+    setError(unwrap_nullable(minValue, minDefault) > unwrap_nullable(v, maxDefault));
     maxSetter(v);
   }
 

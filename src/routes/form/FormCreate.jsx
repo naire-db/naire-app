@@ -60,7 +60,12 @@ function FormCreate() {
     if (!title.trim())
       return setTitleError(true);
     const body = {
-      questions: qids.map(qid => qMap[qid])
+      questions: qids.map(qid => {
+        const q = qMap[qid];
+        if (q.onSave)
+          q.onSave();
+        return q;
+      })
     };
     const res = await api.form.create(title.trim(), body);
     if (res.code === 0)

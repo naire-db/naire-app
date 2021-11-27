@@ -7,10 +7,19 @@ import { makeRangeNumberInputProps } from './utils';
 
 class CheckboxQuestion extends BaseQuestion {
   type = 'checkbox';
+  min_choices = null;
+  max_choices = null;
 
   constructor(id, ctx) {
     super(id);
     this.options = [ctx.newOption()];
+  }
+
+  onSave() {
+    if (this.min_choices === null)
+      this.min_choices = 0;
+    if (this.max_choices === null)
+      this.max_choices = this.options.length;
   }
 }
 
@@ -112,6 +121,7 @@ function CheckboxEditor(props) {
           label='最大选择数量'
           error={error}
           {...maxProps}
+          nullable
         />
       </Form.Group>
     </Form>

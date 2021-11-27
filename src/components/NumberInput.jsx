@@ -9,11 +9,16 @@ function NumberInput(props) {
   function onChange(e) {
     const v = e.target.value;
     if (v === '') {
+      if (props.onEmpty)
+        props.onEmpty();
       setEmpty(true);
-      return handler(props.defaultValue);
+      return handler(props.nullable ? null : props.defaultValue);
     }
-    if (empty)
+    if (empty) {
+      if (props.onNonEmpty)
+        props.onNonEmpty();
       setEmpty(false);
+    }
     const x = parseInt(v, 10);
     if (x < props.min)
       return handler(props.min);
@@ -32,8 +37,7 @@ function NumberInput(props) {
       onChange={onChange}
       value={empty ? '' : `${props.value}`}
       error={props.error}
-    >
-    </Form.Input>
+    />
   );
 }
 
