@@ -1,5 +1,14 @@
 const entry = 'http://localhost:8000';  // TODO: change in production environment
 
+function api_unwrap(res) {
+  console.log('unwrapping res', res);
+  if (res.code !== 0) {
+    console.error(res);
+    return null;
+  }
+  return res.data;
+}
+
 class Api {
   ERR_FAILURE = 1;
   ERR_AUTH_REQUIRED = 2;
@@ -103,7 +112,29 @@ class Api {
     remove: fid =>
       this.post('/form/remove/', {
         fid
-      })
+      }),
+
+    // For owner showing details
+
+    get_form_resps: fid =>
+      this.post('/form/get_form_resps/', {
+        fid
+      }),
+
+    get_form_stats: fid =>
+      this.post('/form/get_form_stats/', {
+        fid
+      }),
+
+    get_resp_detail: (fid, rid) =>
+      this.post('/form/get_resp_detail/', {
+        fid, rid
+      }),
+
+    remove_resp: (fid, rid) =>
+      this.post('/form/remove_resp/', {
+        fid, rid
+      }),
   };
 
   user = {
@@ -122,3 +153,4 @@ class Api {
 const api = new Api();
 
 export default api;
+export { api_unwrap };
