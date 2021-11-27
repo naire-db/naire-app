@@ -12,11 +12,11 @@ function CheckboxView(props) {
   const [error, setError] = props.useErrorState(() => min_choices > 0);
 
   function addOid(oid) {
-    setSelectedOids(a => {
-      console.log('adding', oid, 'to', a);
-      if (a.includes(oid))
-        return;
-      a.push(oid);
+    setSelectedOids(o => {
+      console.log('adding', oid, 'to', o);
+      if (o.includes(oid))
+        return o;
+      const a = [oid, ...o];
       console.log(a);
       setError(a.length > max_choices || a.length < min_choices);
       return a;
@@ -39,7 +39,10 @@ function CheckboxView(props) {
           key={o.id}
           label={o.text}
           error={props.tried && error}
-          onChange={(_, d) => (d.checked ? addOid(o.id) : removeOid(o.id))}
+          checked={selectedOids.includes(o.id)}
+          onChange={(_, d) =>
+            d.checked ? addOid(o.id) : removeOid(o.id)
+          }
         />
       ))
     }
