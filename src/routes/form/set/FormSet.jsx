@@ -8,7 +8,7 @@ import ShareRow from './ShareRow';
 import RetitleModal from './RetitleModal';
 import RemoveModal from './RemoveModal';
 
-import '../form.css';
+import './form-set.css';
 
 function formatTimestamp(ts) {
   const dt = new Date(ts * 1000);
