@@ -10,7 +10,6 @@ class CheckboxQuestion extends BaseQuestion {
 
   constructor(id, ctx) {
     super(id);
-    console.log('ctx', ctx);
     this.options = [ctx.newOption()];
   }
 }
@@ -91,10 +90,9 @@ function CheckboxEditor(props) {
   const [minChoices, setMinChoices] = useQState('min_choices', props);
   const [maxChoices, setMaxChoices] = useQState('max_choices', props);
 
-  const flag = props.useErrorFlag();
-  const error = flag.get();
+  const [error, setError] = props.useErrorState();
   const [minProps, maxProps] = makeRangeNumberInputProps(
-    minChoices, setMinChoices, 0, maxChoices, setMaxChoices, options.length, flag
+    minChoices, setMinChoices, 0, maxChoices, setMaxChoices, options.length, setError
   );
 
   return <>

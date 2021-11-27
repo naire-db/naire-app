@@ -18,11 +18,9 @@ function InputEditor(props) {
   const [maxLength, setMaxLength] = useQState('max_length', props);
   const [, setRegex] = useQState('regex', props);
 
-  const flag = props.useErrorFlag();
-  console.log('ie reget');
-  const error = flag.get();
+  const [error, setError] = props.useErrorState();
   const [minProps, maxProps] = makeRangeNumberInputProps(
-    minLength, setMinLength, 0, maxLength, setMaxLength, 200, flag
+    minLength, setMinLength, 0, maxLength, setMaxLength, 200, setError
   );
 
   return (

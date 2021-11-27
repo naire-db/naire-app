@@ -1,11 +1,11 @@
-function makeRangeNumberInputProps(minValue, minSetter, minDefault, maxValue, maxSetter, maxDefault, flag) {
+function makeRangeNumberInputProps(minValue, minSetter, minDefault, maxValue, maxSetter, maxDefault, setError) {
   function onMinChanged(v) {
-    flag.set_to(v > maxValue);
+    setError(v > maxValue);
     minSetter(v);
   }
 
   function onMaxChanged(v) {
-    flag.set_to(minValue > v);
+    setError(minValue > v);
     maxSetter(v);
   }
 
