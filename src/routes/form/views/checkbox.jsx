@@ -1,14 +1,14 @@
 import React, { useMemo } from 'react';
 import { Form, Label } from 'semantic-ui-react';
 
-import { registerQuestionView, useAState, useErrorState } from './base';
+import { registerQuestionView, useAState } from './base';
 
 function CheckboxView(props) {
   const q = props.question;
   const [, setSelectedOids] = useAState(q);
   const {min_choices, max_choices} = q;
 
-  const [error, setError] = useErrorState(props, () => min_choices > 0);
+  const [error, setError] = props.useErrorState(() => min_choices > 0);
 
   function addOid(oid) {
     setSelectedOids(a => {

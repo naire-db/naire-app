@@ -1,33 +1,94 @@
 import { useEffect, useState } from 'react';
+import { Set } from 'immutable';
 
-import FlagStore from 'stores/flags';
+function is_fn(maybe_fn) {
+  return typeof maybe_fn === 'function';
+}
 
-function makeErrorContext() {
-  const flags = new FlagStore();
-  return {
-    errorFlags: flags,
+class SimpleErrorContext {
+  constructor(tokens, setTokens) {
+    this.tokens = tokens;
+    this.setTokens = setTokens;
+  }
 
-    useErrorFlag(props, initial) {
-      const flag = flags.make(props.qid);
+  count() {
+    return this.tokens.size;
+  }
+
+  clean() {
+    return this.tokens.size === 0;
+  }
+
+  dirty() {
+    return this.tokens.size !== 0;
+  }
+
+  createFlag(token) {
+    const that = this;
+    return {
+      set: () => that.setTokens(tokens => tokens.add(token)),
+      unset: () => that.setTokens(tokens => tokens.delete(token)),
+      get: () => that.tokens.has(token),
+      set_to: v => {
+        console.log('set to', v);
+        if (v)
+          that.setTokens(tokens => tokens.add(token));
+        else
+          that.setTokens(tokens => tokens.delete(token));
+      }
+    };
+  }
+
+  createFlagHook(token) {
+    return initial_or_fn => {
+      const flag = this.createFlag(token);
       useEffect(() => {
-        flag.set_to(typeof initial === 'function' ? initial() : initial);
+        flag.set_to(is_fn(initial_or_fn) ? initial_or_fn() : initial_or_fn);
       }, []);
       return flag;
-    },
+    };
+  }
 
-    useErrorState(props, initial) {
-      const flag = flags.make(props.qid);
+  _createStateHook(token) {
+    return initial_or_fn => {
+      const flag = this.createFlag(token);
       const [state, setState] = useState(() => {
-        const v = typeof initial === 'function' ? initial() : initial;
+        const v = is_fn(initial_or_fn) ? initial_or_fn() : initial_or_fn;
         flag.set_to(v);
         return v;
       });
-      return [state, nv => {
-        flag.set_to(nv);
-        setState(nv);
+      return [state, maybe_fn => {
+        setState(v => {
+          const nv = is_fn(maybe_fn) ? maybe_fn(v) : maybe_fn;
+          flag.set_to(nv);
+          return nv;
+        });
       }];
-    }
-  };
+    };
+  }
+
+  createStateHook(token) {
+    return initial_or_fn => {
+      const flag = this.createFlag(token);
+      useEffect(() => {
+        flag.set_to(is_fn(initial_or_fn) ? initial_or_fn() : initial_or_fn);
+      }, []);
+      const v = flag.get();
+      return [v, maybe_fn => {
+        const nv = is_fn(maybe_fn) ? maybe_fn(v) : maybe_fn;
+        flag.set_to(nv);
+      }];
+    };
+  }
 }
 
-export default makeErrorContext;
+function useErrorContext() {
+  const [state, setState] = useState(() => ({
+    d: Set()
+  }));
+  return new SimpleErrorContext(state.d, f => setState(s => ({
+    d: f(s.d)
+  })));
+}
+
+export { useErrorContext };

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form, Label } from 'semantic-ui-react';
 
-import { registerQuestionView, useAState, useErrorState } from './base';
+import { registerQuestionView, useAState } from './base';
 import { QLabel } from './utils';
 
 function InputView(props) {
@@ -9,7 +9,7 @@ function InputView(props) {
   const [value, setValue] = useAState(q);
   const {min_length, max_length, regex} = q;
 
-  const [error, setError] = useErrorState(props, () => min_length > 0);
+  const [error, setError] = props.useErrorState(() => min_length > 0);
 
   function onChange(e) {
     const v = e.target.value;
@@ -29,7 +29,7 @@ function InputView(props) {
     <Form.Input
       value={value}
       onChange={onChange}
-      maxlength={max_length}
+      maxLength={max_length}
       error={props.tried && error}
       type={regex === '\\d+' || regex === '\\d*' ? 'number' : undefined}
     />

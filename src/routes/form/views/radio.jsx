@@ -1,13 +1,13 @@
 import React from 'react';
 import { Form } from 'semantic-ui-react';
 
-import { registerQuestionView, useAState, useErrorFlag } from './base';
+import { registerQuestionView, useAState } from './base';
 
 function RadioView(props) {
   const q = props.question;
   const [selectedOid, setSelectedOid] = useAState(q);
 
-  const flag = useErrorFlag(props, true);
+  const flag = props.useErrorFlag(true);
 
   function onChange(oid) {
     flag.unset();

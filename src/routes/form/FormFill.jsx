@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { observer } from 'mobx-react-lite';
 import { useParams } from 'react-router-dom';
 import { Button, Container, Grid, Header, Segment } from 'semantic-ui-react';
 
 import AppLayout from 'layouts/AppLayout';
 import api from 'api';
-import { aMap, errorFlags, initialMap, viewMap } from './views';
+import { aMap, initialMap, viewMap } from './views';
+import { useErrorContext } from './errorContext';
 
 import './form.css';
 
-const FormView = observer(props => {
+function FormView(props) {
   const [tried, setTried] = useState(false);
+  const errorCtx = useErrorContext();
 
   async function onSubmit() {
-    if (errorFlags.dirty())
+    if (errorCtx.dirty())
       return setTried(true);
     alert(JSON.stringify(aMap));
 
@@ -48,7 +49,13 @@ const FormView = observer(props => {
               </Grid.Row>
               <Grid.Row>
                 <Grid.Column>
-                  {E && <E question={q} qid={q.id} tried={tried} />  /* TODO: remove the check */}
+                  {E && <E
+                    question={q}
+                    qid={q.id}
+                    tried={tried}
+                    useErrorFlag={errorCtx.createFlagHook(q.id)}
+                    useErrorState={errorCtx.createStateHook(q.id)}
+                  />  /* TODO: remove the check */}
                 </Grid.Column>
               </Grid.Row>
             </Grid>
@@ -68,7 +75,7 @@ const FormView = observer(props => {
       {JSON.stringify(props.body)}
     </Header>
   </>;
-});
+}
 
 function FormFill() {
   const [detail, setDetail] = useState(null);

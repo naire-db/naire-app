@@ -1,9 +1,5 @@
 import { useState } from 'react';
 
-import makeErrorContext from '../errorContext';
-
-const {errorFlags, useErrorFlag, useErrorState} = makeErrorContext();
-
 const qMap = {};
 
 class BaseQuestion {
@@ -37,7 +33,4 @@ export {
   editorMap,
   typeMap,
   registerQuestionType,
-  errorFlags,
-  useErrorFlag,
-  useErrorState
 };

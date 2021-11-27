@@ -2,7 +2,7 @@ import React from 'react';
 import { Form } from 'semantic-ui-react';
 
 import NumberInput from 'components/NumberInput';
-import { BaseQuestion, registerQuestionType, useErrorFlag, useQState } from './base';
+import { BaseQuestion, registerQuestionType, useQState } from './base';
 import { makeRangeNumberInputProps } from './utils';
 
 class InputQuestion extends BaseQuestion {
@@ -18,7 +18,8 @@ function InputEditor(props) {
   const [maxLength, setMaxLength] = useQState('max_length', props);
   const [, setRegex] = useQState('regex', props);
 
-  const flag = useErrorFlag(props);
+  const flag = props.useErrorFlag();
+  console.log('ie reget');
   const error = flag.get();
   const [minProps, maxProps] = makeRangeNumberInputProps(
     minLength, setMinLength, 0, maxLength, setMaxLength, 200, flag

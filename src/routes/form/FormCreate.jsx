@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { observer } from 'mobx-react-lite';
 import { Button, Grid, Header, Icon, Input, Label, Segment, Sticky, Transition } from 'semantic-ui-react';
 
 import AppLayout from 'layouts/AppLayout';
 import api from 'api';
-import { editorMap, errorFlags, qMap, typeMap } from './types';
+
+import { editorMap, qMap, typeMap } from './types';
+import { useErrorContext } from './errorContext';
 
 import './form.css';
 
@@ -25,12 +26,13 @@ const qTypes = [
   ['file', '文件上传', 'file']
 ];
 
-const FormCreate = observer(() => {
+function FormCreate() {
   const [nextQid, setNextQid] = useState(0);
   const [nextOid, setNextOid] = useState(0);
   const [qids, setQids] = useState([]);
   const [title, setTitle] = useState('');
   const [titleError, setTitleError] = useState(false);
+  const errorCtx = useErrorContext();
 
   const ctx = {
     getOid() {
@@ -98,7 +100,7 @@ const FormCreate = observer(() => {
             <Button
               primary floated='right'
               onClick={onSubmit}
-              disabled={titleError || errorFlags.dirty()}
+              disabled={titleError || errorCtx.dirty()}
             >
               创建问卷
             </Button>
@@ -116,7 +118,12 @@ const FormCreate = observer(() => {
                     </Grid.Row>
                     <Grid.Row>
                       <Grid.Column>
-                        <E qid={qid} ctx={ctx} />
+                        <E
+                          qid={qid}
+                          ctx={ctx}
+                          useErrorFlag={errorCtx.createFlagHook(qid)}
+                          useErrorState={errorCtx.createStateHook(qid)}
+                        />
                       </Grid.Column>
                     </Grid.Row>
                   </Grid>
@@ -128,6 +135,6 @@ const FormCreate = observer(() => {
       </Grid>
     </AppLayout>
   );
-});
+}
 
 export default FormCreate;

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Checkbox, Form, Input, Radio, Table } from 'semantic-ui-react';
 
-import { BaseQuestion, registerQuestionType, useErrorFlag, useQState } from './base';
+import { BaseQuestion, registerQuestionType, useQState } from './base';
 import NumberInput from 'components/NumberInput';
 import { makeRangeNumberInputProps } from './utils';
 
@@ -91,7 +91,7 @@ function CheckboxEditor(props) {
   const [minChoices, setMinChoices] = useQState('min_choices', props);
   const [maxChoices, setMaxChoices] = useQState('max_choices', props);
 
-  const flag = useErrorFlag(props);
+  const flag = props.useErrorFlag();
   const error = flag.get();
   const [minProps, maxProps] = makeRangeNumberInputProps(
     minChoices, setMinChoices, 0, maxChoices, setMaxChoices, options.length, flag

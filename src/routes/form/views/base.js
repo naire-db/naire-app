@@ -1,9 +1,5 @@
 import { useState } from 'react';
 
-import makeErrorContext from '../errorContext';
-
-const {errorFlags, useErrorFlag, useErrorState} = makeErrorContext();
-
 const aMap = {};
 const viewMap = {};
 const initialMap = {};
@@ -50,7 +46,4 @@ export {
   useAStore,
   aMap,
   initialMap,
-  errorFlags,
-  useErrorFlag,
-  useErrorState
 };
