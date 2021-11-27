@@ -22,6 +22,15 @@ function formatUser(desc) {
   return `${dname} (${username})`;
 }
 
+function formatUserFull(desc) {
+  if (desc === null)
+    return '未登录用户';
+  const {username, dname} = desc;
+  if (username === dname)
+    return username;
+  return `${dname} (${username})`;
+}
+
 function RemoveModal(props) {
   const {ind, fid, rid, onClosed} = props;
 
@@ -62,31 +71,41 @@ function RemoveModal(props) {
 }
 
 function RespViewModal(props) {
-  const {fid, rid, form, onClosed} = props;
+  const {fid, resp, form, onClosed} = props;
+
+  const content = resp !== null && <>
+    <Header>
+      查看答卷
+      <Header.Subheader>
+        用户：{formatUserFull(resp.user)}
+      </Header.Subheader>
+      <Header.Subheader>
+        时间：{formatTimestamp(resp.ctime)}
+      </Header.Subheader>
+    </Header>
+    <Modal.Content>
+      <Modal.Description>
+        <RespView
+          form={form}
+          fid={fid}
+          rid={resp.id}
+        />
+      </Modal.Description>
+    </Modal.Content>
+    <Modal.Actions>
+      <Button
+        content='关闭'
+        onClick={onClosed}
+      />
+    </Modal.Actions>
+  </>;
 
   return (
     <Modal
-      open={rid !== null}
+      open={resp !== null}
       onClose={onClosed}
     >
-      <Header>
-        查看答卷
-      </Header>
-      <Modal.Content>
-        <Modal.Description>
-          <RespView
-            form={form}
-            fid={fid}
-            rid={rid}
-          />
-        </Modal.Description>
-      </Modal.Content>
-      <Modal.Actions>
-        <Button
-          content='关闭'
-          onClick={onClosed}
-        />
-      </Modal.Actions>
+      {content}
     </Modal>
   );
 }
@@ -171,7 +190,9 @@ function FormRespsInner(props) {
     </ModalTransition>
     <ModalTransition open={viewModalOpen}>
       <RespViewModal
-        fid={fid} rid={viewingInd === null ? 0 : resps[viewingInd].id} form={form}
+        fid={fid}
+        resp={viewingInd === null ? null : resps[viewingInd]}
+        form={form}
         onClosed={onViewModalClosed}
       />
     </ModalTransition>
