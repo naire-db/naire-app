@@ -46,6 +46,9 @@ function AppRouter() {
         {mount('/user/password', () => import('routes/user/ChangePassword'))}
         {mount('/form/all', () => import('routes/form/set/FormSet'))}
         {mount('/form/create', () => import('routes/form/FormCreate'))}
+        {mount('/form/:fid/resps', () => import('routes/form/detail/FormResps'))}
+        {mount('/form/:fid/stats', () => import('routes/form/detail/FormStats'))}
+        {mount('/form/:fid/settings', () => import('routes/form/detail/FormSettings'))}
         {mount('/f/:fid', () => import('routes/form/FormFill'))}
         {mount('*', () => import('routes/Home'))}
       </Routes>
