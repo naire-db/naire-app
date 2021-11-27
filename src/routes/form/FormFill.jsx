@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Button, Container, Grid, Header, Segment } from 'semantic-ui-react';
+import { Button, Container, Grid, Header, Modal, Segment, Transition } from 'semantic-ui-react';
 
 import AppLayout from 'layouts/AppLayout';
 import api from 'api';
@@ -11,6 +11,9 @@ import './form.css';
 
 function FormView(props) {
   const [tried, setTried] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+
   const errorCtx = useErrorContext();
   const {title} = props;
   const {questions} = props.body;
@@ -18,16 +21,15 @@ function FormView(props) {
   async function onSubmit() {
     if (errorCtx.dirty())
       return setTried(true);
-    alert(JSON.stringify(aMap));
-
     const body = {
       answers: questions.map(q => aMap[q.id])
     };
     const res = await api.form.save_resp(props.fid, body);
     if (res.code !== 0)
-      console.error(res);
-    window.location = '/';
-    // TODO: show some success message
+      return console.error(res);
+    // window.location = '/';
+    setSubmitted(true);
+    setModalOpen(true);
   }
 
   return <>
@@ -64,11 +66,21 @@ function FormView(props) {
     <Container textAlign='center'>
       <Button
         primary
+        disabled={submitted}
         onClick={onSubmit}
       >
         提交
       </Button>
     </Container>
+    <Transition visible={modalOpen} unmountOnHide duration={80} animation='fade'>
+      <Modal
+        open={modalOpen}
+        size='mini'
+        header='提交成功'
+        content='答卷已提交。'
+        actions={[{key: 0, content: '完成', positive: true, onClick: () => setModalOpen(false)}]}
+      />
+    </Transition>
   </>;
 }
 
