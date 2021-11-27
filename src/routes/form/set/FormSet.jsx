@@ -9,6 +9,7 @@ import RetitleModal from './RetitleModal';
 import RemoveModal from './RemoveModal';
 
 import './form-set.css';
+import { ModalTransition } from '../../../components/transitedModal';
 
 function formatTimestamp(ts) {
   const dt = new Date(ts * 1000);
@@ -20,7 +21,7 @@ function getFormUrl(fid) {
 }
 
 function getFormDetailUrl(fid) {
-  return window.location.origin + '/form/' + fid;
+  return window.location.origin + '/form/' + fid + '/resps';
 }
 
 const formMap = new Map();
@@ -59,7 +60,7 @@ function FormSet() {
 
   const cards = forms.map(form =>
     <Card
-      href={'/form/' + form.id}
+      href={getFormDetailUrl(form.id)}
       key={form.id}
     >
       <Card.Content header={form.title} meta={
@@ -111,14 +112,19 @@ function FormSet() {
     </Card>
   );
 
+  // FIXME: transition not working
   function buildModal(E, fid, setFid) {
-    return fid !== null && <E fid={fid} form={formMap.get(fid)} onClosed={() => setFid(null)} />;
+    return (
+      <ModalTransition open={fid !== null}>
+        <E fid={fid} form={formMap.get(fid)} onClosed={() => setFid(null)} />
+      </ModalTransition>
+    );
   }
 
-  const modals = [
-    buildModal(RetitleModal, retitlingFid, setRetitlingFid),
-    buildModal(RemoveModal, removingFid, setRemovingFid)
-  ];
+  const modals = <>
+    {buildModal(RetitleModal, retitlingFid, setRetitlingFid)}
+    {buildModal(RemoveModal, removingFid, setRemovingFid)}
+  </>;
 
   return (
     <AppLayout offset>
