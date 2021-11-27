@@ -6,6 +6,7 @@ import api from 'api';
 
 import { editorMap, qMap, typeMap } from './types';
 import { useErrorContext } from './errorContext';
+import { FORM_TITLE_MAX_LENGTH } from './config';
 
 import './form.css';
 
@@ -90,11 +91,10 @@ function FormCreate() {
               error={titleError}
               placeholder='问卷标题'
               value={title}
+              maxLength={FORM_TITLE_MAX_LENGTH}
               onChange={e => {
                 setTitleError(false);
-                const nv = e.target.value;
-                if (nv.length <= 200)
-                  setTitle(nv);
+                setTitle(e.target.value);
               }}
             />
             <Button
