@@ -25,7 +25,6 @@ function CheckboxView(props) {
 
   function removeOid(oid) {
     setSelectedOids(o => {
-      console.log('rming', oid, 'from', o);
       const a = o.filter(x => x !== oid);
       console.log(a);
       setError(a.length > max_choices || a.length < min_choices);
@@ -46,11 +45,11 @@ function CheckboxView(props) {
     }
     {min_choices !== 0 && <QLabel
       text={`至少选择 ${min_choices} 项`}
-      error={selectedOids.length < min_choices}
+      error={props.tried && selectedOids.length < min_choices}
     />}
     {max_choices !== q.options.length && <QLabel
       text={`最多选择 ${max_choices} 项`}
-      error={selectedOids.length > max_choices}
+      error={props.tried && selectedOids.length > max_choices}
     />}
   </Form>;
 }
