@@ -42,10 +42,10 @@ function InputEditor(props) {
           {...maxProps}
         />
       </Form.Group>
-      <Form.Input
+      {!props.noRegex && <Form.Input
         onChange={e => setRegex(e.target.value)}
         label='正则表达式（可选）'
-      />
+      />}
     </Form>
   );
 }
