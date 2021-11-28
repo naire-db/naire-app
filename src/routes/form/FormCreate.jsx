@@ -6,7 +6,7 @@ import api from 'api';
 
 import { editorMap, nameMap, qMap, typeMap } from './types';
 import { useErrorContext } from './errorContext';
-import { FORM_TITLE_MAX_LENGTH } from './config';
+import { FORM_TITLE_MAX_LENGTH, QUESTION_TITLE_MAX_LENGTH } from './config';
 
 import './form.css';
 
@@ -92,59 +92,73 @@ function FormCreate() {
             </Sticky>
           </Grid.Column>
           <Grid.Column width={12}>
-            <Input
-              error={titleError}
-              placeholder='问卷标题'
-              value={title}
-              maxLength={FORM_TITLE_MAX_LENGTH}
-              onChange={e => {
-                setTitleError(false);
-                setTitle(e.target.value);
-              }}
-            />
-            <Button
-              primary floated='right'
-              onClick={onSubmit}
-              disabled={titleError || errorCtx.dirty()}
-            >
-              创建问卷
-            </Button>
-            <Transition.Group duration={180}>
-              {qids.map(qid => {
-                const {type} = qMap[qid];
-                const E = editorMap[type];
-                return <Segment key={qid}>
-                  <Grid>
-                    <Grid.Row className='qeditor-meta-row'>
-                      <Grid.Column width={14}>
-                        <Input
-                          className='qeditor-title-input-box'
-                          placeholder='问题'
-                          onChange={e => {
-                            qMap[qid].title = e.target.value;
-                          }}
-                        />
-                      </Grid.Column>
-                      <Grid.Column width={2} floated='right' verticalAlign='middle'>
-                        <Label className='rfloated'>
-                          {nameMap[type]}
-                        </Label>
-                      </Grid.Column>
-                    </Grid.Row>
-                    <Grid.Row>
-                      <Grid.Column>
-                        <E
-                          qid={qid}
-                          ctx={ctx}
-                          useErrorFlag={errorCtx.createFlagHook(qid)}
-                          useErrorState={errorCtx.createStateHook(qid)}
-                        />
-                      </Grid.Column>
-                    </Grid.Row>
-                  </Grid>
-                </Segment>;
-              })}
-            </Transition.Group>
+            <Grid>
+              <Grid.Row>
+                <Grid.Column width={13}>
+                  <Input
+                    className='qeditor-title-input-box'
+                    error={titleError}
+                    placeholder='问卷标题'
+                    value={title}
+                    maxLength={FORM_TITLE_MAX_LENGTH}
+                    onChange={e => {
+                      setTitleError(false);
+                      setTitle(e.target.value);
+                    }}
+                  />
+                </Grid.Column>
+                <Grid.Column width={3}>
+                  <Button
+                    primary floated='right'
+                    onClick={onSubmit}
+                    disabled={titleError || errorCtx.dirty()}
+                  >
+                    创建问卷
+                  </Button>
+                </Grid.Column>
+              </Grid.Row>
+              <Grid.Row>
+                <Grid.Column>
+                  <Transition.Group duration={180}>
+                    {qids.map(qid => {
+                      const {type} = qMap[qid];
+                      const E = editorMap[type];
+                      return <Segment key={qid}>
+                        <Grid>
+                          <Grid.Row className='qeditor-meta-row'>
+                            <Grid.Column width={14}>
+                              <Input
+                                className='qeditor-title-input-box'
+                                placeholder='问题'
+                                maxLength={QUESTION_TITLE_MAX_LENGTH}
+                                onChange={e => {
+                                  qMap[qid].title = e.target.value;
+                                }}
+                              />
+                            </Grid.Column>
+                            <Grid.Column width={2} floated='right' verticalAlign='middle'>
+                              <Label className='rfloated'>
+                                {nameMap[type]}
+                              </Label>
+                            </Grid.Column>
+                          </Grid.Row>
+                          <Grid.Row>
+                            <Grid.Column>
+                              <E
+                                qid={qid}
+                                ctx={ctx}
+                                useErrorFlag={errorCtx.createFlagHook(qid)}
+                                useErrorState={errorCtx.createStateHook(qid)}
+                              />
+                            </Grid.Column>
+                          </Grid.Row>
+                        </Grid>
+                      </Segment>;
+                    })}
+                  </Transition.Group>
+                </Grid.Column>
+              </Grid.Row>
+            </Grid>
           </Grid.Column>
         </Grid.Row>
       </Grid>
