@@ -16,15 +16,15 @@ function DetailLayout(props) {
             <Menu secondary vertical fluid>
               <Menu.Item active={offset === 'resps'} href={'/form/' + fid + '/resps'}>
                 <Icon name='database' />
-                答卷
+                浏览答卷
               </Menu.Item>
               <Menu.Item active={offset === 'stats'} href={'/form/' + fid + '/stats'}>
                 <Icon name='chart pie' />
-                统计
+                数据统计
               </Menu.Item>
               <Menu.Item active={offset === 'settings'} href={'/form/' + fid + '/settings'}>
                 <Icon name='settings' />
-                设置
+                问卷设置
               </Menu.Item>
             </Menu>
           </Grid.Column>
