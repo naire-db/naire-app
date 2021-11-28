@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Button, Header, Icon, Menu, Modal, Table } from 'semantic-ui-react';
+import { Button, Grid, Header, Modal, Table } from 'semantic-ui-react';
 
 import api, { api_unwrap } from 'api';
 import { ModalTransition } from 'components/transitedModal';
@@ -8,6 +8,7 @@ import { useAsyncResult } from 'utils';
 
 import DetailLayout from './DetailLayout';
 import RespView, { loadResp } from './RespView';
+import { usePagination } from 'utils/paginate';
 
 function formatTimestamp(ts) {
   const dt = new Date(ts * 1000);
@@ -115,6 +116,10 @@ function FormRespsInner(props) {
   const {fid, form, resps} = props;
   console.log(props);
 
+  const {activeItems, menu, activeOffset} = usePagination(resps, {
+    maxPageSize: 20
+  });
+
   async function openView(rid, ind) {
     console.log('open view', fid, rid, form);
     await loadResp(fid, rid, form);
@@ -122,81 +127,69 @@ function FormRespsInner(props) {
     setViewingInd(ind);
   }
 
-  // TODO: pagination
   return <>
-    <Table celled basic compact>
-      <Table.Header>
-        <Table.Row>
-          <Table.HeaderCell>序号</Table.HeaderCell>
-          <Table.HeaderCell>提交时间</Table.HeaderCell>
-          <Table.HeaderCell>用户</Table.HeaderCell>
-          <Table.HeaderCell>操作</Table.HeaderCell>
-        </Table.Row>
-      </Table.Header>
+    <Grid>
+      <Grid.Row>
+        <Grid.Column textAlign='center'>
+          {menu}
+        </Grid.Column>
+      </Grid.Row>
+      <Grid.Row>
+        <Grid.Column>
+          <Table celled basic='very' compact='very' textAlign='center'>
+            <Table.Header>
+              <Table.Row>
+                <Table.HeaderCell>序号</Table.HeaderCell>
+                <Table.HeaderCell>提交时间</Table.HeaderCell>
+                <Table.HeaderCell>用户</Table.HeaderCell>
+                <Table.HeaderCell>操作</Table.HeaderCell>
+              </Table.Row>
+            </Table.Header>
 
-      <Table.Body>
-        {resps.length ? resps.map((r, i) => (
-          <Table.Row key={i}>
-            <Table.Cell>{i + 1}</Table.Cell>
-            <Table.Cell>{formatTimestamp(r.ctime)}</Table.Cell>
-            <Table.Cell>{formatUser(r.user)}</Table.Cell>
-            <Table.Cell>
-              <Button
-                icon='eye' content='查看' size='mini'
-                onClick={() => openView(r.id, i)}
-              />
-              <Button
-                icon='delete' content='删除' negative size='mini'
-                onClick={() => setRemovingInd(i)}
-                style={{marginLeft: 5}}
-              />
-            </Table.Cell>
-          </Table.Row>
-        )) : (
-          <Table.Row>
-            <Table.Cell>
-              暂无答卷
-            </Table.Cell>
-          </Table.Row>
-        )}
-      </Table.Body>
-
-      <Table.Footer>
-        <Table.Row>
-          <Table.HeaderCell colSpan='1'>
-            共 {resps.length} 份答卷
-          </Table.HeaderCell>
-          <Table.HeaderCell colSpan='3'>
-            <Menu floated='right' pagination>
-              <Menu.Item as='a' icon>
-                <Icon name='chevron left' />
-              </Menu.Item>
-              <Menu.Item as='a'><code>TODO: pagination</code></Menu.Item>
-              <Menu.Item as='a'>2</Menu.Item>
-              <Menu.Item as='a'>3</Menu.Item>
-              <Menu.Item as='a'>4</Menu.Item>
-              <Menu.Item as='a' icon>
-                <Icon name='chevron right' />
-              </Menu.Item>
-            </Menu>
-          </Table.HeaderCell>
-        </Table.Row>
-      </Table.Footer>
-    </Table>
-    <ModalTransition open={removeModalOpen}>
-      <RemoveModal
-        fid={fid} rid={removingInd === null ? 0 : resps[removingInd].id} ind={removingInd}
-        onClosed={onRemoveModalClosed}
-      />
-    </ModalTransition>
-    <ModalTransition open={viewModalOpen}>
-      <RespViewModal
-        fid={fid}
-        resp={viewingInd === null ? null : resps[viewingInd]}
-        form={form}
-        onClosed={onViewModalClosed}
-      />
-    </ModalTransition>
+            <Table.Body>
+              {resps.length ? activeItems.map((r, i) => (
+                <Table.Row key={i}>
+                  <Table.Cell>{i + 1 + activeOffset}</Table.Cell>
+                  <Table.Cell>{formatTimestamp(r.ctime)}</Table.Cell>
+                  <Table.Cell>{formatUser(r.user)}</Table.Cell>
+                  <Table.Cell width={4}>
+                    <Button
+                      icon='eye' content='查看' size='mini'
+                      onClick={() => openView(r.id, i + activeOffset)}
+                    />
+                    <Button
+                      icon='delete' content='删除' negative size='mini'
+                      onClick={() => setRemovingInd(i + activeOffset)}
+                      style={{marginLeft: 5}}
+                    />
+                  </Table.Cell>
+                </Table.Row>
+              )) : (
+                <Table.Row>
+                  <Table.Cell>
+                    暂无答卷
+                  </Table.Cell>
+                </Table.Row>
+              )}
+            </Table.Body>
+          </Table>
+          <ModalTransition open={removeModalOpen}>
+            <RemoveModal
+              fid={fid} rid={removingInd === null ? 0 : resps[removingInd].id} ind={removingInd}
+              onClosed={onRemoveModalClosed}
+            />
+          </ModalTransition>
+          <ModalTransition open={viewModalOpen}>
+            <RespViewModal
+              fid={fid}
+              resp={viewingInd === null ? null : resps[viewingInd]}
+              form={form}
+              onClosed={onViewModalClosed}
+            />
+          </ModalTransition>
+        </Grid.Column>
+      </Grid.Row>
+    </Grid>
   </>;
 }
 
