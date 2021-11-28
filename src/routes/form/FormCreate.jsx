@@ -71,6 +71,11 @@ function FormCreate() {
     window.location = '/form/all';
   }
 
+  function onRemoved(qid) {
+    // TODO: show a confirm   modal
+    setQids(qids.filter(x => x !== qid));
+  }
+
   return (
     <AppLayout offset>
       <Grid>
@@ -116,41 +121,55 @@ function FormCreate() {
               </Grid.Row>
               <Grid.Row>
                 <Grid.Column>
-                  <Transition.Group duration={180}>
+                  <Transition.Group duration={120}>
                     {qids.map(qid => {
                       const {type} = qMap[qid];
                       const E = editorMap[type];
-                      return <Segment key={qid}>
-                        <Grid>
-                          <Grid.Row className='qeditor-meta-row'>
-                            <Grid.Column width={14}>
-                              <Input
-                                className='qeditor-title-input-box'
-                                placeholder='问题'
-                                maxLength={QUESTION_TITLE_MAX_LENGTH}
-                                onChange={e => {
-                                  qMap[qid].title = e.target.value;
-                                }}
-                              />
-                            </Grid.Column>
-                            <Grid.Column width={2} floated='right' verticalAlign='middle'>
-                              <Label className='rfloated'>
-                                {nameMap[type]}
-                              </Label>
-                            </Grid.Column>
-                          </Grid.Row>
-                          <Grid.Row>
-                            <Grid.Column>
-                              <E
-                                qid={qid}
-                                ctx={ctx}
-                                useErrorFlag={errorCtx.createFlagHook(qid)}
-                                useErrorState={errorCtx.createStateHook(qid)}
-                              />
-                            </Grid.Column>
-                          </Grid.Row>
-                        </Grid>
-                      </Segment>;
+                      return <Segment.Group key={qid}>
+                        <Segment>
+                          <Grid>
+                            <Grid.Row>
+                              <Grid.Column width={13} verticalAlign='middle'>
+                                <Header as='h4'>
+                                  {nameMap[type]}
+                                </Header>
+                              </Grid.Column>
+                              <Grid.Column width={3} verticalAlign='middle'>
+                                <Icon
+                                  link name='delete' size='large' className='rfloated'
+                                  onClick={() => onRemoved(qid)}
+                                />
+                              </Grid.Column>
+                            </Grid.Row>
+                          </Grid>
+                        </Segment>
+                        <Segment>
+                          <Grid>
+                            <Grid.Row className='qeditor-meta-row'>
+                              <Grid.Column>
+                                <Input
+                                  className='qeditor-title-input-box'
+                                  placeholder='问题'
+                                  maxLength={QUESTION_TITLE_MAX_LENGTH}
+                                  onChange={e => {
+                                    qMap[qid].title = e.target.value;
+                                  }}
+                                />
+                              </Grid.Column>
+                            </Grid.Row>
+                            <Grid.Row>
+                              <Grid.Column>
+                                <E
+                                  qid={qid}
+                                  ctx={ctx}
+                                  useErrorFlag={errorCtx.createFlagHook(qid)}
+                                  useErrorState={errorCtx.createStateHook(qid)}
+                                />
+                              </Grid.Column>
+                            </Grid.Row>
+                          </Grid>
+                        </Segment>
+                      </Segment.Group>;
                     })}
                   </Transition.Group>
                 </Grid.Column>
