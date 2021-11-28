@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Card, Dropdown, Grid, Icon, Label, Menu } from 'semantic-ui-react';
+import React, { useState } from 'react';
+import { Button, Card, Dropdown, Grid, Label, Menu, Segment } from 'semantic-ui-react';
 
 import AppLayout from 'layouts/AppLayout';
-import api from 'api';
+import api, { api_unwrap } from 'api';
 
 import ShareRow from './ShareRow';
 import RetitleModal from './RetitleModal';
@@ -10,6 +10,8 @@ import RemoveModal from './RemoveModal';
 
 import './form-set.css';
 import { ModalTransition } from '../../../components/transitedModal';
+import { useAsyncResult } from '../../../utils';
+import { usePagination } from '../../../utils/paginate';
 
 function formatTimestamp(ts) {
   const dt = new Date(ts * 1000);
@@ -27,21 +29,25 @@ function getFormDetailUrl(fid) {
 const formMap = new Map();
 
 function FormSet() {
-  const [forms, setForms] = useState([]);
   const [sharingFid, setSharingFid] = useState(null);
 
   const [retitlingFid, setRetitlingFid] = useState(null);
   const [removingFid, setRemovingFid] = useState(null);
 
-  useEffect(() => {
-    (async () => {
-      const res = await api.form.get_all();
-      formMap.clear();
-      for (const form of res.data)
-        formMap.set(form.id, form);
-      setForms(res.data);
-    })();
-  }, []);
+  const forms = useAsyncResult(async () => {
+    const forms = api_unwrap(await api.form.get_all());
+    formMap.clear();
+    for (const form of forms)
+      formMap.set(form.id, form);
+    return forms;
+  });
+
+  const {activeItems, menu} = usePagination(forms, {
+    maxPageSize: 15
+  });
+
+  if (forms === null)
+    return null;
 
   function share(form) {
     const fid = form.id;
@@ -58,58 +64,64 @@ function FormSet() {
     window.location = getFormDetailUrl(form.id);
   }
 
-  const cards = forms.map(form =>
-    <Card
-      href={getFormDetailUrl(form.id)}
-      key={form.id}
-    >
-      <Card.Content header={form.title} meta={
-        '创建于 ' + formatTimestamp(form.ctime)
-      } />
-      <Card.Content extra>
-        <Grid>
-          <Grid.Column width={12} verticalAlign='middle'>
-            {form.resp_count + ' 份答卷'}
-          </Grid.Column>
-          <Grid.Column width={4} verticalAlign='middle' floated='right'>
-            <Dropdown
-              className='form-card-dropdown icon'
-              icon='ellipsis vertical'
-              basic button size='mini' simple
-              onClick={e => e.preventDefault()}
-            >
-              <Dropdown.Menu>
-                <Dropdown.Item
-                  icon='setting' text='打开'
-                  onClick={() => detail(form)}
-                />
-                <Dropdown.Item
-                  icon='share alternate' text='分享'
-                  onClick={() => share(form)}
-                />
-                <Dropdown.Item
-                  icon='fire' text='作答'
-                  onClick={() => open(form)}
-                />
-                <Dropdown.Item
-                  icon='i cursor' text='重命名'
-                  onClick={() => setRetitlingFid(form.id)}
-                />
-                <Dropdown.Item
-                  icon='edit' text='编辑'
-                />
-                <Dropdown.Item icon='copy' text='复制' />
-                <Dropdown.Item icon='folder' text='移动' />
-                <Dropdown.Item
-                  className='ui negative' icon='delete' text='删除'
-                  onClick={() => setRemovingFid(form.id)}
-                />
-              </Dropdown.Menu>
-            </Dropdown>
-          </Grid.Column>
-        </Grid>
-      </Card.Content>
-    </Card>
+  const content = forms.length ? (
+    <Card.Group itemsPerRow={3}>
+      {activeItems.map(form => (
+        <Card
+          href={getFormDetailUrl(form.id)}
+          key={form.id}
+        >
+          <Card.Content header={form.title} meta={
+            '创建于 ' + formatTimestamp(form.ctime)
+          } />
+          <Card.Content extra>
+            <Grid>
+              <Grid.Column width={12} verticalAlign='middle'>
+                {form.resp_count + ' 份答卷'}
+              </Grid.Column>
+              <Grid.Column width={4} verticalAlign='middle' floated='right'>
+                <Dropdown
+                  className='form-card-dropdown icon'
+                  icon='ellipsis vertical'
+                  basic button size='mini' simple
+                  onClick={e => e.preventDefault()}
+                >
+                  <Dropdown.Menu>
+                    <Dropdown.Item
+                      icon='setting' text='打开'
+                      onClick={() => detail(form)}
+                    />
+                    <Dropdown.Item
+                      icon='share alternate' text='分享'
+                      onClick={() => share(form)}
+                    />
+                    <Dropdown.Item
+                      icon='fire' text='作答'
+                      onClick={() => open(form)}
+                    />
+                    <Dropdown.Item
+                      icon='i cursor' text='重命名'
+                      onClick={() => setRetitlingFid(form.id)}
+                    />
+                    <Dropdown.Item
+                      icon='edit' text='编辑'
+                    />
+                    <Dropdown.Item icon='copy' text='复制' />
+                    <Dropdown.Item icon='folder' text='移动' />
+                    <Dropdown.Item
+                      className='ui negative' icon='delete' text='删除'
+                      onClick={() => setRemovingFid(form.id)}
+                    />
+                  </Dropdown.Menu>
+                </Dropdown>
+              </Grid.Column>
+            </Grid>
+          </Card.Content>
+        </Card>
+      ))}
+    </Card.Group>
+  ) : (
+    <Segment>暂无问卷</Segment>
   );
 
   // FIXME: transition not working
@@ -151,20 +163,9 @@ function FormSet() {
             <Grid>
               <Grid.Row>
                 <Grid.Column>
-                  <Menu pagination>
-                    <Menu.Item as='a' icon>
-                      <Icon name='chevron left' />
-                    </Menu.Item>
-                    <Menu.Item as='a'><code>{'TODO: pagination'}</code></Menu.Item>
-                    <Menu.Item as='a'>2</Menu.Item>
-                    <Menu.Item as='a'>3</Menu.Item>
-                    <Menu.Item as='a'>4</Menu.Item>
-                    <Menu.Item as='a' icon>
-                      <Icon name='chevron right' />
-                    </Menu.Item>
-                  </Menu>
+                  {menu}
                   <Button
-                    primary size='large' floated='right'
+                    primary size='large' floated={menu ? 'right' : undefined}
                     href='/form/create'
                   >
                     创建问卷
@@ -176,9 +177,7 @@ function FormSet() {
               />
               <Grid.Row>
                 <Grid.Column>
-                  <Card.Group itemsPerRow={3}>
-                    {cards}
-                  </Card.Group>
+                  {content}
                 </Grid.Column>
               </Grid.Row>
             </Grid>

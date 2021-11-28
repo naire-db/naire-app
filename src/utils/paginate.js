@@ -3,6 +3,13 @@ import { Pagination } from 'semantic-ui-react';
 
 function usePagination(items, {maxPageSize = 30} = {}) {
   const [activePage, setActivePage] = useState(0);
+  if (!items)
+    return {
+      activeItems: [],
+      menu: null,
+      activeOffset: 0
+    };
+
   const tot = items.length;
   if (tot <= maxPageSize)
     return {
