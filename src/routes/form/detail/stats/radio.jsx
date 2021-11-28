@@ -1,64 +1,45 @@
 import React from 'react';
-import { ArcElement, Chart as ChartJS, Legend, Tooltip } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
-import { Grid } from 'semantic-ui-react';
+
 import { registerQuestionStat } from './base';
+import { chartOptions } from './utils';
+import OptionStatLayout, { OptionCounter } from './OptionStatLayout';
 
-ChartJS.register(ArcElement, Tooltip, Legend);
-
-function rand() {
-  return Math.floor(Math.random() * 233);
-}
-
-function randColor() {
-  return `rgb(${rand()}, ${rand()}, ${rand()})`;
-}
-
-const fluidOptions = {
-  maintainAspectRatio: false,
-  responsive: true
-};
+import './index.css';
 
 function RadioStat(props) {
   const {question: q, values} = props;
-  const optMap = {};
-  const labels = [];
-  const counts = [];
-  const colors = [];
-  for (const o of q.options) {
-    optMap[o.id] = counts.length;
-    labels.push(o.text);
-    counts.push(0);
-    colors.push(randColor());
-  }
+  const stat = new OptionCounter(q.options);
 
-  for (const v of values)
-    ++counts[optMap[v]];
+  for (const oid of values)
+    stat.update(oid);
+  stat.setTotal(values.length);
 
-  console.log(q, values, optMap, counts, labels);
-
-  const data = {
-    labels,
-    datasets: [
-      {
-        data: counts,
-        backgroundColor: colors
-      },
-    ]
-  };
+  /*
+  while (data.length < 10)
+    data.push({
+      text: 'qwq',
+      count: 20
+    });
+   */
 
   return (
-    <Grid>
-      <Grid.Row>
-        <Grid.Column width={7}>
-          <Pie
-            data={data}
-          />
-        </Grid.Column>
-        <Grid.Column width={11} />
-      </Grid.Row>
-    </Grid>
+    <OptionStatLayout
+      stat={stat}
+    >
+      <Pie
+        data={stat.toChartData()}
+        options={chartOptions}
+      />
+    </OptionStatLayout>
   );
 }
 
-registerQuestionStat('radio', RadioStat);
+function RadioAnswerRenderFactory(q) {
+  const m = new Map();
+  for (const o of q.options)
+    m.set(o.id, o.text);
+  return oid => m.get(oid);
+}
+
+registerQuestionStat('radio', RadioStat, RadioAnswerRenderFactory);

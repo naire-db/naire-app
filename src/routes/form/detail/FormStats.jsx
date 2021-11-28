@@ -31,10 +31,17 @@ function FormStats() {
           <p>
             {q.title}
           </p>
-          <E
-            question={q}
-            values={resps.map(r => r.body.answers[i])}
-          />
+          <div
+            style={{
+              paddingBottom: 4,
+              paddingTop: 4
+            }}
+          >
+            <E
+              question={q}
+              values={resps.map(r => r.body.answers[i])}
+            />
+          </div>
         </Segment>;
       })}
     </DetailLayout>
