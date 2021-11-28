@@ -33,7 +33,7 @@ function FormStats() {
             <Grid.Row>
               <Grid.Column>
                 {q.title}
-                <Label floated horizontal style={{
+                <Label horizontal style={{
                   marginLeft: 15
                 }}>
                   {nameMap[q.type]}

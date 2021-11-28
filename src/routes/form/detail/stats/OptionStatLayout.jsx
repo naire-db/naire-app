@@ -72,8 +72,8 @@ function OptionStatLayout(props) {
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {data.map(d => (
-              <Table.Row>
+            {data.map((d, i) => (
+              <Table.Row key={i}>
                 <Table.Cell width={6}>{d.text}</Table.Cell>
                 <Table.Cell width={6}>{d.count}</Table.Cell>
                 <Table.Cell width={6}>{formatPercent(d.count / total)}</Table.Cell>
