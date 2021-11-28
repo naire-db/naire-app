@@ -19,7 +19,8 @@ function FormStats() {
   const {form, resps} = details;
   const {questions} = form.body;
 
-  // TODO: when empty
+  // TODO: when there are no questions
+  // TODO: when there are no responses
   return (
     <DetailLayout offset='stats' fid={fid} title={form.title}>
       {questions.map((q, i) => {
