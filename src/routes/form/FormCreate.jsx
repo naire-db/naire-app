@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Grid, Header, Icon, Input, Label, Segment, Sticky, Transition } from 'semantic-ui-react';
 
 import AppLayout from 'layouts/AppLayout';
@@ -52,6 +52,7 @@ function FormCreate() {
     setNextQid(qid + 1);
     qids.push(qid);
     setQids(qids);
+    window.qidsNonEmpty = true;
     console.log(typeMap, editorMap, ctx);
     qMap[qid] = new typeMap[type](qid, ctx);
   }
@@ -68,13 +69,28 @@ function FormCreate() {
       })
     };
     api_unwrap(await api.form.create(title.trim(), body));
+    window.qidsNonEmpty = window.titleNonEmpty = false;
     window.location = '/form/all';
   }
 
   function onRemoved(qid) {
     // TODO: show a confirm modal
-    setQids(qids.filter(x => x !== qid));
+    setQids(qids => {
+      const n = qids.filter(x => x !== qid);
+      window.qidsNonEmpty = n.length;
+      return n;
+    });
   }
+
+  useEffect(() => {
+    const fn = e => {
+      const edited = window.qidsNonEmpty || window.titleNonEmpty;
+      if (edited)
+        e.returnValue = false;
+    };
+    window.addEventListener('beforeunload', fn);
+    return () => window.removeEventListener('beforeunload', fn);
+  }, []);
 
   return (
     <AppLayout offset>
@@ -104,8 +120,10 @@ function FormCreate() {
                     value={title}
                     maxLength={FORM_TITLE_MAX_LENGTH}
                     onChange={e => {
+                      const v = e.target.value;
+                      window.titleNonEmpty = v.trim();
                       setTitleError(false);
-                      setTitle(e.target.value);
+                      setTitle(v);
                     }}
                   />
                 </Grid.Column>
