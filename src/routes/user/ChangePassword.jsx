@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Checkbox, Form, Message } from 'semantic-ui-react';
 
 import api from 'api';
-import { checkPassword, useField } from 'utils';
+import { checkPassword, useField } from 'utils/fieldHook';
 import ProfileLayout from 'layouts/ProfileLayout';
 
 function ChangePassword() {

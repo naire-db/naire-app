@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 function useField(checker, initialValue = '', errorPosition = 'bottom') {
   const [value, setValue] = useState(initialValue);
@@ -82,14 +82,4 @@ function validateFields(...fields) {
   return fields.map(f => f.validate()).every(t => t);
 }
 
-function useAsyncResult(callback, deps) {
-  const [res, setRes] = useState(null);
-  useEffect(() => {
-    (async () => {
-      setRes(await callback());
-    })();
-  }, deps || []);
-  return res;
-}
-
-export { useField, checkUsername, checkPassword, checkEmail, checkDname, validateFields, useAsyncResult };
+export { useField, checkUsername, checkPassword, checkEmail, checkDname, validateFields };

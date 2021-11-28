@@ -4,7 +4,7 @@ import { Form, Message } from 'semantic-ui-react';
 import api from 'api';
 import appState from 'appState';
 import ProfileLayout from 'layouts/ProfileLayout';
-import { checkDname, checkEmail, useField, validateFields } from 'utils';
+import { checkDname, checkEmail, useField, validateFields } from 'utils/fieldHook';
 
 function Profile() {
   const currentInfo = appState.user_info;

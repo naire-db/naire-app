@@ -3,7 +3,7 @@ import { Button, Form, Grid, Header, Message, Segment } from 'semantic-ui-react'
 
 import AppLayout from 'layouts/AppLayout';
 import api from 'api';
-import { checkEmail, checkPassword, checkUsername, useField } from 'utils';
+import { checkEmail, checkPassword, checkUsername, useField } from 'utils/fieldHook';
 
 function Register() {
   const usernameField = useField(checkUsername);
