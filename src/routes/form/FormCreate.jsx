@@ -72,7 +72,7 @@ function FormCreate() {
   }
 
   function onRemoved(qid) {
-    // TODO: show a confirm   modal
+    // TODO: show a confirm modal
     setQids(qids.filter(x => x !== qid));
   }
 
