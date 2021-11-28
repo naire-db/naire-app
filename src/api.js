@@ -9,6 +9,10 @@ function api_unwrap(res) {
   return res.data;
 }
 
+async function api_unwrap_fut(fut) {
+  return api_unwrap(await fut);
+}
+
 class Api {
   ERR_FAILURE = 1;
   ERR_AUTH_REQUIRED = 2;
@@ -154,4 +158,4 @@ class Api {
 const api = new Api();
 
 export default api;
-export { api_unwrap };
+export { api_unwrap, api_unwrap_fut };
