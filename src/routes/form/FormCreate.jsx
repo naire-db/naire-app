@@ -4,7 +4,7 @@ import { Button, Grid, Header, Icon, Input, Label, Segment, Sticky, Transition }
 import AppLayout from 'layouts/AppLayout';
 import api from 'api';
 
-import { editorMap, qMap, typeMap } from './types';
+import { editorMap, nameMap, qMap, typeMap } from './types';
 import { useErrorContext } from './errorContext';
 import { FORM_TITLE_MAX_LENGTH } from './config';
 
@@ -111,14 +111,24 @@ function FormCreate() {
             </Button>
             <Transition.Group duration={180}>
               {qids.map(qid => {
-                const E = editorMap[qMap[qid].type];
+                const {type} = qMap[qid];
+                const E = editorMap[type];
                 return <Segment key={qid}>
                   <Grid>
-                    <Grid.Row className='question-editor-meta-row'>
-                      <Grid.Column>
-                        <Input placeholder='问题' onChange={e => {
-                          qMap[qid].title = e.target.value;
-                        }} />
+                    <Grid.Row className='qeditor-meta-row'>
+                      <Grid.Column width={14}>
+                        <Input
+                          className='qeditor-title-input-box'
+                          placeholder='问题'
+                          onChange={e => {
+                            qMap[qid].title = e.target.value;
+                          }}
+                        />
+                      </Grid.Column>
+                      <Grid.Column width={2} floated='right' verticalAlign='middle'>
+                        <Label className='rfloated'>
+                          {nameMap[type]}
+                        </Label>
                       </Grid.Column>
                     </Grid.Row>
                     <Grid.Row>

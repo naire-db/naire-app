@@ -3,4 +3,10 @@ import './checkbox';
 import './radio';
 import './input';
 
-export { qMap, editorMap, typeMap };
+const nameMap = {
+  'radio': '单选题',
+  'checkbox': '多选题',
+  'input': '填空题'
+};
+
+export { qMap, editorMap, typeMap, nameMap };

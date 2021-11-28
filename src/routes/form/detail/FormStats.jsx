@@ -1,12 +1,13 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { Segment } from 'semantic-ui-react';
+import { Grid, Label, Segment } from 'semantic-ui-react';
 
 import api, { api_unwrap_fut } from 'api';
 import { useAsyncResult } from 'utils';
 
 import DetailLayout from './DetailLayout';
 import { statMap } from './stats';
+import { nameMap } from '../types';
 
 function FormStats() {
   const fid = parseInt(useParams().fid, 10);
@@ -28,20 +29,33 @@ function FormStats() {
         if (!E)
           return null;  // TODO: remove checks
         return <Segment key={q.id}>
-          <p>
-            {q.title}
-          </p>
-          <div
-            style={{
-              paddingBottom: 4,
-              paddingTop: 4
-            }}
-          >
-            <E
-              question={q}
-              values={resps.map(r => r.body.answers[i])}
-            />
-          </div>
+          <Grid>
+            <Grid.Row>
+              <Grid.Column>
+                {q.title}
+                <Label floated horizontal style={{
+                  marginLeft: 15
+                }}>
+                  {nameMap[q.type]}
+                </Label>
+              </Grid.Column>
+            </Grid.Row>
+            <Grid.Row>
+              <Grid.Column>
+                <div
+                  style={{
+                    paddingBottom: 4,
+                    paddingTop: 4
+                  }}
+                >
+                  <E
+                    question={q}
+                    values={resps.map(r => r.body.answers[i])}
+                  />
+                </div>
+              </Grid.Column>
+            </Grid.Row>
+          </Grid>
         </Segment>;
       })}
     </DetailLayout>

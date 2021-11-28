@@ -1,3 +1,11 @@
-.question-editor-meta-row {
+.qeditor-meta-row {
   padding-bottom: 0 !important;
+}
+
+.qeditor-title-input-box {
+  width: 100%;
+}
+
+.rfloated {
+  float: right;
 }
