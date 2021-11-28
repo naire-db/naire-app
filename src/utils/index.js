@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 
-function useAsyncResult(callback, deps) {
-  const [res, setRes] = useState(null);
+function useAsyncResult(callback, deps = [], initial = null) {
+  const [res, setRes] = useState(initial);
   useEffect(() => {
     (async () => {
       setRes(await callback());
     })();
-  }, deps || []);
+  }, deps);
   return res;
 }
 
