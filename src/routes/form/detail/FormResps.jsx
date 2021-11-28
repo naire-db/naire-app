@@ -123,11 +123,17 @@ function FormRespsInner(props) {
     setViewingInd(ind);
   }
 
+  // TODO: export
   return <>
     <Grid>
       <Grid.Row>
-        <Grid.Column textAlign='center'>
+        <Grid.Column>
           {menu}
+          <Button
+            primary
+            content='下载答卷数据'
+            floated={menu && 'right'}
+          />
         </Grid.Column>
       </Grid.Row>
       <Grid.Row>
