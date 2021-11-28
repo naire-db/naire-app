@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button, Grid, Header, Icon, Input, Label, Segment, Sticky, Transition } from 'semantic-ui-react';
 
 import AppLayout from 'layouts/AppLayout';
-import api from 'api';
+import api, { api_unwrap } from 'api';
 
 import { editorMap, nameMap, qMap, typeMap } from './types';
 import { useErrorContext } from './errorContext';
@@ -67,11 +67,8 @@ function FormCreate() {
         return q;
       })
     };
-    const res = await api.form.create(title.trim(), body);
-    if (res.code === 0)
-      window.location = '/form/all';
-    else
-      console.error(res);
+    api_unwrap(await api.form.create(title.trim(), body));
+    window.location = '/form/all';
   }
 
   return (
