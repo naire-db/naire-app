@@ -23,15 +23,6 @@ function formatUser(desc) {
   return `${dname} (${username})`;
 }
 
-function formatUserFull(desc) {
-  if (desc === null)
-    return '未登录用户';
-  const {username, dname} = desc;
-  if (username === dname)
-    return username;
-  return `${dname} (${username})`;
-}
-
 function RemoveModal(props) {
   const {ind, fid, rid, onClosed} = props;
 
@@ -78,7 +69,7 @@ function RespViewModal(props) {
     <Header>
       查看答卷
       <Header.Subheader>
-        用户：{formatUserFull(resp.user)}
+        用户：{formatUser(resp.user)}
       </Header.Subheader>
       <Header.Subheader>
         时间：{formatTimestamp(resp.ctime)}
