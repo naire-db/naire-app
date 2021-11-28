@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Button, Header, Icon, Menu, Modal, Table } from 'semantic-ui-react';
 
-import api from 'api';
+import api, { api_unwrap } from 'api';
 import { ModalTransition } from 'components/transitedModal';
+import { useAsyncResult } from 'utils';
 
 import DetailLayout from './DetailLayout';
 import RespView, { loadResp } from './RespView';
@@ -209,17 +210,10 @@ function FormRespsInner(props) {
 }
 
 function FormResps() {
-  const [resData, setResData] = useState(null);
   const fid = parseInt(useParams().fid, 10);
-
-  useEffect(() => {
-    (async () => {
-      const res = await api.form.get_form_resps(fid);
-      if (res.code !== 0)
-        return console.error(res);
-      setResData(res.data);
-    })();
-  }, [fid]);
+  const resData = useAsyncResult(async () =>
+      api_unwrap(await api.form.get_form_resps(fid))
+    , [fid]);
 
   if (resData === null)
     return null;
