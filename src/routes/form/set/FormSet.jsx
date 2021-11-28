@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import { Button, Card, Dropdown, Grid, Label, Menu, Segment } from 'semantic-ui-react';
 
-import AppLayout from 'layouts/AppLayout';
 import api, { api_unwrap } from 'api';
+import AppLayout from 'layouts/AppLayout';
+import { ModalTransition } from 'components/transitedModal';
+import { useAsyncResult } from 'utils';
+import { usePagination } from 'utils/paginate';
 
 import ShareRow from './ShareRow';
 import RetitleModal from './RetitleModal';
 import RemoveModal from './RemoveModal';
 
 import './form-set.css';
-import { ModalTransition } from '../../../components/transitedModal';
-import { useAsyncResult } from '../../../utils';
-import { usePagination } from '../../../utils/paginate';
 
 function formatTimestamp(ts) {
   const dt = new Date(ts * 1000);

@@ -4,10 +4,10 @@ import { Button, Grid, Header, Modal, Table } from 'semantic-ui-react';
 
 import api, { api_unwrap } from 'api';
 import { useAsyncResult } from 'utils';
+import { usePagination } from 'utils/paginate';
 
 import DetailLayout from './DetailLayout';
 import RespView, { loadResp } from './RespView';
-import { usePagination } from 'utils/paginate';
 
 function formatTimestamp(ts) {
   const dt = new Date(ts * 1000);
