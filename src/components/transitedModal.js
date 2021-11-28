@@ -3,6 +3,7 @@ import { Transition } from 'semantic-ui-react';
 function ModalTransition(props) {
   const {open, duration, animation} = props;
 
+  // TODO: use transited portal?
   return (
     <Transition
       unmountOnHide
