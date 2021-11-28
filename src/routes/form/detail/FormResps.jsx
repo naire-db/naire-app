@@ -3,7 +3,6 @@ import { useParams } from 'react-router-dom';
 import { Button, Grid, Header, Modal, Table } from 'semantic-ui-react';
 
 import api, { api_unwrap } from 'api';
-import { ModalTransition } from 'components/transitedModal';
 import { useAsyncResult } from 'utils';
 
 import DetailLayout from './DetailLayout';
@@ -107,10 +106,7 @@ function FormRespsInner(props) {
   const [removingInd, setRemovingInd] = useState(null);
   const [viewingInd, setViewingInd] = useState(null);
 
-  const removeModalOpen = removingInd !== null;
   const onRemoveModalClosed = () => setRemovingInd(null);
-
-  const viewModalOpen = viewingInd !== null;
   const onViewModalClosed = () => setViewingInd(null);
 
   const {fid, form, resps} = props;
@@ -173,20 +169,18 @@ function FormRespsInner(props) {
               )}
             </Table.Body>
           </Table>
-          <ModalTransition open={removeModalOpen}>
-            <RemoveModal
-              fid={fid} rid={removingInd === null ? 0 : resps[removingInd].id} ind={removingInd}
-              onClosed={onRemoveModalClosed}
-            />
-          </ModalTransition>
-          <ModalTransition open={viewModalOpen}>
-            <RespViewModal
-              fid={fid}
-              resp={viewingInd === null ? null : resps[viewingInd]}
-              form={form}
-              onClosed={onViewModalClosed}
-            />
-          </ModalTransition>
+          <RemoveModal
+            fid={fid}
+            rid={removingInd === null ? null : resps[removingInd].id}
+            ind={removingInd}
+            onClosed={onRemoveModalClosed}
+          />
+          <RespViewModal
+            fid={fid}
+            resp={viewingInd === null ? null : resps[viewingInd]}
+            form={form}
+            onClosed={onViewModalClosed}
+          />
         </Grid.Column>
       </Grid.Row>
     </Grid>
