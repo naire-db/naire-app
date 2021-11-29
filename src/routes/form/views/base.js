@@ -11,7 +11,7 @@ function registerQuestionView(type, View, initial) {
 
 function useAState(q) {
   const qid = q.id;
-  const [value, setValue] = useState(aMap[qid]);
+  const [value, setValue] = useState(() => aMap[qid]);
   return [value, v => {
     if (typeof v === 'function')
       setValue(s => {

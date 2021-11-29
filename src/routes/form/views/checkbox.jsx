@@ -12,24 +12,24 @@ function CheckboxView(props) {
   const [error, setError] = props.useErrorState(() => min_choices > 0);
 
   function addOid(oid) {
-    setSelectedOids(o => {
-      console.log('adding', oid, 'to', o);
-      if (o.includes(oid))
-        return o;
-      const a = [oid, ...o];
-      console.log(a);
-      setError(a.length > max_choices || a.length < min_choices);
-      return a;
-    });
+    const o = selectedOids;
+    // using a update action causes "Cannot update a component
+    // (`FormView`) while rendering a different component
+    // (`CheckboxView`)"
+    console.log('adding', oid, 'to', o);
+    if (o.includes(oid))
+      return o;
+    const a = [oid, ...o];
+    console.log(a);
+    setError(a.length > max_choices || a.length < min_choices);
+    setSelectedOids(a);
   }
 
   function removeOid(oid) {
-    setSelectedOids(o => {
-      const a = o.filter(x => x !== oid);
-      console.log(a);
-      setError(a.length > max_choices || a.length < min_choices);
-      return a;
-    });
+    const a = selectedOids.filter(x => x !== oid);
+    console.log(a);
+    setError(a.length > max_choices || a.length < min_choices);
+    setSelectedOids(a);
   }
 
   return <Form>
@@ -40,9 +40,9 @@ function CheckboxView(props) {
           label={o.text}
           error={props.tried && error}
           checked={selectedOids.includes(o.id)}
-          onChange={(_, d) =>
+          onChange={(_, d) => (
             d.checked ? addOid(o.id) : removeOid(o.id)
-          }
+          )}
         />
       ))
     }

@@ -40,8 +40,8 @@ class SimpleErrorContext {
   }
 
   createFlagHook(token) {
+    const flag = this.createFlag(token);
     return initial_or_fn => {
-      const flag = this.createFlag(token);
       useEffect(() => {
         flag.set_to(is_fn(initial_or_fn) ? initial_or_fn() : initial_or_fn);
       }, []);
@@ -50,8 +50,8 @@ class SimpleErrorContext {
   }
 
   _createStateHook(token) {
+    const flag = this.createFlag(token);
     return initial_or_fn => {
-      const flag = this.createFlag(token);
       const [state, setState] = useState(() => {
         const v = is_fn(initial_or_fn) ? initial_or_fn() : initial_or_fn;
         flag.set_to(v);
@@ -68,8 +68,8 @@ class SimpleErrorContext {
   }
 
   createStateHook(token) {
+    const flag = this.createFlag(token);
     return initial_or_fn => {
-      const flag = this.createFlag(token);
       useEffect(() => {
         flag.set_to(is_fn(initial_or_fn) ? initial_or_fn() : initial_or_fn);
       }, []);

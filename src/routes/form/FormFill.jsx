@@ -71,6 +71,7 @@ function FormView(props) {
     {
       questions.map(q => (
         <QuestionView
+          key={q.id}
           question={q}
           tried={tried}
           errorCtx={errorCtx}
