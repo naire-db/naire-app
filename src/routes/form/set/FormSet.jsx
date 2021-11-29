@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Card, Dropdown, Grid, Label, Menu, Segment } from 'semantic-ui-react';
+import { Button, Card, Dropdown, Grid, Input, Label, Menu, Segment } from 'semantic-ui-react';
 
 import api, { api_unwrap } from 'api';
 import AppLayout from 'layouts/AppLayout';
@@ -27,6 +27,12 @@ function getFormDetailUrl(fid) {
 }
 
 const formMap = new Map();
+
+function makeOption(value, text) {
+  return {
+    key: value, value, text
+  };
+}
 
 function FormSet() {
   const [sharingFid, setSharingFid] = useState(null);
@@ -62,6 +68,16 @@ function FormSet() {
 
   function detail(form) {
     window.location = getFormDetailUrl(form.id);
+  }
+
+  function onSorted(key) {
+    // TODO
+    console.log('sort', key);
+  }
+
+  function onFiltered(v) {
+    // TODO
+    console.log('filter', v);
   }
 
   const content = forms.length ? (
@@ -162,10 +178,36 @@ function FormSet() {
           <Grid.Column width={12}>
             <Grid>
               <Grid.Row>
-                <Grid.Column>
-                  {menu}
+                <Grid.Column width={10} verticalAlign='middle'>
+                  <Input
+                    fluid
+                    icon='search'
+                    placeholder='搜索问卷'
+                    size='large'
+                    onChange={(e, d) => onFiltered(d.value)}
+                  />
+                </Grid.Column>
+                <Grid.Column width={3} verticalAlign='middle'>
+                  <Dropdown
+                    className='form-card-sort-dd'
+                    selection
+                    simple
+                    compact
+                    fluid
+                    placeholder='State'
+                    options={[
+                      makeOption('ctime', '最早创建'),
+                      makeOption('title', '按标题')
+                    ]}
+                    defaultValue='ctime'  // behaviour of API
+                    style={{}}
+                    onChange={(e, d) => onSorted(d.value)}
+                  />
+                </Grid.Column>
+                <Grid.Column width={3} verticalAlign='middle'>
                   <Button
-                    primary size='large' floated={menu ? 'right' : undefined}
+                    floated='right'
+                    primary size='large'
                     href='/form/create'
                   >
                     创建问卷
@@ -178,6 +220,11 @@ function FormSet() {
               <Grid.Row>
                 <Grid.Column>
                   {content}
+                </Grid.Column>
+              </Grid.Row>
+              <Grid.Row>
+                <Grid.Column textAlign='center'>
+                  {menu}
                 </Grid.Column>
               </Grid.Row>
             </Grid>
