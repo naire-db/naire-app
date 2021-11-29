@@ -27,6 +27,8 @@ const qTypes = [
   ['file', '文件上传', 'file']
 ];
 
+// TODO: save state in localStorage / IndexedDB? to restore after leaving the page (not a priority)
+
 function FormCreate() {
   const [nextQid, setNextQid] = useState(0);
   const [nextOid, setNextOid] = useState(0);
