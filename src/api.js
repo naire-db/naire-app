@@ -1,9 +1,8 @@
 const entry = 'http://localhost:8000';  // TODO: change in production environment
 
 function api_unwrap(res) {
-  console.log('unwrapping res', res);
   if (res.code !== 0) {
-    console.error(res);
+    console.error('api unwrap failed', res);
     return null;
   }
   return res.data;
@@ -13,6 +12,22 @@ async function api_unwrap_fut(fut) {
   return api_unwrap(await fut);
 }
 
+async function api_fetch(path, options) {
+  const {method, body} = options;
+  if (body === undefined)
+    console.log(`${method}ing ${path}`);
+  else
+    console.log(`${method}ing ${path} with ${body}`);
+  const resp = await fetch(entry + path, options);
+  if (!resp.ok) {
+    console.error('bad api fetch', path, resp);
+    throw new Error(`API ${path}: ${resp.status} ${resp.statusText}`);
+  }
+  const res = await resp.json();
+  console.log(`${method} ${path} responded ${JSON.stringify(res)}`);
+  return res;
+}
+
 class Api {
   ERR_FAILURE = 1;
   ERR_AUTH_REQUIRED = 2;
@@ -20,8 +35,6 @@ class Api {
   ERR_DUPL_EMAIL = 4;
 
   async post(path, data) {
-    console.log('POSTing', path, 'with', JSON.stringify(data));
-    const url = entry + path;
     const options = {
       method: 'POST',
       headers: {
@@ -31,15 +44,10 @@ class Api {
       body: data === undefined ? undefined : JSON.stringify(data),
       credentials: 'include',
     };
-    const resp = await fetch(url, options);
-    const res = await resp.json();
-    console.log('POST', path, 'with', JSON.stringify(data), 'resp', JSON.stringify(res));
-    return res;
+    return await api_fetch(path, options);
   }
 
   async get(path) {
-    console.log('GETing', path);
-    const url = entry + path;
     const options = {
       method: 'GET',
       headers: {
@@ -47,10 +55,7 @@ class Api {
       },
       credentials: 'include',
     };
-    const resp = await fetch(url, options);
-    const res = await resp.json();
-    console.log('GET', path, 'resp', res);
-    return res;
+    return await api_fetch(path, options);
   }
 
   login = (username_or_email, password) =>
