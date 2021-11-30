@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import api from 'api';
 import appState from 'appState';
+import { CommonModal } from './utils/modal';
 
 function make_lazy(f) {
   const E = lazy(f);
@@ -35,7 +36,7 @@ function AppRouter() {
     })();
   }, []);
 
-  return (
+  return <>
     <BrowserRouter>
       <Routes>
         {mount('/', () => import('routes/Home'))}
@@ -53,7 +54,8 @@ function AppRouter() {
         {mount('*', () => import('routes/Home'))}
       </Routes>
     </BrowserRouter>
-  );
+    <CommonModal />
+  </>;
 }
 
 export default AppRouter;
