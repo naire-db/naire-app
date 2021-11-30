@@ -73,8 +73,6 @@ class Api {
     });
 
   form = {
-    get_all: () => this.get('/form/get_all/'),
-
     create: (title, body) =>
       this.post('/form/create/', {
         title, body
@@ -145,6 +143,35 @@ class Api {
       this.post('/form/remove_resp/', {
         fid, rid
       }),
+
+    // Folder stuff
+
+    get_overview: () => this.get('/form/get_overview/'),
+
+    get_folder_all: folder_id =>
+      this.post('/form/get_folder_all/', {
+        folder_id
+      }),
+
+    create_folder: name =>
+      this.post('/form/create_folder/', {
+        name
+      }),
+
+    rename_folder: (folder_id, name) =>
+      this.post('/form/rename_folder/', {
+        folder_id, name
+      }),
+
+    remove_folder: folder_id =>
+      this.post('/form/remove_folder/', {
+        folder_id
+      }),
+
+    move_to_folder: (fid, folder_id) =>
+      this.post('/form/move_to_folder/', {
+        fid, folder_id
+      })
   };
 
   user = {
