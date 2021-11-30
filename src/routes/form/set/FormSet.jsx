@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
-import { Button, Card, Dropdown, Grid, Input, Label, Menu, Segment } from 'semantic-ui-react';
+import { Button, Card, Dropdown, Form, Grid, Icon, Input, Label, Menu, Segment } from 'semantic-ui-react';
 
-import api, { api_unwrap } from 'api';
+import api, { api_unwrap, api_unwrap_fut } from 'api';
 import AppLayout from 'layouts/AppLayout';
 import { ModalTransition } from 'components/transitedModal';
-import { useAsyncResult } from 'utils';
+import { useAsyncEffect } from 'utils';
 import { usePagination } from 'utils/paginate';
+import { closeModal, showModal } from 'utils/modal';
 
 import ShareRow from './ShareRow';
 import RetitleModal from './RetitleModal';
 import RemoveModal from './RemoveModal';
+import { FOLDER_NAME_MAX_LENGTH } from './config';
 
 import './form-set.css';
 
@@ -26,13 +28,36 @@ function getFormDetailUrl(fid) {
   return window.location.origin + '/form/' + fid + '/resps';
 }
 
-const formMap = new Map();
-
 function makeOption(value, text) {
   return {
     key: value, value, text
   };
 }
+
+const sortOptions = [
+  makeOption('ctime', '最早创建'),
+  makeOption('ctime_', '最新创建'),
+  makeOption('resp_count_', '最多答卷'),
+  makeOption('resp_count', '最少答卷'),
+  makeOption('title', '按标题'),
+];
+
+function nc(a, b) {
+  return a > b ? 1 : (a < b ? -1 : 0);
+}
+
+const sortComps = {
+  ctime: (a, b) => nc(a.ctime, b.ctime),
+  ctime_: (a, b) => nc(b.ctime, a.ctime),
+  resp_count: (a, b) => nc(a.resp_count, b.resp_count),
+  resp_count_: (a, b) => nc(b.resp_count, a.resp_count),
+  title: (a, b) => a.title.localeCompare(b.title),
+};
+
+const formMap = new Map();
+const folderMap = new Map();
+
+let userRootFid = null;
 
 function FormSet() {
   const [sharingFid, setSharingFid] = useState(null);
@@ -40,15 +65,142 @@ function FormSet() {
   const [retitlingFid, setRetitlingFid] = useState(null);
   const [removingFid, setRemovingFid] = useState(null);
 
-  const forms = useAsyncResult(async () => {
-    const forms = api_unwrap(await api.form.get_all());
-    formMap.clear();
-    for (const form of forms)
+  const [folders, setFolders_] = useState(null);
+
+  const [forms, setForms_] = useState(null);
+  const [filteredForms, setFilteredForms] = useState(null);
+  const [currFolderId, setCurrFolderId] = useState(null);
+
+  const [filterWord, setFilterWord] = useState('');
+
+  function setForms(nextForms) {
+    for (const form of nextForms)
       formMap.set(form.id, form);
-    return forms;
+    setForms_(nextForms);
+  }
+
+  function setFolders(nextFolders) {
+    nextFolders.sort((a, b) => {
+      if (a.id === userRootFid)
+        return -1;
+      if (b.id === userRootFid)
+        return 1;
+      return a.name.localeCompare(b.name);
+    });
+    for (const folder of nextFolders)
+      folderMap.set(folder.id, folder);
+    setFolders_(nextFolders);
+  }
+
+  useAsyncEffect(async () => {
+    const {folders, root_forms, root_fid} = api_unwrap(await api.form.get_overview());
+    userRootFid = root_fid;
+    setCurrFolderId(root_fid);
+    setFolders(folders);
+    setFilteredForms(root_forms);
+    setForms(root_forms);
   });
 
-  const {activeItems, menu} = usePagination(forms, {
+  async function onFolderChanged(folder) {
+    console.log('folder changed', folder);
+    const {forms} = await api_unwrap_fut(api.form.get_folder_all(folder.id));
+    setCurrFolderId(folder.id);
+    setFilterWord('');
+    setFilteredForms(forms);
+    setForms(forms);
+  }
+
+  async function addFolder() {
+    let value = '新目录';
+    await showModal({
+      title: '创建目录',
+      inputProps: {
+        onChange: e => (value = e.target.value),
+        maxLength: FOLDER_NAME_MAX_LENGTH,
+        placeholder: '新目录'
+      },
+      onConfirmed: async () => {
+        const res = await api_unwrap_fut(api.form.create_folder(value.trim() || '新目录'));
+        setFolders([...folders, res]);
+        closeModal();
+      }
+    });
+  }
+
+  async function removeFolder() {
+    const folder = folderMap.get(currFolderId);
+    await showModal({
+      title: '删除目录',
+      confirmText: '删除',
+      confirmProps: {negative: true},
+      subtitle: folder.name,
+      description: `已有的 ${folder.form_count} 个问卷将被移动到默认目录。`,
+      onConfirmed: async () => {
+        await api_unwrap_fut(api.form.remove_folder(currFolderId));
+        setFolders(folders.filter(f => f.id !== currFolderId));
+        setCurrFolderId(userRootFid);
+        closeModal();
+      }
+    });
+  }
+
+  async function renameFolder() {
+    const folder = folderMap.get(currFolderId);
+    let value = null;
+    await showModal({
+      title: '重命名目录',
+      confirmText: '保存',
+      inputProps: {
+        onChange: e => (value = e.target.value),
+        maxLength: FOLDER_NAME_MAX_LENGTH,
+        placeholder: folder.name
+      },
+      onConfirmed: async () => {
+        const v = value.trim();
+        if (v) {
+          await api_unwrap_fut(api.form.rename_folder(currFolderId, v));
+          folderMap.get(currFolderId).name = v;
+          setFolders([...folders]);
+        }
+        closeModal();
+      }
+    });
+  }
+
+  async function moveToFolder(form) {
+    await showModal({
+      title: '移动到目录',
+      subtitle: form.title,
+      content: s => {
+        return <Form>
+          <Form.Dropdown
+            label='新目录'
+            defaultValue={currFolderId}
+            selection
+            options={folders.map(f => ({
+              key: f.id,
+              value: f.id,
+              text: f.name
+            }))}
+            onChange={(e, d) => {
+              s.value = d.value;
+            }}
+          />
+        </Form>;
+      },
+      onConfirmed: async () => {
+        closeModal();
+      },
+      initialState: {
+        value: currFolderId
+      },
+      confirmProps: s => ({
+        disabled: s.value === currFolderId
+      })
+    });
+  }
+
+  const {activeItems, menu} = usePagination(filteredForms, {
     maxPageSize: 15
   });
 
@@ -71,16 +223,20 @@ function FormSet() {
   }
 
   function onSorted(key) {
-    // TODO
     console.log('sort', key);
+    setForms([...forms].sort(sortComps[key]));
+    setFilteredForms([...filteredForms].sort(sortComps[key]));
   }
 
   function onFiltered(v) {
-    // TODO
-    console.log('filter', v);
+    setFilterWord(v);
+    const pin = v.trim();
+    if (!pin)
+      setFilteredForms(forms);
+    setFilteredForms(forms.filter(f => f.title.includes(pin)));
   }
 
-  const content = forms.length ? (
+  const content = filteredForms.length ? (
     <Card.Group itemsPerRow={3}>
       {activeItems.map(form => (
         <Card
@@ -123,7 +279,10 @@ function FormSet() {
                       icon='edit' text='编辑'
                     />
                     <Dropdown.Item icon='copy' text='复制' />
-                    <Dropdown.Item icon='folder' text='移动' />
+                    <Dropdown.Item
+                      icon='folder' text='移动'
+                      onClick={() => moveToFolder(form)}
+                    />
                     <Dropdown.Item
                       className='ui negative' icon='delete' text='删除'
                       onClick={() => setRemovingFid(form.id)}
@@ -136,6 +295,8 @@ function FormSet() {
         </Card>
       ))}
     </Card.Group>
+  ) : forms.length ? (
+    <Segment>无搜索结果</Segment>
   ) : (
     <Segment>暂无问卷</Segment>
   );
@@ -149,6 +310,7 @@ function FormSet() {
     );
   }
 
+  // TODO: reimplement with showModal
   const modals = <>
     {buildModal(RetitleModal, retitlingFid, setRetitlingFid)}
     {buildModal(RemoveModal, removingFid, setRemovingFid)}
@@ -160,17 +322,31 @@ function FormSet() {
         <Grid.Row>
           <Grid.Column width={3}>
             <Menu vertical pointing>
-              <Menu.Item active>
-                <Label>1</Label>
-                <code>{'TODO: folders'}</code>
+              {folders.map(f => (
+                <Menu.Item
+                  key={f.id}
+                  active={f.id === currFolderId}
+                  onClick={() => onFolderChanged(f)}
+                >
+                  <Label>{f.form_count}
+                  </Label>
+                  {f.name}
+                </Menu.Item>
+              ))}
+            </Menu>
+            <Menu icon size='mini' compact style={{
+              float: 'right',
+            }}>
+              {currFolderId !== userRootFid &&
+                <Menu.Item onClick={removeFolder}>
+                  <Icon name='delete' />
+                </Menu.Item>
+              }
+              <Menu.Item onClick={renameFolder}>
+                <Icon name='edit' />
               </Menu.Item>
-              <Menu.Item>
-                <Label>51</Label>
-                Folder 2
-              </Menu.Item>
-              <Menu.Item>
-                <Label>1</Label>
-                Folder 3
+              <Menu.Item onClick={addFolder}>
+                <Icon name='add' />
               </Menu.Item>
             </Menu>
           </Grid.Column>
@@ -184,6 +360,7 @@ function FormSet() {
                     icon='search'
                     placeholder='搜索问卷'
                     size='large'
+                    value={filterWord}
                     onChange={(e, d) => onFiltered(d.value)}
                   />
                 </Grid.Column>
@@ -195,10 +372,7 @@ function FormSet() {
                     compact
                     fluid
                     placeholder='State'
-                    options={[
-                      makeOption('ctime', '最早创建'),
-                      makeOption('title', '按标题')
-                    ]}
+                    options={sortOptions}
                     defaultValue='ctime'  // behaviour of API
                     style={{}}
                     onChange={(e, d) => onSorted(d.value)}
