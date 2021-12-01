@@ -8,10 +8,10 @@ import { useAsyncEffect } from 'utils';
 import { usePagination } from 'utils/paginate';
 import { closeModal, showModal } from 'utils/modal';
 
+import { FOLDER_NAME_MAX_LENGTH } from '../config';
 import ShareRow from './ShareRow';
 import RetitleModal from './RetitleModal';
 import RemoveModal from './RemoveModal';
-import { FOLDER_NAME_MAX_LENGTH } from './config';
 
 import './form-set.css';
 
@@ -379,6 +379,7 @@ function FormSet() {
                   />
                 </Grid.Column>
                 <Grid.Column width={3} verticalAlign='middle'>
+                  {/* TODO: provide folder id */}
                   <Button
                     floated='right'
                     primary size='large'
