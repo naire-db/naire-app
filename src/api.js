@@ -243,7 +243,7 @@ class Api {
         oid, name
       }),
 
-    // 400 when user is the only owner
+    // 400 when uid is of the user
     remove_member: (uid, oid) =>
       this.post('/org/remove_member/', {
         uid, oid
