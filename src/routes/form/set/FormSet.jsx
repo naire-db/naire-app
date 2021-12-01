@@ -71,7 +71,16 @@ function FormSet() {
   const [filteredForms, setFilteredForms] = useState(null);
   const [currFolderId, setCurrFolderId] = useState(null);
 
-  const [filterWord, setFilterWord] = useState('');
+  const [filterWord, setFilterWord_] = useState('');
+
+  function updateFilterWord(v, withForms) {
+    setFilterWord_(v);
+    const pin = v.trim();
+    if (pin)
+      setFilteredForms(withForms.filter(f => f.title.includes(pin)));
+    else
+      setFilteredForms(withForms);
+  }
 
   function setForms(nextForms) {
     for (const form of nextForms)
@@ -92,22 +101,22 @@ function FormSet() {
     setFolders_(nextFolders);
   }
 
-  useAsyncEffect(async () => {
+  async function refreshOverview() {
     const {folders, root_forms, root_fid} = api_unwrap(await api.form.get_overview());
     userRootFid = root_fid;
     setCurrFolderId(root_fid);
     setFolders(folders);
-    setFilteredForms(root_forms);
+    updateFilterWord('', root_forms);
     setForms(root_forms);
-  });
+  }
+
+  useAsyncEffect(refreshOverview);
 
   async function onFolderChanged(folder) {
     console.log('folder changed', folder);
     const {forms} = await api_unwrap_fut(api.form.get_folder_all(folder.id));
     setCurrFolderId(folder.id);
-    setFilterWord('');
-    setFilteredForms(forms);
-    setForms(forms);
+    updateFilterWord('', forms);
   }
 
   async function addFolder() {
@@ -137,8 +146,9 @@ function FormSet() {
       description: `已有的 ${folder.form_count} 个问卷将被移动到默认目录。`,
       onConfirmed: async () => {
         await api_unwrap_fut(api.form.remove_folder(currFolderId));
-        setFolders(folders.filter(f => f.id !== currFolderId));
-        setCurrFolderId(userRootFid);
+        await refreshOverview();  // refresh form_count
+        // setFolders(folders.filter(f => f.id !== currFolderId));
+        // setCurrFolderId(userRootFid);
         closeModal();
       }
     });
@@ -230,11 +240,7 @@ function FormSet() {
   }
 
   function onFiltered(v) {
-    setFilterWord(v);
-    const pin = v.trim();
-    if (!pin)
-      setFilteredForms(forms);
-    setFilteredForms(forms.filter(f => f.title.includes(pin)));
+    updateFilterWord(v, forms);
   }
 
   const content = filteredForms.length ? (
