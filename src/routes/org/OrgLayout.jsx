@@ -15,7 +15,7 @@ function OrgLayout(props) {
               {title}
             </Header>
             <Menu secondary vertical fluid>
-              <Menu.Item active={props.page === 'members'} href={'/org/' + oid + '/members'}>
+              <Menu.Item active={props.offset === 'members'} href={'/org/' + oid + '/members'}>
                 <Icon name='user' />
                 成员管理
               </Menu.Item>

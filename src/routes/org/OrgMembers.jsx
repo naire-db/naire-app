@@ -31,7 +31,7 @@ function OrgMembers() {
   }
 
   return (
-    <OrgLayout offset='orgs' oid={oid} title={name}>
+    <OrgLayout offset='members' oid={oid} title={name}>
       <Grid>
         <Grid.Row style={{
           paddingBottom: 0,
