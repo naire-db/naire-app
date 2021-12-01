@@ -43,8 +43,11 @@ function AppRouter() {
         {mount('/demo', () => import('routes/Demo'))}
         {mount('/login', () => import('routes/Login'))}
         {mount('/register', () => import('routes/Register'))}
+
         {mount('/user/profile', () => import('routes/user/Profile'))}
         {mount('/user/password', () => import('routes/user/ChangePassword'))}
+        {mount('/user/orgs', () => import('routes/user/UserOrgs'))}
+
         {mount('/form/all', () => import('routes/form/set/FormSet'))}
         {mount('/form/create', () => import('routes/form/FormCreate'))}
         {mount('/form/:fid/resps', () => import('routes/form/detail/FormResps'))}

@@ -1,4 +1,6 @@
-const entry = 'http://localhost:8000';  // TODO: change in production environment
+// TODO: change in production environment
+// const entry = 'http://localhost:8000';
+const entry = window.location.protocol + '//' + window.location.hostname + ':8000';
 
 function api_unwrap(res) {
   if (res.code !== 0) {
@@ -189,6 +191,39 @@ class Api {
       this.post('/auth/change_password/', {
         password, new_password
       })
+  };
+
+  // draft
+  org = {
+    get_joined: () =>
+      this.get('/org/get_joined/'),
+
+    create: name =>
+      this.post('/org/create/', {
+        name
+      }),
+
+    get_invite_token: oid =>
+      this.post('/org/get_invite_token/', {
+        oid
+      }),
+
+    refresh_invite_token: oid =>
+      this.post('/org/refresh_invite_token/', {
+        oid
+      }),
+
+    // ERR_FAILURE: token expired
+    check_invite_token: token =>
+      this.post('/org/check_invite_token/', {
+        token
+      }),
+
+    // ERR_FAILURE: token expired
+    accept_invite_token: token =>
+      this.post('/org/accept_invite_token/', {
+        token
+      }),
   };
 }
 

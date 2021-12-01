@@ -38,6 +38,7 @@ const Nav = observer(() => {
               <Dropdown simple item text={info.dname ? info.dname : info.username}>
                 <Dropdown.Menu>
                   <Dropdown.Item as='a' href='/user/profile'>个人资料</Dropdown.Item>
+                  <Dropdown.Item as='a' href='/user/orgs'>我的组织</Dropdown.Item>
                   <Dropdown.Item onClick={onLogout}>注销</Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown> :
