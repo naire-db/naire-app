@@ -121,7 +121,7 @@ function FormSet() {
   }
 
   async function addFolder() {
-    let value = '新目录';
+    let value = null;
     await showModal({
       title: '创建目录',
       inputProps: {
@@ -130,7 +130,7 @@ function FormSet() {
         placeholder: '新目录'
       },
       onConfirmed: async () => {
-        const res = await api_unwrap_fut(api.form.create_folder(value.trim() || '新目录'));
+        const res = await api_unwrap_fut(api.form.create_folder(value?.trim() || '新目录'));
         setFolders([...folders, res]);
         closeModal();
       }
