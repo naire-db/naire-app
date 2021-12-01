@@ -6,7 +6,7 @@ import { useAsyncResult } from 'utils';
 import { showModal } from 'utils/modal';
 import ProfileLayout from 'layouts/ProfileLayout';
 
-import { ORG_NAME_MAX_LENGTH } from './config';
+import { ORG_NAME_MAX_LENGTH, ROLE_OWNER } from './config';
 
 function formatRole(i) {
   return [null, '管理员', '所有者'][i];
