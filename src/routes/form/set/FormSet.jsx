@@ -49,9 +49,9 @@ function nc(a, b) {
 const sortComps = {
   ctime: (a, b) => nc(a.ctime, b.ctime),
   ctime_: (a, b) => nc(b.ctime, a.ctime),
-  resp_count: (a, b) => nc(a.resp_count, b.resp_count),
-  resp_count_: (a, b) => nc(b.resp_count, a.resp_count),
-  title: (a, b) => a.title.localeCompare(b.title),
+  resp_count: (a, b) => (nc(a.resp_count, b.resp_count) || nc(a.id, b.id)),
+  resp_count_: (a, b) => (nc(b.resp_count, a.resp_count) || nc(a.id, b.id)),
+  title: (a, b) => (a.title.localeCompare(b.title) || nc(a.id, b.id)),
 };
 
 const formMap = new Map();
