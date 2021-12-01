@@ -8,7 +8,7 @@ import { useAsyncEffect } from 'utils';
 import { usePagination } from 'utils/paginate';
 import { closeModal, showModal } from 'utils/modal';
 
-import { FOLDER_NAME_MAX_LENGTH } from '../config';
+import { FOLDER_NAME_MAX_LENGTH, FORM_TITLE_MAX_LENGTH } from '../config';
 import ShareRow from './ShareRow';
 import RetitleModal from './RetitleModal';
 import RemoveModal from './RemoveModal';
@@ -181,6 +181,7 @@ function FormSet() {
   async function moveToFolder(form) {
     await showModal({
       title: '移动到目录',
+      confirmText: '移动',
       subtitle: form.title,
       content: s => {
         return <Form>
@@ -232,6 +233,49 @@ function FormSet() {
 
   function detail(form) {
     window.location = getFormDetailUrl(form.id);
+  }
+
+  async function copy(form) {
+    console.log('copying', form);
+    // TODO
+    let newTitle = null;
+    let newFolderId = currFolderId;
+    await showModal({
+      title: '复制问卷',
+      confirmText: '复制',
+      subtitle: form.title,
+      content: () => {
+        return <Form>
+          <Form.Dropdown
+            label='目标目录'
+            defaultValue={currFolderId}
+            compact
+            selection
+            options={folders.map(f => ({
+              key: f.id,
+              value: f.id,
+              text: f.name
+            }))}
+            onChange={(e, d) => {
+              newFolderId = d.value;
+            }}
+          />
+          <Form.Input
+            label='问卷标题'
+            onChange={(e, d) => {
+              newTitle = d.value;
+            }}
+            placeholder={form.title}
+            maxLength={FORM_TITLE_MAX_LENGTH}
+          />
+        </Form>;
+      },
+      onConfirmed: async () => {
+        const title = newTitle?.trim() || form.title;
+        await api_unwrap_fut(api.form.copy(form.id, newFolderId, title));
+        window.location.reload();  // TODO: do it better
+      }
+    });
   }
 
   function onSorted(key) {
@@ -286,7 +330,10 @@ function FormSet() {
                     <Dropdown.Item
                       icon='edit' text='编辑'
                     />
-                    <Dropdown.Item icon='copy' text='复制' />
+                    <Dropdown.Item
+                      icon='copy' text='复制'
+                      onClick={() => copy(form)}
+                    />
                     <Dropdown.Item
                       icon='folder' text='移动'
                       onClick={() => moveToFolder(form)}

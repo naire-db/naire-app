@@ -171,6 +171,11 @@ class Api {
     move_to_folder: (fid, folder_id) =>
       this.post('/form/move_to_folder/', {
         fid, folder_id
+      }),
+
+    copy: (fid, folder_id, title) =>
+      this.post('/form/copy/', {
+        fid, folder_id, title
       })
   };
 
