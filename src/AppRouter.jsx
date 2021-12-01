@@ -48,6 +48,8 @@ function AppRouter() {
         {mount('/user/password', () => import('routes/user/ChangePassword'))}
         {mount('/user/orgs', () => import('routes/user/UserOrgs'))}
 
+        {mount('/org/:oid/members', () => import('routes/org/OrgMembers'))}
+
         {mount('/form/all', () => import('routes/form/set/FormSet'))}
         {mount('/form/create', () => import('routes/form/FormCreate'))}
         {mount('/form/:fid/resps', () => import('routes/form/detail/FormResps'))}

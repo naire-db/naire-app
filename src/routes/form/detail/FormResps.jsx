@@ -5,23 +5,10 @@ import { Button, Grid, Header, Modal, Table } from 'semantic-ui-react';
 import api, { api_unwrap } from 'api';
 import { useAsyncResult } from 'utils';
 import { usePagination } from 'utils/paginate';
+import { formatTimestamp, formatUser } from 'utils/render';
 
 import DetailLayout from './DetailLayout';
 import RespView, { loadResp } from './RespView';
-
-function formatTimestamp(ts) {
-  const dt = new Date(ts * 1000);
-  return dt.toLocaleString();
-}
-
-function formatUser(desc) {
-  if (desc === null)
-    return '未登录';
-  const {username, dname} = desc;
-  if (username === dname)
-    return username;
-  return `${dname} (${username})`;
-}
 
 function RemoveModal(props) {
   const {ind, fid, rid, onClosed} = props;

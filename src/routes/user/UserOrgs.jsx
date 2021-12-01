@@ -1,16 +1,13 @@
 import React from 'react';
-import { Button, Grid, Header, Label, Segment, Table } from 'semantic-ui-react';
+import { Button, Grid, Segment, Table } from 'semantic-ui-react';
 
 import api, { api_unwrap_fut } from 'api';
 import { useAsyncResult } from 'utils';
 import { showModal } from 'utils/modal';
 import ProfileLayout from 'layouts/ProfileLayout';
 
-import { ORG_NAME_MAX_LENGTH, ROLE_OWNER } from './config';
-
-function formatRole(i) {
-  return [null, '管理员', '所有者'][i];
-}
+import { renderRoleLabel } from '../org/utils';
+import { ORG_NAME_MAX_LENGTH, ROLE_OWNER } from '../org/config';
 
 function UserOrgs() {
   const orgs = useAsyncResult(() => api_unwrap_fut(api.org.get_joined()));
@@ -34,10 +31,6 @@ function UserOrgs() {
     });
   }
 
-  async function manage(org) {
-    // TODO
-  }
-
   async function leave(org) {
     // TODO
   }
@@ -50,11 +43,6 @@ function UserOrgs() {
           marginBottom: -5
         }}>
           <Grid.Column verticalAlign='middle'>
-            <Header
-              as='h3' floated='left'
-            >
-              已加入的组织
-            </Header>
             <Button
               size='small'
               primary
@@ -73,15 +61,7 @@ function UserOrgs() {
                     <Table.Row>
                       <Table.Cell width={4}>
                         {o.name}
-                        {o.role > 0 &&
-                          <Label
-                            content={formatRole(o.role)}
-                            style={{
-                              marginLeft: 12
-                            }}
-                            color={o.role === ROLE_OWNER ? 'blue' : undefined}
-                          />
-                        }
+                        {renderRoleLabel(o.role)}
                       </Table.Cell>
                       <Table.Cell width={5}>
                         {o.member_count} 个成员
@@ -98,14 +78,12 @@ function UserOrgs() {
                         {
                           o.role >= ROLE_OWNER &&
                           <Button
+                            className='left-btn'
                             icon='setting'
                             size='small'
                             content='设置'
                             floated='right'
-                            style={{
-                              marginRight: 5
-                            }}
-                            onClick={() => manage(o)}
+                            href={'/org/' + o.id + '/members'}
                           />
                         }
                       </Table.Cell>

@@ -203,6 +203,11 @@ class Api {
         name
       }),
 
+    get_members: oid =>
+      this.post('/org/get_members/', {
+        oid
+      }),
+
     get_invite_token: oid =>
       this.post('/org/get_invite_token/', {
         oid
