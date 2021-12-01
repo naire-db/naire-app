@@ -4,7 +4,7 @@ import { Grid, Header, Icon, Menu } from 'semantic-ui-react';
 import AppLayout from 'layouts/AppLayout';
 
 function DetailLayout(props) {
-  const {offset, fid} = props;
+  const {offset, fid, statsDisabled} = props;
   return (
     <AppLayout offset>
       <Grid>
@@ -18,7 +18,11 @@ function DetailLayout(props) {
                 <Icon name='database' />
                 浏览答卷
               </Menu.Item>
-              <Menu.Item active={offset === 'stats'} href={'/form/' + fid + '/stats'}>
+              <Menu.Item
+                active={offset === 'stats'}
+                href={statsDisabled ? undefined : '/form/' + fid + '/stats'}
+                disabled={statsDisabled}
+              >
                 <Icon name='chart pie' />
                 数据统计
               </Menu.Item>
