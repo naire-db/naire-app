@@ -9,7 +9,7 @@ function RemoveModal(props) {
     const res = await api.form.remove(fid);
     if (res.code !== 0)
       console.error(res);
-    window.location.reload();
+    window.location.reload();  // TODO: this can be handled better
   }
 
   // TODO: 回收站

@@ -17,7 +17,7 @@ function RetitleModal(props) {
     const res = await api.form.save_title(fid, v);
     if (res.code !== 0)
       console.error(res);
-    window.location.reload();
+    window.location.reload();  // TODO: this can be handled better
   }
 
   return (
