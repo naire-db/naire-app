@@ -116,7 +116,8 @@ function FormSet() {
     console.log('folder changed', folder);
     const {forms} = await api_unwrap_fut(api.form.get_folder_all(folder.id));
     setCurrFolderId(folder.id);
-    updateFilterWord('', forms);
+    setForms(forms);
+    updateFilterWord(filterWord, forms);
   }
 
   async function addFolder() {
