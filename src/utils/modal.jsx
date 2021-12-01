@@ -111,13 +111,13 @@ function showModal(
     modalState.update({
       title, subtitle, description, content, size, confirmText, confirmProps, inputProps,
       onConfirmed: onConfirmed ? () => {
-        resolve(onConfirmed());
+        resolve(onConfirmed(modalState.state));
       } : () => {
         resolve(true);
         closeModal();
       },
       onCancelled: onCancelled ? () => {
-        resolve(onCancelled());
+        resolve(onCancelled(modalState.state));
       } : () => {
         resolve(false);
         closeModal();

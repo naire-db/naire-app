@@ -188,8 +188,9 @@ function FormSet() {
           />
         </Form>;
       },
-      onConfirmed: async () => {
-        closeModal();
+      onConfirmed: async s => {
+        await api_unwrap_fut(api.form.move_to_folder(form.id, s.value));
+        window.location.reload();  // TODO: do it better
       },
       initialState: {
         value: currFolderId
