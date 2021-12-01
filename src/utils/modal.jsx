@@ -20,7 +20,7 @@ const modalState = makeAutoObservable({
   state: {},
 
   update: action(function (o) {
-    console.log('upd', this, o);
+    console.log('modal updated', o);
     Object.assign(this, o);
   }),
   setOpen: action(function (v) {
