@@ -1,9 +1,9 @@
+import { useEffect, useRef } from 'react';
 import { Button, Form, Header, Modal, Ref, TransitionablePortal } from 'semantic-ui-react';
 import { action, makeAutoObservable } from 'mobx';
 import { observer } from 'mobx-react-lite';
 
 import { resolvePossibleAction } from './index';
-import { useEffect, useRef } from 'react';
 
 const modalState = makeAutoObservable({
   title: 'Title',
