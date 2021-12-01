@@ -203,13 +203,28 @@ class Api {
         name
       }),
 
-    get_members: oid =>
-      this.post('/org/get_members/', {
+    // ERR_FAILURE: token expired
+    check_invite_token: token =>
+      this.post('/org/check_invite_token/', {
+        token
+      }),
+
+    // ERR_FAILURE: token expired
+    accept_invite: token =>
+      this.post('/org/accept_invite/', {
+        token
+      }),
+
+    // 400 when user is the only owner
+    leave: oid =>
+      this.post('/org/leave/', {
         oid
       }),
 
-    get_invite_token: oid =>
-      this.post('/org/get_invite_token/', {
+    // Following operations require that the user owns the Org
+
+    get_members: oid =>
+      this.post('/org/get_members/', {
         oid
       }),
 
@@ -218,16 +233,26 @@ class Api {
         oid
       }),
 
-    // ERR_FAILURE: token expired
-    check_invite_token: token =>
-      this.post('/org/check_invite_token/', {
-        token
+    dissolve: oid =>
+      this.post('/org/dissolve/', {
+        oid
       }),
 
-    // ERR_FAILURE: token expired
-    accept_invite_token: token =>
-      this.post('/org/accept_invite_token/', {
-        token
+    rename: (oid, name) =>
+      this.post('/org/name/', {
+        oid, name
+      }),
+
+    // 400 when user is the only owner
+    remove_member: (uid, oid) =>
+      this.post('/org/remove_member/', {
+        uid, oid
+      }),
+
+    // 400 when uid is of the user
+    change_role: (role, uid, oid) =>
+      this.post('/org/change_role/', {
+        role, uid, oid
       }),
   };
 }
