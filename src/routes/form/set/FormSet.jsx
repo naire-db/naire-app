@@ -143,7 +143,7 @@ function FormSet() {
       confirmText: '删除',
       confirmProps: {negative: true},
       subtitle: folder.name,
-      description: `已有的 ${folder.form_count} 个问卷将被移动到默认目录。`,
+      description: folder.form_count ? `已有的 ${folder.form_count} 个问卷将被移动到默认目录。` : '将删除该空目录。',
       onConfirmed: async () => {
         await api_unwrap_fut(api.form.remove_folder(currFolderId));
         await refreshOverview();  // refresh form_count
