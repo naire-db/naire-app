@@ -32,7 +32,18 @@ function UserOrgs() {
   }
 
   async function leave(org) {
-    // TODO
+    await showModal({
+      title: '退出组织',
+      description: '将离开组织 ' + org.name + ' 。',
+      confirmText: '退出组织',
+      confirmProps: {
+        negative: true
+      },
+      async onConfirmed() {
+        await api_unwrap_fut(api.org.leave(org.id));
+        window.location.reload();
+      }
+    });
   }
 
   return (
@@ -68,21 +79,23 @@ function UserOrgs() {
                       </Table.Cell>
                       <Table.Cell width={7}>
                         <Button
-                          icon='log out'
-                          negative
-                          size='small'
-                          content='退出'
-                          floated='right'
-                          onClick={() => leave(o)}
-                        />
-                        <Button
-                          className='left-btn'
                           icon='setting'
-                          size='small'
+                          size='mini'
                           content='详情'
                           floated='right'
                           href={'/org/' + o.id + '/members'}
                         />
+                        {o.can_leave &&
+                          <Button
+                            className='left-btn'
+                            icon='log out'
+                            negative
+                            size='mini'
+                            content='退出'
+                            floated='right'
+                            onClick={() => leave(o)}
+                          />
+                        }
                       </Table.Cell>
                     </Table.Row>
                   )) :
