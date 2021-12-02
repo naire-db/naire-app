@@ -9,6 +9,7 @@ function renderRoleLabel(role) {
   return role > 0 && (
     <Label
       content={formatRole(role)}
+      size='mini'
       style={{
         marginLeft: 12
       }}
