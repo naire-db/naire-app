@@ -1,18 +1,10 @@
-import React, { useState } from 'react';
-import { Button, Form, Grid, Icon, Input, Message, Transition } from 'semantic-ui-react';
+import React from 'react';
+import { Form, Grid, Input, Message, Transition } from 'semantic-ui-react';
+
+import CopyButton from 'components/CopyButton';
 
 function ShareRow(props) {
   const {fid} = props;
-  const [sharingSuccessToken, setSharingSuccessToken] = useState(null);
-
-  async function copy() {
-    const tk = Math.random();
-    setSharingSuccessToken(tk);
-    setTimeout(() => {
-      setSharingSuccessToken(tk_cur => (tk === tk_cur ? null : tk_cur));
-    }, 1000);
-    await navigator.clipboard.writeText(window.sharingUrl);
-  }
 
   return (
     <Transition visible={fid !== null} animation='fade' duration={80}>
@@ -30,15 +22,12 @@ function ShareRow(props) {
                       size='small'
                       value={window.sharingUrl}
                     />
-                    <Button
-                      className='share-link-btn'
-                      positive={sharingSuccessToken !== null}
-                      icon labelPosition='left' size='small'
-                      onClick={copy}
-                    >
-                      <Icon name={sharingSuccessToken === null ? 'copy' : 'checkmark'} />
-                      复制
-                    </Button>
+                    <CopyButton
+                      content={window.sharingUrl}
+                      btnProps={{
+                        className: 'share-link-btn'
+                      }}
+                    />
                   </Form.Field>
                 </Form>
               </Message> : <></>
