@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { Button, Card, Dropdown, Form, Grid, Icon, Input, Label, Menu, Segment } from 'semantic-ui-react';
 
 import api, { api_unwrap_fut } from 'api';
+import appState from 'appState';
 import AppLayout from 'layouts/AppLayout';
 import { ModalTransition } from 'components/transitedModal';
 import { useAsyncEffect } from 'utils';
@@ -15,7 +16,6 @@ import RetitleModal from './RetitleModal';
 import RemoveModal from './RemoveModal';
 
 import './form-set.css';
-import appState from '../../../appState';
 
 function getFormUrl(fid) {
   return window.location.origin + '/f/' + fid;
