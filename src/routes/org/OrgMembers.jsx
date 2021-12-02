@@ -10,7 +10,7 @@ import { formatUser } from 'utils/render';
 import { formatRole, renderRoleLabel } from './utils';
 import OrgLayout from './OrgLayout';
 import { showModal } from '../../utils/modal';
-import { ROLE_DESCRIPTIONS, ROLE_OPTIONS } from './config';
+import { ROLE_DESCRIPTIONS, ROLE_OPTIONS, ROLE_OWNER } from './config';
 
 function OrgMembers() {
   const oid = parseInt(useParams().oid, 10);
@@ -105,11 +105,11 @@ function OrgMembers() {
                       {u.email}
                     </Table.Cell>
                     <Table.Cell width={7}>
-                      {role > 0 && u.id !== appState.user_info.id && <>
+                      {role >= ROLE_OWNER && u.id !== appState.user_info.id && <>
                         <Button
                           icon='user times'
                           negative
-                          size='small'
+                          size='mini'
                           content='移除'
                           floated='right'
                           onClick={() => remove(u)}
@@ -117,7 +117,7 @@ function OrgMembers() {
                         <Button
                           className='left-btn'
                           icon='edit'
-                          size='small'
+                          size='mini'
                           content='变更权限'
                           floated='right'
                           onClick={() => change_role(u)}
