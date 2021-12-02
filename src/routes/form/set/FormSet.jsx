@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Button, Card, Dropdown, Form, Grid, Icon, Input, Label, Menu, Segment } from 'semantic-ui-react';
 
-import api, { api_unwrap, api_unwrap_fut } from 'api';
+import api, { api_unwrap_fut } from 'api';
 import AppLayout from 'layouts/AppLayout';
 import { ModalTransition } from 'components/transitedModal';
 import { useAsyncEffect } from 'utils';
 import { usePagination } from 'utils/paginate';
 import { closeModal, showModal } from 'utils/modal';
-import { formatTimestamp } from 'utils/render';
+import { formatTimestamp, formatUser } from 'utils/render';
 
 import { FOLDER_NAME_MAX_LENGTH, FORM_TITLE_MAX_LENGTH } from '../config';
 import ShareRow from './ShareRow';
@@ -15,6 +15,7 @@ import RetitleModal from './RetitleModal';
 import RemoveModal from './RemoveModal';
 
 import './form-set.css';
+import appState from '../../../appState';
 
 function getFormUrl(fid) {
   return window.location.origin + '/f/' + fid;
@@ -53,8 +54,6 @@ const sortComps = {
 const formMap = new Map();
 const folderMap = new Map();
 
-let userRootFid = null;
-
 function FormSet() {
   const [sharingFid, setSharingFid] = useState(null);
 
@@ -68,6 +67,10 @@ function FormSet() {
   const [currFolderId, setCurrFolderId] = useState(null);
 
   const [filterWord, setFilterWord_] = useState('');
+
+  const [rootFid, setRootFid] = useState(null);
+  const [orgs, setOrgs] = useState(null);
+  const [ctx, setCtx] = useState(-1);
 
   function updateFilterWord(v, withForms) {
     setFilterWord_(v);
@@ -86,9 +89,9 @@ function FormSet() {
 
   function setFolders(nextFolders) {
     nextFolders.sort((a, b) => {
-      if (a.id === userRootFid)
+      if (a.id === rootFid)
         return -1;
-      if (b.id === userRootFid)
+      if (b.id === rootFid)
         return 1;
       return a.name.localeCompare(b.name);
     });
@@ -97,16 +100,43 @@ function FormSet() {
     setFolders_(nextFolders);
   }
 
-  async function refreshOverview() {
-    const {folders, root_forms, root_fid} = api_unwrap(await api.form.get_overview());
-    userRootFid = root_fid;
+  function loadOverview(res) {
+    const {folders, root_forms, root_fid} = res;
+    // TODO: store these in one state to reduce rerendering
+    setRootFid(root_fid);
     setCurrFolderId(root_fid);
     setFolders(folders);
     updateFilterWord('', root_forms);
     setForms(root_forms);
   }
 
-  useAsyncEffect(refreshOverview);
+  console.log('curr fid', rootFid, currFolderId, folders);
+
+  async function refreshOverview(ctx) {
+    const fut = ctx < 0 ? api.form.get_overview() : api.form.get_org_overview(ctx);
+    loadOverview(await api_unwrap_fut(fut));
+  }
+
+  useAsyncEffect(async () => {
+    const res = await api_unwrap_fut(api.form.get_overview());
+    const {admin_orgs} = res;
+    setOrgs(admin_orgs);
+    loadOverview(res);
+  });
+
+  const ctxOptions = useMemo(() => {
+    if (!orgs?.length)
+      return null;
+    return [{key: -1, value: -1, text: formatUser(appState.user_info)}, ...orgs.map(o => ({
+      key: o.id, value: o.id, text: o.name
+    }))];
+  }, [orgs]);
+
+  async function switchContext(ctx) {
+    console.log('switch ctx', ctx);
+    await refreshOverview(ctx);
+    setCtx(ctx);
+  }
 
   async function onFolderChanged(folder) {
     console.log('folder changed', folder);
@@ -126,7 +156,10 @@ function FormSet() {
         placeholder: '新目录'
       },
       onConfirmed: async () => {
-        const res = await api_unwrap_fut(api.form.create_folder(value?.trim() || '新目录'));
+        const res = await api_unwrap_fut(api.form.create_folder(
+          value?.trim() || '新目录',
+          ctx < 0 ? null : ctx
+        ));
         setFolders([...folders, res]);
         closeModal();
       }
@@ -143,7 +176,7 @@ function FormSet() {
       description: folder.form_count ? `已有的 ${folder.form_count} 个问卷将被移动到默认目录。` : '将删除该空目录。',
       onConfirmed: async () => {
         await api_unwrap_fut(api.form.remove_folder(currFolderId));
-        await refreshOverview();  // refresh form_count
+        await refreshOverview(ctx);  // refresh form_count
         // setFolders(folders.filter(f => f.id !== currFolderId));
         // setCurrFolderId(userRootFid);
         closeModal();
@@ -372,6 +405,13 @@ function FormSet() {
       <Grid>
         <Grid.Row>
           <Grid.Column width={3}>
+            {ctxOptions && <Dropdown
+              fluid
+              selection
+              value={ctx}
+              options={ctxOptions}
+              onChange={(e, d) => switchContext(d.value)}
+            />}
             <Menu vertical pointing>
               {folders.map(f => (
                 <Menu.Item
@@ -388,7 +428,7 @@ function FormSet() {
             <Menu icon size='mini' compact style={{
               float: 'right',
             }}>
-              {currFolderId !== userRootFid &&
+              {currFolderId !== rootFid &&
                 <Menu.Item onClick={removeFolder}>
                   <Icon name='delete' />
                 </Menu.Item>
@@ -436,6 +476,7 @@ function FormSet() {
                     primary size='large'
                     href='/form/create'
                   >
+                    {/* TODO: in org */}
                     创建问卷
                   </Button>
                 </Grid.Column>
