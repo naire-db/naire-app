@@ -5,8 +5,8 @@ import { Button, Header, Message } from 'semantic-ui-react';
 import api from 'api';
 import appState from 'appState';
 import { useAsyncResult } from 'utils';
+import { redirect_login } from 'utils/url';
 import AppLayout from 'layouts/AppLayout';
-import { redirect_login } from '../../utils/url';
 
 function OrgInvitation() {
   const token = useParams().token;
