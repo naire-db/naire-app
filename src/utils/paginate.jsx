@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Pagination } from 'semantic-ui-react';
 
 function usePagination(items, {maxPageSize = 30} = {}) {
