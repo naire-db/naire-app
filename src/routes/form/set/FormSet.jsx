@@ -122,7 +122,6 @@ function FormSet() {
   useAsyncEffect(async () => {
     const folderId = parseInt(get_query_param('f'), 10);
     const hasFolderId = !isNaN(folderId);
-    console.log('all f', folderId, hasFolderId);
     const res = await api_unwrap_fut(
       hasFolderId ? api.form.get_folder_overview(folderId) : api.form.get_overview()
     );
@@ -257,7 +256,7 @@ function FormSet() {
   }
 
   async function edit(form) {
-    // TODO: warn only when resp_count > 0 and form is visible
+    // TODO: warn only when resp_count > 0 or form is visible
     return await showModal({
       title: '修改问卷',
       subtitle: form.title,
