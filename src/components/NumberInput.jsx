@@ -3,22 +3,17 @@ import React, { useState } from 'react';
 import { Form } from 'semantic-ui-react';
 
 function NumberInput(props) {
-  const [empty, setEmpty] = useState(props.defaultValue !== null);
+  const [empty, setEmpty] = useState(() => props.value === null);
   const handler = props.onChanged;
 
   function onChange(e) {
     const v = e.target.value;
     if (v === '') {
-      if (props.onEmpty)
-        props.onEmpty();
       setEmpty(true);
       return handler(props.nullable ? null : props.defaultValue);
     }
-    if (empty) {
-      if (props.onNonEmpty)
-        props.onNonEmpty();
+    if (empty)
       setEmpty(false);
-    }
     const x = parseInt(v, 10);
     if (x < props.min)
       return handler(props.min);
