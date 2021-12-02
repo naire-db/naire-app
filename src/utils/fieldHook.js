@@ -5,7 +5,11 @@ function useField(checker, initialValue = '', errorPosition = 'bottom') {
   const [error, setError] = useState(undefined);
   return {
     value, error,
-    handler(e) {
+    set(v) {
+      setValue(v);
+      setError(checker(v));
+    },
+    handler: e => {
       const v = e.target.value;
       setValue(v);
       setError(checker(v));

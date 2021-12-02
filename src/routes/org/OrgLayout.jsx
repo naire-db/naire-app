@@ -6,7 +6,8 @@ import { ROLE_OWNER } from './config';
 
 function OrgLayout(props) {
   const {oid} = props;
-  const {name, role} = props.org;
+  const {name} = props.org;
+  const role = props.role === undefined ? props.org.role : props.role;
 
   return (
     <AppLayout offset>
