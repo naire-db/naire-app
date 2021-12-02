@@ -3,6 +3,7 @@ import { Button, Form, Grid, Header, Message, Segment } from 'semantic-ui-react'
 
 import AppLayout from 'layouts/AppLayout';
 import api from 'api';
+import { get_query_param } from '../utils/url';
 
 function Login() {
   const [usernameOrEmail, setUsernameOrEmail] = useState('');
@@ -27,11 +28,8 @@ function Login() {
     if (res.code === 0) {
       const user = res.data;
       localStorage.setItem('user_info', JSON.stringify(user));
-      const qs = window.location.search;
-      if (qs.startsWith('?r='))
-        window.location = qs.slice(3);
-      else
-        window.location = '/';
+      const target = get_query_param('r');
+      window.location = target || '/';
     } else
       setErrorPrompt('用户名或密码错误');
   }
