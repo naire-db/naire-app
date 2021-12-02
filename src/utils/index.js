@@ -20,4 +20,9 @@ function resolvePossibleAction(value_or_fn, ...args) {
   return typeof value_or_fn === 'function' ? value_or_fn(...args) : value_or_fn;
 }
 
-export { useAsyncResult, useAsyncEffect, resolvePossibleAction };
+function int_or_null(x) {
+  const r = parseInt(x, 10);
+  return isNaN(r) ? null : r;
+}
+
+export { useAsyncResult, useAsyncEffect, resolvePossibleAction, int_or_null };

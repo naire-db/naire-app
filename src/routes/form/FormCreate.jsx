@@ -3,6 +3,7 @@ import { Button, Grid, Header, Icon, Input, Label, Segment, Sticky, Transition }
 
 import AppLayout from 'layouts/AppLayout';
 import api, { api_unwrap_fut } from 'api';
+import { int_or_null } from 'utils';
 import { get_query_param } from 'utils/url';
 
 import { editorMap, nameMap, qMap, typeMap } from './types';
@@ -236,11 +237,9 @@ function FormEditor(props) {
 
 function FormCreate() {
   async function onSaved(body, title) {
-    let fid = get_query_param('f');
-    fid = fid ? parseInt(fid, 10) : null;
+    const fid = int_or_null(get_query_param('f'));
     await api_unwrap_fut(api.form.create(title, body, fid));
-    window.location = '/form/all';
-    // TODO: redirect to the folder
+    window.location = '/form/all' + window.location.search;
   }
 
   return <FormEditor

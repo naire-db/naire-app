@@ -47,7 +47,7 @@ function FormEdit() {
   async function onSaved(body, title) {
     async function submit() {
       await api_unwrap_fut(api.form.remake(fid, title, body));  // TODO: concurrently unsafe
-      window.location = '/form/all';
+      window.location = '/form/all' + window.location.search;
     }
 
     const respCount = await api_unwrap_fut(api.form.get_resp_count(fid));

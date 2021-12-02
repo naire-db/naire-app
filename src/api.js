@@ -166,6 +166,11 @@ class Api {
 
     get_overview: () => this.get('/form/get_overview/'),
 
+    get_folder_overview: folder_id =>
+      this.post('/form/get_folder_overview/', {
+        folder_id
+      }),
+
     get_folder_all: folder_id =>
       this.post('/form/get_folder_all/', {
         folder_id

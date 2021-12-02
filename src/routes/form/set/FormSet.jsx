@@ -9,6 +9,7 @@ import { useAsyncEffect } from 'utils';
 import { usePagination } from 'utils/paginate';
 import { closeModal, showModal } from 'utils/modal';
 import { formatTimestamp, formatUser } from 'utils/render';
+import { get_query_param } from 'utils/url';
 
 import { FOLDER_NAME_MAX_LENGTH, FORM_TITLE_MAX_LENGTH } from '../config';
 import ShareRow from './ShareRow';
@@ -100,11 +101,14 @@ function FormSet() {
     setFolders_(nextFolders);
   }
 
-  function loadOverview(res) {
+  function loadOverview(res, folderId) {
     const {folders, root_forms, root_fid} = res;
     // TODO: store these in one state to reduce rerendering
     setRootFid(root_fid);
-    setCurrFolderId(root_fid);
+    if (folderId === undefined)
+      setCurrFolderId(root_fid);
+    else
+      setCurrFolderId(folderId);
     setFolders(folders);
     updateFilterWord('', root_forms);
     setForms(root_forms);
@@ -116,11 +120,25 @@ function FormSet() {
   }
 
   useAsyncEffect(async () => {
-    const res = await api_unwrap_fut(api.form.get_overview());
+    const folderId = parseInt(get_query_param('f'), 10);
+    const hasFolderId = !isNaN(folderId);
+    console.log('all f', folderId, hasFolderId);
+    const res = await api_unwrap_fut(
+      hasFolderId ? api.form.get_folder_overview(folderId) : api.form.get_overview()
+    );
     const {admin_orgs} = res;
     setOrgs(admin_orgs);
-    loadOverview(res);
+    if (hasFolderId) {
+      loadOverview(res, folderId);
+      setCtx(res.context === null ? -1 : res.context);
+      await onFolderChanged({id: folderId});
+    } else
+      loadOverview(res);
   });
+
+  function reload() {
+    window.location = '/form/all?f=' + currFolderId;
+  }
 
   const ctxOptions = useMemo(() => {
     if (!orgs?.length)
@@ -227,7 +245,7 @@ function FormSet() {
       },
       onConfirmed: async s => {
         await api_unwrap_fut(api.form.move_to_folder(form.id, s.value));
-        window.location.reload();  // TODO: do it better
+        reload();
       },
       initialState: {
         value: currFolderId
@@ -239,8 +257,19 @@ function FormSet() {
   }
 
   async function edit(form) {
-    // TODO: warn
-    window.location = '/form/' + form.id + '/edit';
+    // TODO: warn only when resp_count > 0 and form is visible
+    return await showModal({
+      title: '修改问卷',
+      subtitle: form.title,
+      description: '这将删除所有已有的答卷。',
+      confirmText: '修改',
+      confirmProps: {
+        negative: true
+      },
+      onConfirmed() {
+        window.location = '/form/' + form.id + '/edit?f=' + currFolderId;
+      }
+    });
   }
 
   const {activeItems, menu} = usePagination(filteredForms, {
@@ -301,7 +330,7 @@ function FormSet() {
       onConfirmed: async () => {
         const title = newTitle?.trim() || form.title;
         await api_unwrap_fut(api.form.copy(form.id, newFolderId, title));
-        window.location.reload();  // TODO: do it better
+        reload();
       }
     });
   }
