@@ -120,9 +120,9 @@ class Api {
 
     // Following 2 operations will remove all the existing responses of the form at the same time
 
-    change_body: (fid, body) =>
-      this.post('/form/change_body/', {
-        fid, body
+    remake: (fid, title, body) =>
+      this.post('/form/remake/', {
+        fid, title, body
       }),
 
     remove: fid =>
@@ -131,6 +131,16 @@ class Api {
       }),
 
     // For owner showing details
+
+    get_status: fid =>
+      this.post('/form/get_status/', {
+        fid
+      }),
+
+    get_resp_count: fid =>
+      this.post('/form/get_resp_count/', {
+        fid
+      }),
 
     get_form_resps: fid =>
       this.post('/form/get_form_resps/', {

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Grid, Header, Icon, Input, Label, Segment, Sticky, Transition } from 'semantic-ui-react';
 
 import AppLayout from 'layouts/AppLayout';
-import api, { api_unwrap } from 'api';
+import api, { api_unwrap_fut } from 'api';
 import { get_query_param } from 'utils/url';
 
 import { editorMap, nameMap, qMap, typeMap } from './types';
@@ -10,6 +10,16 @@ import { useErrorContext } from './errorContext';
 import { FORM_TITLE_MAX_LENGTH, QUESTION_TITLE_MAX_LENGTH } from './config';
 
 import './form.css';
+
+function loadQMap(questions, ctx) {
+  console.log('load qmap', questions);
+  for (const q of questions) {
+    const n = qMap[q.id] = new typeMap[q.type](q.id, ctx);
+    Object.assign(n, q);
+    n.afterLoad?.();
+  }
+  console.log('loaded qmap', qMap);
+}
 
 class Option {
   text = '';
@@ -30,13 +40,15 @@ const qTypes = [
 
 // TODO: save state in localStorage / IndexedDB? to restore after leaving the page (not a priority)
 
-function FormCreate() {
+function FormEditor(props) {
   const [nextQid, setNextQid] = useState(0);
   const [nextOid, setNextOid] = useState(0);
   const [qids, setQids] = useState([]);
   const [title, setTitle] = useState('');
   const [titleError, setTitleError] = useState(false);
   const errorCtx = useErrorContext();
+
+  const {onSaved, saveText, initialStateFn} = props;
 
   const ctx = {
     getOid() {
@@ -48,6 +60,19 @@ function FormCreate() {
       return new Option(this.getOid());
     }
   };
+
+  useEffect(() => {
+    if (!initialStateFn)
+      return;
+
+    const {nextQid, nextOid, qids, title, questions} = initialStateFn();
+    setNextQid(nextQid);
+    setNextOid(nextOid);
+    setQids(qids);
+    setTitle(title);
+    // Assume initialStateFn never changes after FormEditor's first time rendering
+    loadQMap(questions, ctx);
+  }, [initialStateFn]);
 
   function addQuestion(type) {
     console.log('adding question type', type);
@@ -61,8 +86,10 @@ function FormCreate() {
   }
 
   async function onSubmit() {
-    if (!title.trim())
+    const titleValue = title.trim();
+    if (!titleValue)
       return setTitleError(true);
+
     const body = {
       questions: qids.map(qid => {
         const q = qMap[qid];
@@ -71,11 +98,9 @@ function FormCreate() {
         return q;
       })
     };
-    const folder_id = get_query_param('f');
-    api_unwrap(await api.form.create(title.trim(), body, folder_id ? parseInt(folder_id, 10) : null));
+    // TODO: Recover the flags?
     window.qidsNonEmpty = window.titleNonEmpty = false;
-    window.location = '/form/all';
-    // TODO: redirect to the folder
+    onSaved(body, titleValue);
   }
 
   function onRemoved(qid) {
@@ -138,7 +163,7 @@ function FormCreate() {
                     onClick={onSubmit}
                     disabled={titleError || errorCtx.dirty()}
                   >
-                    创建问卷
+                    {saveText}
                   </Button>
                 </Grid.Column>
               </Grid.Row>
@@ -146,7 +171,8 @@ function FormCreate() {
                 <Grid.Column>
                   <Transition.Group duration={120}>
                     {qids.map(qid => {
-                      const {type} = qMap[qid];
+                      const q = qMap[qid];
+                      const {type, title} = q;
                       const E = editorMap[type];
                       return <Segment.Group key={qid}>
                         <Segment>
@@ -170,12 +196,15 @@ function FormCreate() {
                           <Grid>
                             <Grid.Row className='qeditor-meta-row'>
                               <Grid.Column>
+                                {/* TODO: It may be unnecessary to make this Input controlled. */}
                                 <Input
                                   className='qeditor-title-input-box'
                                   placeholder='问题'
                                   maxLength={QUESTION_TITLE_MAX_LENGTH}
+                                  value={title}
                                   onChange={e => {
-                                    qMap[qid].title = e.target.value;
+                                    q.title = e.target.value;
+                                    setQids([...qids]);  // dirty way to make this part rerendered
                                   }}
                                 />
                               </Grid.Column>
@@ -205,4 +234,20 @@ function FormCreate() {
   );
 }
 
+function FormCreate() {
+  async function onSaved(body, title) {
+    let fid = get_query_param('f');
+    fid = fid ? parseInt(fid, 10) : null;
+    await api_unwrap_fut(api.form.create(title, body, fid));
+    window.location = '/form/all';
+    // TODO: redirect to the folder
+  }
+
+  return <FormEditor
+    onSaved={onSaved}
+    saveText='创建'
+  />;
+}
+
 export default FormCreate;
+export { FormEditor };

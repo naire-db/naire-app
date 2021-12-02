@@ -238,6 +238,11 @@ function FormSet() {
     });
   }
 
+  async function edit(form) {
+    // TODO: warn
+    window.location = '/form/' + form.id + '/edit';
+  }
+
   const {activeItems, menu} = usePagination(filteredForms, {
     maxPageSize: 15
   });
@@ -351,6 +356,7 @@ function FormSet() {
                     />
                     <Dropdown.Item
                       icon='edit' text='编辑'
+                      onClick={() => edit(form)}
                     />
                     <Dropdown.Item
                       icon='copy' text='复制'

@@ -54,6 +54,7 @@ function AppRouter() {
 
         {mount('/form/all', () => import('routes/form/set/FormSet'))}
         {mount('/form/create', () => import('routes/form/FormCreate'))}
+        {mount('/form/:fid/edit', () => import('routes/form/FormEdit'))}
         {mount('/form/:fid/resps', () => import('routes/form/detail/FormResps'))}
         {mount('/form/:fid/stats', () => import('routes/form/detail/FormStats'))}
         {mount('/form/:fid/settings', () => import('routes/form/detail/FormSettings'))}
