@@ -27,8 +27,11 @@ function Login() {
     if (res.code === 0) {
       const user = res.data;
       localStorage.setItem('user_info', JSON.stringify(user));
-      window.location = '/';
-      // TODO: redirect to url in the query param if existing
+      const qs = window.location.search;
+      if (qs.startsWith('?r='))
+        window.location = qs.slice(3);
+      else
+        window.location = '/';
     } else
       setErrorPrompt('用户名或密码错误');
   }
@@ -67,6 +70,7 @@ function Login() {
           </Form>
           <Message className='text-center'>
             新用户？ <a href='/register'>注册</a>
+            {/* TODO: 1) pass redirection qs down; 2) try an icon? */}
           </Message>
         </Grid.Column>
       </Grid>
