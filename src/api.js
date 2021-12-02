@@ -26,6 +26,7 @@ async function api_fetch(path, options) {
   const resp = await fetch(entry + path, options);
   if (!resp.ok) {
     console.error('bad api fetch', path, resp);
+    // TODO: handle on a page
     throw new Error(`API ${path}: ${resp.status} ${resp.statusText}`);
   }
   const res = await resp.json();
