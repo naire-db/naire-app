@@ -58,7 +58,7 @@ function UserOrgs() {
               <Table.Body>
                 {orgs.length ?
                   orgs.map(o => (
-                    <Table.Row>
+                    <Table.Row key={o.id}>
                       <Table.Cell width={4}>
                         {o.name}
                         {renderRoleLabel(o.role)}
