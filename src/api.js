@@ -244,7 +244,7 @@ class Api {
       }),
 
     rename: (oid, name) =>
-      this.post('/org/name/', {
+      this.post('/org/rename/', {
         oid, name
       }),
 
