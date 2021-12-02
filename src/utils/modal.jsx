@@ -32,6 +32,8 @@ const modalState = makeAutoObservable({
 });
 
 const CommonModal = observer(() => {
+  // TODO: handle pressing Enter
+
   // closeOnDimmerClick is somehow broken, so we do it on our own
   const ref = useRef();
   useEffect(() => {
