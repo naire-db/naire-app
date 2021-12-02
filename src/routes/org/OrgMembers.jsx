@@ -39,6 +39,7 @@ function OrgMembers() {
     await showModal({
       title: '变更用户权限',
       confirmText: '保存',
+      size: 'small',
       content: s => {
         return <>
           <Form>
