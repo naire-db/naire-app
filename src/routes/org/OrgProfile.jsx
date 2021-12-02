@@ -26,7 +26,7 @@ function OrgProfile() {
   if (res === null)
     return null;
 
-  const {name: oldName} = res;
+  const {name: oldName, member_count} = res;
   const invite_url = with_origin(get_invite_url(inviteToken));
 
   const nameValue = nameField.value.trim();
@@ -49,6 +49,21 @@ function OrgProfile() {
   async function save() {
     await api_unwrap_fut(api.org.rename(oid, nameValue));
     window.location.reload();
+  }
+
+  async function dissolve() {
+    await showModal({
+      title: '解散组织',
+      description: '全部 ' + member_count + ' 位成员将离开组织。',
+      confirmText: '解散',
+      confirmProps: {
+        negative: true
+      },
+      async onConfirmed() {
+        await api_unwrap_fut(api.org.dissolve(oid));
+        window.location = '/user/orgs';
+      }
+    });
   }
 
   return (
@@ -85,13 +100,22 @@ function OrgProfile() {
             </Grid.Column>
           </Grid.Row>
         </Grid>
-        <Button
-          className='form-submit-btn'
-          primary size='small'
-          content='保存'
-          disabled={!nameField.visuallyValid() || nameValue === oldName}
-          onClick={save}
-        />
+        <Form.Group inline>
+          <Form.Button
+            className='form-submit-btn'
+            primary size='small'
+            content='保存'
+            disabled={!nameField.visuallyValid() || nameValue === oldName}
+            onClick={save}
+          />
+          <Form.Button
+            className='form-submit-btn'
+            primary size='small'
+            negative
+            content='解散'
+            onClick={dissolve}
+          />
+        </Form.Group>
       </Form>
     </OrgLayout>
   );
