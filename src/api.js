@@ -1,5 +1,8 @@
+import { redirect_login } from 'utils/url';
+
 // TODO: change in production environment
 // const entry = 'http://localhost:8000';
+
 const entry = window.location.protocol + '//' + window.location.hostname + ':8000';
 
 function api_unwrap(res) {
@@ -27,6 +30,8 @@ async function api_fetch(path, options) {
   }
   const res = await resp.json();
   console.log(`${method} ${path} responded ${JSON.stringify(res)}`);
+  if (res.code === 2)
+    return redirect_login();
   return res;
 }
 
@@ -210,9 +215,9 @@ class Api {
       }),
 
     // ERR_FAILURE: token expired
-    accept_invite: token =>
+    accept_invite: (token, oid) =>
       this.post('/org/accept_invite/', {
-        token
+        token, oid
       }),
 
     // 400 when user is the only owner
