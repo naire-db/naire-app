@@ -69,7 +69,7 @@ function Login() {
             </Segment>
           </Form>
           <Message className='text-center'>
-            新用户？ <a href='/register'>注册</a>
+            新用户？ <a href={'/register' + window.location.search}>注册</a>
             {/* TODO: 1) pass redirection qs down; 2) try an icon? */}
           </Message>
         </Grid.Column>
