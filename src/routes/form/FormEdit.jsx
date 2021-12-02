@@ -30,7 +30,7 @@ function FormEdit() {
   if (stat === null)
     return null;
 
-  const {title, body, folder_id} = stat;
+  const {title, body} = stat;
 
   async function confirm(count, onConfirmed) {
     return await showModal({
