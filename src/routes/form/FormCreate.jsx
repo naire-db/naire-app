@@ -3,6 +3,7 @@ import { Button, Grid, Header, Icon, Input, Label, Segment, Sticky, Transition }
 
 import AppLayout from 'layouts/AppLayout';
 import api, { api_unwrap } from 'api';
+import { get_query_param } from 'utils/url';
 
 import { editorMap, nameMap, qMap, typeMap } from './types';
 import { useErrorContext } from './errorContext';
@@ -70,9 +71,11 @@ function FormCreate() {
         return q;
       })
     };
-    api_unwrap(await api.form.create(title.trim(), body));
+    const folder_id = get_query_param('f');
+    api_unwrap(await api.form.create(title.trim(), body, folder_id ? parseInt(folder_id, 10) : null));
     window.qidsNonEmpty = window.titleNonEmpty = false;
     window.location = '/form/all';
+    // TODO: redirect to the folder
   }
 
   function onRemoved(qid) {

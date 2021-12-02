@@ -110,8 +110,6 @@ function FormSet() {
     setForms(root_forms);
   }
 
-  console.log('curr fid', rootFid, currFolderId, folders);
-
   async function refreshOverview(ctx) {
     const fut = ctx < 0 ? api.form.get_overview() : api.form.get_org_overview(ctx);
     loadOverview(await api_unwrap_fut(fut));
@@ -133,13 +131,11 @@ function FormSet() {
   }, [orgs]);
 
   async function switchContext(ctx) {
-    console.log('switch ctx', ctx);
     await refreshOverview(ctx);
     setCtx(ctx);
   }
 
   async function onFolderChanged(folder) {
-    console.log('folder changed', folder);
     const {forms} = await api_unwrap_fut(api.form.get_folder_all(folder.id));
     setCurrFolderId(folder.id);
     setForms(forms);
@@ -265,8 +261,6 @@ function FormSet() {
   }
 
   async function copy(form) {
-    console.log('copying', form);
-    // TODO
     let newTitle = null;
     let newFolderId = currFolderId;
     await showModal({
@@ -308,7 +302,6 @@ function FormSet() {
   }
 
   function onSorted(key) {
-    console.log('sort', key);
     setForms([...forms].sort(sortComps[key]));
     setFilteredForms([...filteredForms].sort(sortComps[key]));
   }
@@ -470,13 +463,11 @@ function FormSet() {
                   />
                 </Grid.Column>
                 <Grid.Column width={3} verticalAlign='middle'>
-                  {/* TODO: provide folder id */}
                   <Button
                     floated='right'
                     primary size='large'
-                    href='/form/create'
+                    href={'/form/create?f=' + currFolderId}
                   >
-                    {/* TODO: in org */}
                     创建问卷
                   </Button>
                 </Grid.Column>

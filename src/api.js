@@ -81,9 +81,9 @@ class Api {
     });
 
   form = {
-    create: (title, body) =>
+    create: (title, body, folder_id) =>
       this.post('/form/create/', {
-        title, body
+        title, body, folder_id
       }),
 
     /*
