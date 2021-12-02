@@ -16,7 +16,7 @@ function OrgMembers() {
   if (res === null)
     return null;
 
-  const {members: users} = res;
+  const {members: users, role} = res;
 
   async function invite() {
     // TODO

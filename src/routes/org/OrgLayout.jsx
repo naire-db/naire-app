@@ -2,9 +2,11 @@ import React from 'react';
 import { Grid, Header, Icon, Menu } from 'semantic-ui-react';
 
 import AppLayout from 'layouts/AppLayout';
+import { ROLE_OWNER } from './config';
 
 function OrgLayout(props) {
-  const {oid, title} = props;
+  const {oid} = props;
+  const {name, role} = props.org;
 
   return (
     <AppLayout offset>
@@ -12,13 +14,19 @@ function OrgLayout(props) {
         <Grid.Row>
           <Grid.Column width={3}>
             <Header>
-              {title}
+              {name}
             </Header>
             <Menu secondary vertical fluid>
               <Menu.Item active={props.offset === 'members'} href={'/org/' + oid + '/members'}>
                 <Icon name='user' />
                 成员管理
               </Menu.Item>
+              {role >= ROLE_OWNER &&
+                <Menu.Item active={props.offset === 'profile'} href={'/org/' + oid + '/profile'}>
+                  <Icon name='setting' />
+                  组织设置
+                </Menu.Item>
+              }
             </Menu>
           </Grid.Column>
           <Grid.Column width={13}>
