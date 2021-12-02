@@ -55,6 +55,7 @@ function OrgProfile() {
     await showModal({
       title: '解散组织',
       description: '全部 ' + member_count + ' 位成员将离开组织。',
+      // TODO: 显示将被删除的问卷数量
       confirmText: '解散',
       confirmProps: {
         negative: true

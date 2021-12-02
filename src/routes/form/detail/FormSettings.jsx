@@ -21,7 +21,7 @@ function FormSettings() {
 
         <Form.Input label='访问密码' />
         <Form.Checkbox label='仅登录用户可见' /> {/* 同时不允许匿名提交 */}
-        <Form.Checkbox label='仅组织内用户可见' /> { /* a lot to do */}
+        <Form.Checkbox label='仅组织内用户可见' /> { /* 仅当 folder 属于 org 时可用，隐含上一项 */}
 
         {/* if 仅登录用户可见 */}
         <Form.Group inline>
