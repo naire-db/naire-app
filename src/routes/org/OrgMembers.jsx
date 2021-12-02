@@ -6,10 +6,11 @@ import api, { api_unwrap_fut } from 'api';
 import appState from 'appState';
 import { useAsyncResult } from 'utils';
 import { formatUser } from 'utils/render';
+import { showModal } from 'utils/modal';
+
 
 import { formatRole, renderRoleLabel } from './utils';
 import OrgLayout from './OrgLayout';
-import { showModal } from '../../utils/modal';
 import { ROLE_DESCRIPTIONS, ROLE_OPTIONS, ROLE_OWNER } from './config';
 
 function OrgMembers() {
