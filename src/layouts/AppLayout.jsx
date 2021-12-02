@@ -7,7 +7,10 @@ function AppLayout(props) {
   return <>
     <Nav />
     {props.offset ?
-      <Container style={{marginTop: props.offset === true ? '5.5em' : props.offset}}>
+      <Container
+        text={props.text}
+        style={{marginTop: props.offset === true ? '5.5em' : props.offset}}
+      >
         {props.children}
       </Container> :
       props.children
