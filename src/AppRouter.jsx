@@ -50,6 +50,7 @@ function AppRouter() {
 
         {mount('/org/:oid/members', () => import('routes/org/OrgMembers'))}
         {mount('/org/:oid/profile', () => import('routes/org/OrgProfile'))}
+        {mount('/o/:token', () => import('routes/org/OrgInvitation'))}
 
         {mount('/form/all', () => import('routes/form/set/FormSet'))}
         {mount('/form/create', () => import('routes/form/FormCreate'))}
