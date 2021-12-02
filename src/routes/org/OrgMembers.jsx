@@ -16,7 +16,7 @@ function OrgMembers() {
   if (res === null)
     return null;
 
-  const {members: users, name} = res;
+  const {members: users} = res;
 
   async function invite() {
     // TODO
@@ -31,22 +31,24 @@ function OrgMembers() {
   }
 
   return (
-    <OrgLayout offset='members' oid={oid} title={name}>
+    <OrgLayout offset='members' oid={oid} org={res}>
       <Grid>
-        <Grid.Row style={{
-          paddingBottom: 0,
-          marginBottom: -5
-        }}>
-          <Grid.Column verticalAlign='middle'>
-            <Button
-              size='small'
-              primary
-              content='邀请成员'
-              floated='right'
-              onClick={invite}
-            />
-          </Grid.Column>
-        </Grid.Row>
+        {role > 0 &&
+          <Grid.Row style={{
+            paddingBottom: 0,
+            marginBottom: -5
+          }}>
+            <Grid.Column verticalAlign='middle'>
+              <Button
+                size='small'
+                primary
+                content='邀请成员'
+                floated='right'
+                onClick={invite}
+              />
+            </Grid.Column>
+          </Grid.Row>
+        }
         <Grid.Row>
           <Grid.Column>
             <Table size='large' basic>
@@ -61,7 +63,7 @@ function OrgMembers() {
                       {u.email}
                     </Table.Cell>
                     <Table.Cell width={7}>
-                      {u.id !== appState.user_info.id && <>
+                      {role > 0 && u.id !== appState.user_info.id && <>
                         <Button
                           icon='user times'
                           negative

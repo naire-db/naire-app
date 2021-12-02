@@ -221,10 +221,15 @@ class Api {
         oid
       }),
 
-    // Following operations require that the user owns the Org
-
     get_members: oid =>
       this.post('/org/get_members/', {
+        oid
+      }),
+
+    // Following operations require that the user owns the Org
+
+    get_profile: oid =>
+      this.post('/org/get_profile/', {
         oid
       }),
 

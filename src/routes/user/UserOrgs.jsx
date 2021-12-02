@@ -7,7 +7,7 @@ import { showModal } from 'utils/modal';
 import ProfileLayout from 'layouts/ProfileLayout';
 
 import { renderRoleLabel } from '../org/utils';
-import { ORG_NAME_MAX_LENGTH, ROLE_OWNER } from '../org/config';
+import { ORG_NAME_MAX_LENGTH } from '../org/config';
 
 function UserOrgs() {
   const orgs = useAsyncResult(() => api_unwrap_fut(api.org.get_joined()));
@@ -64,7 +64,7 @@ function UserOrgs() {
                         {renderRoleLabel(o.role)}
                       </Table.Cell>
                       <Table.Cell width={5}>
-                        {o.member_count} 个成员
+                        {o.member_count} 位成员
                       </Table.Cell>
                       <Table.Cell width={7}>
                         <Button
@@ -75,17 +75,14 @@ function UserOrgs() {
                           floated='right'
                           onClick={() => leave(o)}
                         />
-                        {
-                          o.role >= ROLE_OWNER &&
-                          <Button
-                            className='left-btn'
-                            icon='setting'
-                            size='small'
-                            content='设置'
-                            floated='right'
-                            href={'/org/' + o.id + '/members'}
-                          />
-                        }
+                        <Button
+                          className='left-btn'
+                          icon='setting'
+                          size='small'
+                          content='详情'
+                          floated='right'
+                          href={'/org/' + o.id + '/members'}
+                        />
                       </Table.Cell>
                     </Table.Row>
                   )) :
