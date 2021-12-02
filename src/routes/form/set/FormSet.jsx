@@ -7,6 +7,7 @@ import { ModalTransition } from 'components/transitedModal';
 import { useAsyncEffect } from 'utils';
 import { usePagination } from 'utils/paginate';
 import { closeModal, showModal } from 'utils/modal';
+import { formatTimestamp } from 'utils/render';
 
 import { FOLDER_NAME_MAX_LENGTH, FORM_TITLE_MAX_LENGTH } from '../config';
 import ShareRow from './ShareRow';
@@ -14,11 +15,6 @@ import RetitleModal from './RetitleModal';
 import RemoveModal from './RemoveModal';
 
 import './form-set.css';
-
-function formatTimestamp(ts) {
-  const dt = new Date(ts * 1000);
-  return dt.toLocaleString();
-}
 
 function getFormUrl(fid) {
   return window.location.origin + '/f/' + fid;
