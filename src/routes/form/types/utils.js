@@ -30,4 +30,4 @@ function makeRangeNumberInputProps(minValue, minSetter, minDefault, maxValue, ma
   ];
 }
 
-export { makeRangeNumberInputProps };
+export { makeRangeNumberInputProps, unwrap_nullable };

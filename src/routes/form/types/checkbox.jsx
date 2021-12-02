@@ -21,6 +21,11 @@ class CheckboxQuestion extends BaseQuestion {
     if (this.max_choices === null)
       this.max_choices = this.options.length;
   }
+
+  afterLoad() {
+    if (this.max_choices === this.options.length)
+      this.max_choices = null;
+  }
 }
 
 function CheckboxOptionTable(props) {
@@ -62,8 +67,10 @@ function CheckboxOptionTable(props) {
               <Table.Cell>
                 <Input
                   size='small' placeholder='选项'
+                  value={o.text}
                   onChange={e => {
                     o.text = e.target.value;
+                    setOptions([...options]);
                   }}
                 />
               </Table.Cell>
@@ -98,7 +105,6 @@ function CheckboxEditor(props) {
   const [options, setOptions] = useQState('options', props);
   const [minChoices, setMinChoices] = useQState('min_choices', props);
   const [maxChoices, setMaxChoices] = useQState('max_choices', props);
-
   const [error, setError] = props.useErrorState();
   const [minProps, maxProps] = makeRangeNumberInputProps(
     minChoices, setMinChoices, 0, maxChoices, setMaxChoices, options.length, setError

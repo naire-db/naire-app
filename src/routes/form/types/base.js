@@ -11,7 +11,7 @@ class BaseQuestion {
 }
 
 function useQState(key, props) {
-  const [value, setValue] = useState(qMap[props.qid][key]);
+  const [value, setValue] = useState(() => qMap[props.qid][key]);
   return [value, v => {
     qMap[props.qid][key] = v;
     setValue(v);
