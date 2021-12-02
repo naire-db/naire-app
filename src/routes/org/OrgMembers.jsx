@@ -1,14 +1,16 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { Button, Grid, Table } from 'semantic-ui-react';
+import { Button, Form, Grid, Message, Table } from 'semantic-ui-react';
 
 import api, { api_unwrap_fut } from 'api';
 import appState from 'appState';
 import { useAsyncResult } from 'utils';
 import { formatUser } from 'utils/render';
 
-import { renderRoleLabel } from './utils';
+import { formatRole, renderRoleLabel } from './utils';
 import OrgLayout from './OrgLayout';
+import { showModal } from '../../utils/modal';
+import { ROLE_DESCRIPTIONS, ROLE_OPTIONS } from './config';
 
 function OrgMembers() {
   const oid = parseInt(useParams().oid, 10);
@@ -18,16 +20,55 @@ function OrgMembers() {
 
   const {members: users, role} = res;
 
-  async function invite() {
-    // TODO
-  }
-
   async function remove(member) {
-    // TODO
+    await showModal({
+      title: '移除用户',
+      description: '将移除' + formatRole(member.role) + ' ' + formatUser(member) + '。',
+      confirmText: '移除',
+      confirmProps: {
+        negative: true
+      },
+      async onConfirmed() {
+        await api_unwrap_fut(api.org.remove_member(member.id, oid));
+        window.location.reload();
+      }
+    });
   }
 
   async function change_role(member) {
-    // TODO
+    await showModal({
+      title: '变更用户权限',
+      confirmText: '保存',
+      content: s => {
+        return <>
+          <Form>
+            <Form.Dropdown
+              label={'将' + formatRole(member.role) + ' ' + formatUser(member) + ' 的权限变更为'}
+              defaultValue={member.role}
+              compact
+              selection
+              options={ROLE_OPTIONS}
+              onChange={(e, d) => {
+                s.value = d.value;
+              }}
+            />
+          </Form>
+          <Message>
+            {ROLE_DESCRIPTIONS[s.value]}
+          </Message>
+        </>;
+      },
+      async onConfirmed(s) {
+        await api_unwrap_fut(api.org.change_role(s.value, member.id, oid));
+        window.location.reload();
+      },
+      initialState: {
+        value: member.role
+      },
+      confirmProps: s => ({
+        disabled: s.value === member.role
+      })
+    });
   }
 
   return (
@@ -44,7 +85,7 @@ function OrgMembers() {
                 primary
                 content='邀请用户'
                 floated='right'
-                onClick={invite}
+                href={'/org/' + oid + '/profile'}
               />
             </Grid.Column>
           </Grid.Row>
@@ -75,7 +116,6 @@ function OrgMembers() {
                         <Button
                           className='left-btn'
                           icon='edit'
-                          primary
                           size='small'
                           content='变更权限'
                           floated='right'
