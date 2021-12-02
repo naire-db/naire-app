@@ -42,7 +42,7 @@ function OrgMembers() {
               <Button
                 size='small'
                 primary
-                content='邀请成员'
+                content='邀请用户'
                 floated='right'
                 onClick={invite}
               />
@@ -54,7 +54,7 @@ function OrgMembers() {
             <Table size='large' basic>
               <Table.Body>
                 {users.map(u => (
-                  <Table.Row>
+                  <Table.Row key={u.id}>
                     <Table.Cell width={4}>
                       {formatUser(u)}
                       {renderRoleLabel(u.role)}
