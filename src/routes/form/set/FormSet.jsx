@@ -153,10 +153,13 @@ function FormSet() {
   }
 
   async function onFolderChanged(folder) {
-    const {forms} = await api_unwrap_fut(api.form.get_folder_all(folder.id));
-    setCurrFolderId(folder.id);
+    const {id} = folder;
+    const {forms} = await api_unwrap_fut(api.form.get_folder_all(id));
+    setCurrFolderId(id);
     setForms(forms);
     updateFilterWord(filterWord, forms);
+    const url = window.location.protocol + '//' + window.location.host + window.location.pathname + '?f=' + id;
+    window.history.pushState({path: url}, '', url);
   }
 
   async function addFolder() {
