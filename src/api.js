@@ -41,6 +41,9 @@ class Api {
   ERR_AUTH_REQUIRED = 2;
   ERR_DUPL_USERNAME = 3;
   ERR_DUPL_EMAIL = 4;
+  ERR_EXPIRED = 5;
+  ERR_DENIED = 6;
+  ERR_LIMITED = 7;
 
   async post(path, data) {
     const options = {
