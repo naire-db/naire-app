@@ -346,8 +346,6 @@ function FormSet() {
     updateFilterWord(v, forms);
   }
 
-  console.log(filteredForms);
-
   const content = filteredForms.length ? (
     <Card.Group itemsPerRow={3}>
       {activeItems.map(form => (
