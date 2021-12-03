@@ -206,6 +206,18 @@ class Api {
         fid, folder_id, title
       }),
 
+    // misc
+
+    get_form_settings: fid =>
+      this.post('/form/get_form_settings/', {
+        fid
+      }),
+
+    save_form_settings: (fid, settings) =>
+      this.post('/form/save_form_settings/', {
+        fid, settings
+      }),
+
     get_org_overview: oid =>
       this.post('/form/get_org_overview/', {
         oid
