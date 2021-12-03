@@ -152,6 +152,11 @@ class Api {
         fid
       }),
 
+    get_form_resp_full_details: fid =>
+      this.post('/form/get_form_resp_full_details/', {
+        fid
+      }),
+
     get_resp_detail: (fid, rid) =>
       this.post('/form/get_resp_detail/', {
         fid, rid

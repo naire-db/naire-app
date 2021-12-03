@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Button, Grid, Header, Modal, Table } from 'semantic-ui-react';
+import { stringify } from 'csv-stringify/lib/sync';
+import * as FileSaver from 'file-saver';
 
 import api, { api_unwrap } from 'api';
 import { useAsyncResult } from 'utils';
 import { usePagination } from 'utils/paginate';
 import { formatTimestamp, formatUser } from 'utils/render';
 
+import { renderMap } from './stats';
 import DetailLayout from './DetailLayout';
 import RespView, { loadResp } from './RespView';
 
@@ -97,20 +100,39 @@ function FormRespsInner(props) {
   const onViewModalClosed = () => setViewingInd(null);
 
   const {fid, form, resps} = props;
-  console.log(props);
 
   const {activeItems, menu, activeOffset} = usePagination(resps, {
     maxPageSize: 20
   });
 
   async function openView(rid, ind) {
-    console.log('open view', fid, rid, form);
     await loadResp(fid, rid, form);
     // FIXME: this can stuck for a while before a modal pops, but avoids showing a empty modal
     setViewingInd(ind);
   }
 
-  // TODO: export
+  async function onExport() {
+    const fut = api.form.get_form_resp_full_details(fid);
+    const header = ['时间', '用户'];
+    const renderers = [];
+    for (const q of form.body.questions) {
+      header.push(q.title);
+      renderers.push(renderMap[q.type](q));
+    }
+    const rows = [header];
+    const details = api_unwrap(await fut);
+    for (const r of details) {
+      const row = [formatTimestamp(r.ctime), formatUser(r.user)];
+      const {answers} = r.body;
+      for (let i = 0; i < answers.length; ++i)
+        row.push(renderers[i](answers[i]));
+      rows.push(row);
+    }
+    const csv = stringify(rows);
+    const blob = new Blob([csv], {type: 'text/csv;charset=utf-8'});
+    FileSaver.saveAs(blob, form.title + '.csv');  // TODO: sanitize the filename
+  }
+
   return <>
     <Grid>
       <Grid.Row>
@@ -120,6 +142,7 @@ function FormRespsInner(props) {
             primary
             content='下载答卷数据'
             floated={menu && 'right'}
+            onClick={onExport}
           />
         </Grid.Column>
       </Grid.Row>
