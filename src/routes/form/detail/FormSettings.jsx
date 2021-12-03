@@ -2,21 +2,19 @@ import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Button, Form } from 'semantic-ui-react';
 import * as dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
 
 import DetailLayout from './DetailLayout';
 import { useAsyncResult } from 'utils';
 import api, { api_unwrap_fut } from 'api';
-import { PASSPHRASE_MAX_LENGTH } from '../config';
 
-dayjs.extend(utc);
+import { PASSPHRASE_MAX_LENGTH } from '../config';
 
 function fromTimestamp(v) {
   return v === null ? '' : dayjs.unix(v).format().slice(0, 16);
 }
 
 function toTimestamp(v) {
-  return v ? dayjs.utc(v).unix() : null;
+  return v ? dayjs(v).unix() : null;
 }
 
 function LimitField(props) {
