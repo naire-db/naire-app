@@ -346,6 +346,8 @@ function FormSet() {
     updateFilterWord(v, forms);
   }
 
+  console.log(filteredForms);
+
   const content = filteredForms.length ? (
     <Card.Group itemsPerRow={3}>
       {activeItems.map(form => (
@@ -359,7 +361,9 @@ function FormSet() {
           <Card.Content extra>
             <Grid>
               <Grid.Column width={12} verticalAlign='middle'>
-                {form.resp_count + ' 份答卷'}
+                {form.resp_count + ' 份答卷'
+                  + (form.published ? '' : '，已暂停')
+                }
               </Grid.Column>
               <Grid.Column width={4} verticalAlign='middle' floated='right'>
                 <Dropdown
