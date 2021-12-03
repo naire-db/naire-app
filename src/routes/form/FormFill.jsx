@@ -64,7 +64,7 @@ function FormView(props) {
     if (code === 0)
       setSubmitted(true);
     else
-      failedPrompt = getErrorPrompt(code) + '。';
+      failedPrompt = getErrorPrompt(code, true) + '。';
     setModalOpen(true);
   }
 
