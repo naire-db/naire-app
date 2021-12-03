@@ -216,7 +216,7 @@ function FormResps() {
   return (
     <DetailLayout
       title={form.title} fid={fid} offset='resps'
-      statsDisabled={!resps.length || !form.body.questions.length}
+      statsDisabled={!resps.length}
     >
       <FormRespsInner fid={fid} form={form} resps={resps} />
     </DetailLayout>
