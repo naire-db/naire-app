@@ -88,7 +88,7 @@ function FormSet() {
     setForms_(nextForms);
   }
 
-  function setFolders(nextFolders) {
+  function setFolders(nextFolders, rootFid) {
     nextFolders.sort((a, b) => {
       if (a.id === rootFid)
         return -1;
@@ -109,7 +109,7 @@ function FormSet() {
       setCurrFolderId(root_fid);
     else
       setCurrFolderId(folderId);
-    setFolders(folders);
+    setFolders(folders, root_fid);
     updateFilterWord('', root_forms);
     setForms(root_forms);
   }
@@ -176,7 +176,7 @@ function FormSet() {
           value?.trim() || '新目录',
           ctx < 0 ? null : ctx
         ));
-        setFolders([...folders, res]);
+        setFolders([...folders, res], rootFid);
         closeModal();
       }
     });
@@ -214,9 +214,10 @@ function FormSet() {
       onConfirmed: async () => {
         const v = value.trim();
         if (v) {
+
           await api_unwrap_fut(api.form.rename_folder(currFolderId, v));
           folderMap.get(currFolderId).name = v;
-          setFolders([...folders]);
+          setFolders([...folders], rootFid);
         }
         closeModal();
       }
