@@ -7,7 +7,7 @@ interface Question { // abstract
   id: int;
 
   title: string;
-  image_ids: int[];  // For use in image src url
+  images: int[];  // For use in image src url, length <= 5
 
   conds: Condition[];
   cond_or: boolean;  // true for 'or', false for 'and'
