@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useParams } from 'react-router-dom';
 import { Button, Grid, Header, Label, Segment } from 'semantic-ui-react';
 
@@ -14,23 +14,6 @@ function FormStats() {
   const details = useAsyncResult(() =>
     api_unwrap_fut(api.form.get_form_stats(fid))
   );
-  const [printing, setPrinting] = useState(false);
-
-  console.log('printing', printing);
-
-  useEffect(() => {
-    const before = () => {
-      console.log('b4');
-      setPrinting(true);
-    };
-    const after = () => setPrinting(false);
-    window.addEventListener('beforeprint', before);
-    window.addEventListener('afterprint', after);
-    return () => {
-      window.removeEventListener('beforeprint', before);
-      window.removeEventListener('afterprint', after);
-    };
-  });
 
   if (details === null)
     return null;
@@ -41,7 +24,7 @@ function FormStats() {
   // TODO: when there are no questions
   // TODO: when there are no responses
   return (
-    <DetailLayout offset='stats' fid={fid} title={form.title} printing={printing}>
+    <DetailLayout offset='stats' fid={fid} title={form.title}>
       <Header className='print-only' as='h1' content={form.title} style={{
         textAlign: 'center'
       }} />
