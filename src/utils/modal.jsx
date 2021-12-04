@@ -16,6 +16,8 @@ const modalState = makeAutoObservable({
   onConfirmed: null,
   confirmText: '确认',
   confirmProps: null,
+  cancelText: '取消',
+  noConfirm: false,
   inputProps: null,
   state: {},
 
@@ -101,19 +103,21 @@ const CommonModal = observer(() => {
           </Modal.Content>
           <Modal.Actions>
             <Button
-              content='取消'
+              content={modalState.cancelText}
               onClick={modalState.onCancelled}
             />
-            <Button
-              primary
-              content={modalState.confirmText}
-              onClick={modalState.onConfirmed}
-              {...(
-                modalState.confirmProps
-                  ? resolvePossibleAction(modalState.confirmProps, modalState.state)
-                  : {}
-              )}
-            />
+            {!modalState.noConfirm &&
+              <Button
+                primary
+                content={modalState.confirmText}
+                onClick={modalState.onConfirmed}
+                {...(
+                  modalState.confirmProps
+                    ? resolvePossibleAction(modalState.confirmProps, modalState.state)
+                    : {}
+                )}
+              />
+            }
           </Modal.Actions>
         </Modal>
       </TransitionablePortal>
@@ -136,13 +140,17 @@ function showModal(
     onConfirmed = null,
     confirmText = '确认',
     confirmProps = null,
+    cancelText = '取消',
+    noConfirm = false,
     inputProps = null,
 
     initialState = null,
   }) {
   return new Promise(resolve => {
     modalState.update({
-      title, subtitle, description, content, size, confirmText, confirmProps, inputProps,
+      title, subtitle, description, content, size, confirmText, confirmProps,
+      cancelText, noConfirm,
+      inputProps,
       onConfirmed: onConfirmed ? () => {
         resolve(onConfirmed(modalState.state));
       } : () => {
