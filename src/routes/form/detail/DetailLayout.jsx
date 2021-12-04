@@ -9,7 +9,7 @@ function DetailLayout(props) {
     <AppLayout offset>
       <Grid>
         <Grid.Row>
-          <Grid.Column width={3}>
+          <Grid.Column width={3} className='no-print'>
             <Header>
               {props.title}
             </Header>
@@ -32,7 +32,7 @@ function DetailLayout(props) {
               </Menu.Item>
             </Menu>
           </Grid.Column>
-          <Grid.Column width={13}>
+          <Grid.Column width={13} className='detail-content'>
             {props.children}
           </Grid.Column>
         </Grid.Row>

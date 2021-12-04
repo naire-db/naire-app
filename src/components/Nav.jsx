@@ -17,7 +17,7 @@ const Nav = observer(() => {
   const info = appState.user_info;
 
   return (
-    <Menu fixed='top'>
+    <Menu fixed='top' className='no-print'>
       <Container>
         <Menu.Item header href='/'>
           <Icon name='fire' size='large' />

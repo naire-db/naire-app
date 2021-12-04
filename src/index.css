@@ -27,3 +27,23 @@ code {
 .form-submit-btn {
   margin-top: 20px !important;
 }
+
+.print-only {
+  display: none !important;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  .detail-content {
+    width: 100% !important;
+    height: 100% !important;
+  }
+  .ui.grid>.row>[class*="thirteen wide"].column {
+    width: 100% !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+}
