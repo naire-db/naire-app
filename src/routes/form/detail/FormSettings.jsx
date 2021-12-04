@@ -3,11 +3,11 @@ import { useParams } from 'react-router-dom';
 import { Button, Form } from 'semantic-ui-react';
 import * as dayjs from 'dayjs';
 
-import DetailLayout from './DetailLayout';
-import { useAsyncResult } from 'utils';
 import api, { api_unwrap_fut } from 'api';
+import { useAsyncResult } from 'utils';
 
 import { PASSPHRASE_MAX_LENGTH } from '../config';
+import DetailLayout from './DetailLayout';
 
 function fromTimestamp(v) {
   return v === null ? '' : dayjs.unix(v).format().slice(0, 16);
