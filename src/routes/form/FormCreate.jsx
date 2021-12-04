@@ -1,10 +1,24 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Grid, Header, Icon, Input, Label, Segment, Sticky, Transition } from 'semantic-ui-react';
+import {
+  Button,
+  Form,
+  Grid,
+  Header,
+  Icon,
+  Image,
+  Input,
+  Label,
+  Message,
+  Segment,
+  Sticky,
+  Transition
+} from 'semantic-ui-react';
 
 import AppLayout from 'layouts/AppLayout';
 import api, { api_unwrap_fut } from 'api';
 import { int_or_null } from 'utils';
 import { get_query_param } from 'utils/url';
+import { closeModal, showModal } from 'utils/modal';
 
 import { editorMap, nameMap, qMap, typeMap } from './types';
 import { useErrorContext } from './errorContext';
@@ -123,6 +137,84 @@ function FormEditor(props) {
     return () => window.removeEventListener('beforeunload', fn);
   }, []);
 
+  function refreshQuestions() {
+    setQids([...qids]);
+  }
+
+  async function openImage(q, iid) {
+    await showModal({
+      title: '查看图片',
+      size: 'small',
+      confirmText: '删除',
+      content() {
+        const src = api.file.image_url(iid);
+        return <Image
+          size='huge'
+          src={src}
+          href={src}
+          target='_blank'
+        />;
+      },
+      confirmProps: {
+        negative: true
+      },
+      onConfirmed() {
+        q.images = q.images.filter(x => x !== iid);
+        refreshQuestions();
+        closeModal();
+      }
+    });
+  }
+
+  async function addImage(q) {
+    let file = null;
+    await showModal({
+      title: '添加图片',
+      size: 'small',
+      confirmText: '上传',
+      content(s) {
+        return <Form className='image-form'>
+          <Form.Input
+            label='上传图片文件（不超过 10M）'
+            type='file'
+            accept='image/*'
+            onChange={e => {
+              s.uploaded = true;
+              file = e.target.files[0];
+              s.size = file.size / 1024 / 1024;
+              s.oversized = s.size > 10;
+            }}
+          />
+          {s.uploaded && s.oversized &&
+            <Message
+              negative
+              content={`文件过大（${s.size.toFixed(3)} MiB）`}
+            />
+          }
+        </Form>;
+      },
+      confirmProps(s) {
+        return {
+          disabled: !s.uploaded || s.oversized
+        };
+      },
+      async onConfirmed() {
+        const data = new FormData();
+        data.append('file', file);
+        const image_id = await api_unwrap_fut(api.file.upload_image(data));
+        q.images.push(image_id);
+        console.log('with image', image_id, q);
+        refreshQuestions();
+        closeModal();
+      },
+      initialState: {
+        size: null,
+        uploaded: false,
+        oversized: false,
+      }
+    });
+  }
+
   return (
     <AppLayout offset>
       <Grid>
@@ -197,7 +289,6 @@ function FormEditor(props) {
                           <Grid>
                             <Grid.Row className='qeditor-meta-row'>
                               <Grid.Column>
-                                {/* TODO: It may be unnecessary to make this Input controlled. */}
                                 <Input
                                   className='qeditor-title-input-box'
                                   placeholder='问题'
@@ -208,6 +299,30 @@ function FormEditor(props) {
                                     setQids([...qids]);  // dirty way to make this part rerendered
                                   }}
                                 />
+                              </Grid.Column>
+                            </Grid.Row>
+                            <Grid.Row className='question-image-group-row'>
+                              <Grid.Column>
+                                <Image.Group size='tiny'>
+                                  {q.images.map(iid => (
+                                    <Image
+                                      key={iid}
+                                      bordered rounded
+                                      src={api.file.image_url(iid)}
+                                      as='a' href='#'
+                                      onClick={() => openImage(q, iid)}
+                                    />
+                                  ))
+                                  }
+                                </Image.Group>
+                                {q.images.length < 5 &&
+                                  <Button
+                                    icon='add'
+                                    onClick={() => addImage(q)}
+                                    content='添加图片'
+                                    size='mini'
+                                  />
+                                }
                               </Grid.Column>
                             </Grid.Row>
                             <Grid.Row>

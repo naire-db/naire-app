@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Button, Container, Grid, Header, Message, Modal, Segment } from 'semantic-ui-react';
+import { Button, Container, Grid, Header, Image, Message, Modal, Segment } from 'semantic-ui-react';
 
 import api from 'api';
 import { useAsyncEffect } from 'utils';
@@ -12,18 +12,55 @@ import { aMap, initialMap, viewMap } from './views';
 import { useErrorContext } from './errorContext';
 
 import './form.css';
+import { showModal } from '../../utils/modal';
 
 function QuestionView(props) {
   const q = props.question;
   const {tried, errorCtx} = props;
 
   const E = viewMap[q.type];
+
+  async function openImage(iid) {
+    await showModal({
+      title: '查看图片',
+      size: 'small',
+      cancelText: '关闭',
+      noConfirm: true,
+      content() {
+        const src = api.file.image_url(iid);
+        return <Image
+          size='huge'
+          src={src}
+          href={src}
+          target='_blank'
+        />;
+      },
+    });
+  }
+
   return (
     <Segment key={q.id}>
       <Grid>
         <Grid.Row className='question-editor-meta-row'>
           <Grid.Column>
             {q.title}
+          </Grid.Column>
+        </Grid.Row>
+        <Grid.Row className='question-image-group-row' style={{
+          marginTop: -16
+        }}>
+          <Grid.Column>
+            <Image.Group size='small'>
+              {q.images.map(iid => (
+                <Image
+                  key={iid}
+                  bordered rounded
+                  src={api.file.image_url(iid)}
+                  as='a' href='#'
+                  onClick={() => openImage(iid)}
+                />
+              ))}
+            </Image.Group>
           </Grid.Column>
         </Grid.Row>
         <Grid.Row>
@@ -82,7 +119,9 @@ function FormView(props) {
         />
       ))
     }
-    <Container textAlign='center'>
+    <Container textAlign='center' style={{
+      marginTop: 25
+    }}>
       <Button
         primary
         disabled={submitted}
