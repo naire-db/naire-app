@@ -58,6 +58,18 @@ class Api {
     return await api_fetch(path, options);
   }
 
+  async post_data(path, body) {
+    const options = {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+      },
+      body,
+      credentials: 'include',
+    };
+    return await api_fetch(path, options);
+  }
+
   async get(path) {
     const options = {
       method: 'GET',
@@ -305,6 +317,13 @@ class Api {
       this.post('/org/change_role/', {
         role, uid, oid
       }),
+  };
+
+  file = {
+    upload_image: form =>
+      this.post_data('/file/upload_image/', form),
+
+    image_url: image_id => entry + '/file/image/' + image_id,
   };
 }
 
