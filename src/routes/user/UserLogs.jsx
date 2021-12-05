@@ -18,7 +18,7 @@ function UserLogs() {
       <Grid>
         <Grid.Row>
           <Grid.Column>
-            <Table basic='very' compact='very' textAlign='center'>
+            <Table basic='very' compact textAlign='center'>
               <Table.Header>
                 <Table.Row>
                   <Table.HeaderCell>操作</Table.HeaderCell>
