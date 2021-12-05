@@ -15,6 +15,7 @@ class DropdownQuestion extends BaseQuestion {
 
 function DropdownQuestionEditor(props) {
   const [options, setOptions] = useQState('options', props);
+  // TODO: identical to RadioQuestionEditor now. Should show a modal with a textarea and better with some presets.
 
   return (
     <CheckboxOptionTable
