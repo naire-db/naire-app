@@ -12,6 +12,7 @@ const entry = window.location.protocol + '//' + window.location.hostname + ':800
 function api_unwrap(res) {
   if (res.code !== 0) {
     console.error('api unwrap failed', res);
+    // TODO: use error fallback
     return null;
   }
   return res.data;
