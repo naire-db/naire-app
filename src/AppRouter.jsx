@@ -47,6 +47,7 @@ function AppRouter() {
         {mount('/user/profile', () => import('routes/user/Profile'))}
         {mount('/user/password', () => import('routes/user/ChangePassword'))}
         {mount('/user/orgs', () => import('routes/user/UserOrgs'))}
+        {mount('/user/logs', () => import('routes/user/UserLogs'))}
 
         {mount('/org/:oid/members', () => import('routes/org/OrgMembers'))}
         {mount('/org/:oid/profile', () => import('routes/org/OrgProfile'))}

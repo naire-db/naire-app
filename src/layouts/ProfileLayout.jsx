@@ -24,6 +24,10 @@ function ProfileLayout(props) {
                 <Icon name='group' />
                 我的组织
               </Menu.Item>
+              <Menu.Item active={props.page === 'logs'} href='/user/logs'>
+                <Icon name='history' />
+                操作日志
+              </Menu.Item>
             </Menu>
           </Grid.Column>
           <Grid.Column width={13}>
