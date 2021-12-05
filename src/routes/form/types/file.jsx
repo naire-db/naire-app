@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Dropdown, Form, Input, Ref } from 'semantic-ui-react';
 
 import { BaseQuestion, registerQuestionType, useQState } from './base';
@@ -10,14 +10,14 @@ const units = [
 ];
 
 const MAX_SIZE_MB = 50;
-const MAX_SIZE_KB = 1024;
+const MAX_SIZE_KB = 51200;
 
 class FileQuestion extends BaseQuestion {
   type = 'file';
 
   extensions = [];
   max_size = null;  // in MiB
-  optional = true;
+  optional = false;
 
   is_mb = true;
 
@@ -40,16 +40,6 @@ function FileSizeInput(props) {
       defaultValue='mib'
     />;
 
-  function FileSizeInput(props) {
-    return <Input
-      label={
-        sizeLabel
-      }
-      labelPosition='right'
-      {...props}
-    />;
-  }
-
   return <Input
     label={
       sizeLabel
@@ -64,12 +54,7 @@ function FileQuestionEditor(props) {
   const [maxSize, setMaxSize] = useQState('max_size', props);
   const [optional, setOptional] = useQState('optional', props);
 
-  const [, setIsMb] = useQState('is_mb', props);
-
-  const [unit, setUnit] = useState('mib');
-  const [optionalToggle, setOptionalToggle] = useState(false);
-
-  //const [maxSize, setMaxSize] = useState('');
+  const [isMega, setIsMega] = useQState('is_mb', props);
 
   function ExtensionControl(props) {
     return <ExtensionDropdown
@@ -79,26 +64,17 @@ function FileQuestionEditor(props) {
     />;
   }
 
-  function setOptionalWrapper() {
-    setOptionalToggle(!optionalToggle);
-    setOptional(optionalToggle);
-  }
-
   const formRef = useRef();
   useEffect(() => {
-    if (formRef.current) {
-      const dd = formRef.current.querySelector('.size-dd');
-      if (dd) {
-        const handler = e => {
-          const nextUnit = e.target.innerText === 'MiB' ? 'mib' : 'kib';
-          if (unit !== nextUnit) {
-            setUnit(nextUnit);
-            setIsMb(nextUnit === 'mib');
-          }
-        };
-        dd.addEventListener('click', handler);
-        return () => dd.removeEventListener('click', handler);
+    const dd = formRef.current?.querySelector('.size-dd');
+    if (dd) {
+      function handler(e) {
+        const nextIsMega = e.target.innerText === 'MiB';
+        setIsMega(nextIsMega);
       }
+
+      dd.addEventListener('click', handler);
+      return () => dd.removeEventListener('click', handler);
     }
   });
 
@@ -107,7 +83,7 @@ function FileQuestionEditor(props) {
       <Form.Field
         width={5}
         label='文件大小限制'
-        placeholder={unit === 'mib' ? String(MAX_SIZE_MB) : String(MAX_SIZE_KB)}
+        placeholder={isMega ? String(MAX_SIZE_MB) : String(MAX_SIZE_KB)}
         control={FileSizeInput}
         value={maxSize === null ? '' : maxSize}
         type='number'
@@ -115,7 +91,7 @@ function FileQuestionEditor(props) {
           let value = parseInt(e.target.value, 10);
           if (isNaN(value))
             value = null;
-          else if (unit === 'mib') {
+          else if (isMega) {
             value = value > MAX_SIZE_MB ? MAX_SIZE_MB : value <= 0 ? 1 : value;
           } else {
             value = value > MAX_SIZE_KB ? MAX_SIZE_KB : value <= 0 ? 1 : value;
@@ -129,8 +105,9 @@ function FileQuestionEditor(props) {
       />
       <Form.Checkbox
         toggle
-        label='必须上传'
-        onChange={setOptionalWrapper}
+        label='可选上传'
+        value={optional}
+        onChange={(e, d) => setOptional(d.checked)}
       />
     </Form>
   </Ref>;
