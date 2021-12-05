@@ -12,7 +12,7 @@ function UserLogs() {
   if (logs === null)
     return null;
 
-  // TODO: pagination
+  // TODO: pagination, filtering, sorting?
   return (
     <ProfileLayout page='logs'>
       <Grid>
