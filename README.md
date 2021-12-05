@@ -15,7 +15,7 @@ $ git checkout -b dev-[feature or patch name]  # 切换到新分支
 $ webstorm .  # 在新的分支上修改
 $ git add [files ..]
 $ git commit -m "[feature]: [changes]"
-$ git pull origin main  # 合并上游更改
+$ git pull origin main --rebase  # 合并上游更改
 $ git push -u origin dev-[feature or patch name]
 $ # 开启 Pull Request
 ```
