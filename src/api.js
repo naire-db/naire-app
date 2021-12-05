@@ -248,7 +248,10 @@ class Api {
     change_password: (password, new_password) =>
       this.post('/auth/change_password/', {
         password, new_password
-      })
+      }),
+
+    get_logs: () =>
+      this.get('/audit/get_logs/'),
   };
 
   // draft
