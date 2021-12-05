@@ -23,9 +23,10 @@ function Profile() {
     } catch (e) {
       return setErrorPrompt(e.toString());
     }
-    if (res.code === 0)
+    if (res.code === 0) {
+      localStorage.setItem('user_info', JSON.stringify(res.data));
       window.location.reload();
-    else if (res.code === api.ERR_DUPL_EMAIL)
+    } else if (res.code === api.ERR_DUPL_EMAIL)
       setErrorPrompt('该邮箱已注册');
     else
       setErrorPrompt(res.code);
