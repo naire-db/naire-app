@@ -2,7 +2,6 @@ import React, { useEffect, useRef } from 'react';
 import { Dropdown, Form, Input, Ref } from 'semantic-ui-react';
 
 import { BaseQuestion, registerQuestionType, useQState } from './base';
-import ExtensionDropdown from './ExtensionDropdown';
 
 const units = [
   {keys: 'kib', text: 'KiB', value: 'kib'},
@@ -50,12 +49,13 @@ function FileSizeInput(props) {
 }
 
 function FileQuestionEditor(props) {
-  const [extensions, setExtensions] = useQState('extensions', props);
+  // const [extensions, setExtensions] = useQState('extensions', props);
   const [maxSize, setMaxSize] = useQState('max_size', props);
   const [optional, setOptional] = useQState('optional', props);
 
   const [isMega, setIsMega] = useQState('is_mb', props);
 
+  /*
   function ExtensionControl(props) {
     return <ExtensionDropdown
       value={extensions}
@@ -63,6 +63,7 @@ function FileQuestionEditor(props) {
       {...props}
     />;
   }
+   */
 
   const formRef = useRef();
   useEffect(() => {
@@ -99,10 +100,10 @@ function FileQuestionEditor(props) {
           setMaxSize(value);
         }}
       />
-      <Form.Field
+      {/*<Form.Field
         label='文件扩展名'
         control={ExtensionControl}
-      />
+      />*/}
       <Form.Checkbox
         toggle
         label='可选上传'
