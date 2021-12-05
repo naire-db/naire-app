@@ -1,8 +1,9 @@
-import React, { lazy, Suspense, useEffect } from 'react';
+import React, { lazy, Suspense } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import api from 'api';
 import appState from 'appState';
+import { useAsyncEffect } from './utils';
 import { CommonModal } from './utils/modal';
 
 function make_lazy(f) {
@@ -21,20 +22,18 @@ function mount(path, f) {
 function AppRouter() {
   console.log('Rendering router');
 
-  useEffect(() => {
-    (async () => {
-      console.log('old user info', appState.user_info);
-      const res = await api.user_info();
-      if (res.code === 0) {
-        appState.user_info = res.data;
-        localStorage.setItem('user_info', JSON.stringify(res.data));
-      } else {
-        appState.user_info = null;
-        localStorage.removeItem('user_info');
-      }
-      console.log('new user info', appState.user_info);
-    })();
-  }, []);
+  useAsyncEffect(async () => {
+    console.log('old user info', appState.user_info);
+    const res = await api.user_info();
+    if (res.code === 0) {
+      appState.user_info = res.data;
+      localStorage.setItem('user_info', JSON.stringify(res.data));
+    } else {
+      appState.user_info = null;
+      localStorage.removeItem('user_info');
+    }
+    console.log('new user info', appState.user_info);
+  });
 
   return <>
     <BrowserRouter>
