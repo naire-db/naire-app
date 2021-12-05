@@ -1,4 +1,8 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
+
 import { redirect_login } from 'utils/url';
+import ErrorFallback from './ErrorFallback';
 
 // TODO: change in production environment
 // const entry = 'http://localhost:8000';
@@ -23,10 +27,21 @@ async function api_fetch(path, options) {
     console.log(`${method}ing ${path}`);
   else
     console.log(`${method}ing ${path} with ${body}`);
-  const resp = await fetch(entry + path, options);
+  let resp;
+  try {
+    resp = await fetch(entry + path, options);
+  } catch (e) {
+    console.log('Failed to fetch:', e);
+    const root = document.getElementById('root');
+    ReactDOM.unmountComponentAtNode(root);
+    ReactDOM.render(<ErrorFallback error={e} />, root);
+    throw e;
+  }
   if (!resp.ok) {
-    console.error('bad api fetch', path, resp);
-    // TODO: handle on a page
+    console.error('Bad API response:', path, resp);
+    const root = document.getElementById('root');
+    ReactDOM.unmountComponentAtNode(root);
+    ReactDOM.render(<ErrorFallback resp={resp} />, root);
     throw new Error(`API ${path}: ${resp.status} ${resp.statusText}`);
   }
   const res = await resp.json();
