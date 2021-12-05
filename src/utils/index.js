@@ -3,16 +3,24 @@ import { useEffect, useState } from 'react';
 function useAsyncResult(callback, deps = [], initial = null) {
   const [res, setRes] = useState(initial);
   useEffect(() => {
-    (async () => {
-      setRes(await callback());
-    })();
+    callback()
+      .then(setRes)
+      .catch(e => {
+        console.error('Caught in async hook: ', e);
+        /* setRes(() => {
+          throw e;
+        }); */
+      });
   }, deps);
   return res;
 }
 
 function useAsyncEffect(callback, deps = []) {
   useEffect(() => {
-    callback();
+    callback()
+      .catch(e => {
+        console.error('Caught in async hook: ', e);
+      });
   }, deps);
 }
 
