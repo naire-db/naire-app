@@ -65,10 +65,10 @@ function UserOrgs() {
         </Grid.Row>
         <Grid.Row>
           <Grid.Column>
-            <Table size='large' basic>
-              <Table.Body>
-                {orgs.length ?
-                  orgs.map(o => (
+            {orgs.length ?
+              <Table size='large' basic>
+                <Table.Body>
+                  {orgs.map(o => (
                     <Table.Row key={o.id}>
                       <Table.Cell width={4}>
                         {o.name}
@@ -99,12 +99,12 @@ function UserOrgs() {
                         }
                       </Table.Cell>
                     </Table.Row>
-                  )) :
-                  <Segment>
-                    尚未加入任何组织
-                  </Segment>}
-              </Table.Body>
-            </Table>
+                  ))}
+                </Table.Body>
+              </Table> : <Segment>
+                尚未加入任何组织
+              </Segment>
+            }
           </Grid.Column>
         </Grid.Row>
       </Grid>
