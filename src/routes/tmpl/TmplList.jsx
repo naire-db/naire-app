@@ -4,7 +4,7 @@ import { Button, Grid, Table } from 'semantic-ui-react';
 import api, { api_unwrap_fut } from 'api';
 import appState from 'appState';
 import { useAsyncResult } from 'utils';
-import { formatUser } from 'utils/render';
+import { formatTimestamp, formatUser } from 'utils/render';
 
 import AppLayout from 'layouts/AppLayout';
 
@@ -15,6 +15,15 @@ function TmplList() {
 
   const me = appState.user_info;
 
+  async function create({id}) {
+    window.location = '/form/create?t=' + id;
+  }
+
+  async function remove({id}) {
+    await api_unwrap_fut(api.tmpl.remove(id));
+    window.location.reload();
+  }
+
   return (
     <AppLayout offset>
       <Grid>
@@ -22,12 +31,17 @@ function TmplList() {
           <Grid.Column>
             <Table basic='very' compact>
               <Table.Header>
-                <Table.HeaderCell>标题</Table.HeaderCell>
-                <Table.HeaderCell>作者</Table.HeaderCell>
-                <Table.HeaderCell textAlign='center'>
-                  使用次数
-                </Table.HeaderCell>
-                <Table.HeaderCell />
+                <Table.Row>
+                  <Table.HeaderCell>标题</Table.HeaderCell>
+                  <Table.HeaderCell>作者</Table.HeaderCell>
+                  <Table.HeaderCell textAlign='center'>
+                    使用次数
+                  </Table.HeaderCell>
+                  <Table.HeaderCell textAlign='center'>
+                    更新时间
+                  </Table.HeaderCell>
+                  <Table.HeaderCell />
+                </Table.Row>
               </Table.Header>
               <Table.Body>
                 {tmpls.map(t => (
@@ -41,6 +55,9 @@ function TmplList() {
                     <Table.Cell textAlign='center' width={2}>
                       {t.use_count}
                     </Table.Cell>
+                    <Table.Cell textAlign='center'>
+                      {formatTimestamp(t.mtime)}
+                    </Table.Cell>
                     <Table.Cell width={4}>
                       <Button
                         primary
@@ -48,6 +65,7 @@ function TmplList() {
                         size='mini'
                         content='创建问卷'
                         floated='right'
+                        onClick={() => create(t)}
                       />
                       {me && t.user.id === me.id &&
                         <Button
@@ -59,6 +77,7 @@ function TmplList() {
                           style={{
                             marginRight: 5
                           }}
+                          onClick={() => remove(t)}
                         />
                       }
                     </Table.Cell>
