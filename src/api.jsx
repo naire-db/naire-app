@@ -365,6 +365,9 @@ class Api {
       this.post('/tmpl/remove/', {
         tid
       }),
+
+    get_all: () =>
+      this.get('/tmpl/get_all/'),
   };
 }
 
