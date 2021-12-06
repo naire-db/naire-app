@@ -297,6 +297,8 @@ function FormSet() {
     window.location = getFormDetailUrl(form.id);
   }
 
+  // TODO: Allow copying / moving to another context (org), which will make it possible
+  //  to have a form created from a template as an org.
   async function copy(form) {
     let newTitle = null;
     let newFolderId = currFolderId;
