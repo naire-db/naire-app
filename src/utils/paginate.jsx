@@ -1,13 +1,19 @@
 import React, { useState } from 'react';
 import { Pagination } from 'semantic-ui-react';
 
-function usePagination(items, {maxPageSize = 30} = {}) {
+function usePagination(items, {maxPageSize = 30, menuProps = {}} = {}) {
   const [activePage, setActivePage] = useState(0);
+
+  function reset() {
+    setActivePage(0);
+  }
+
   if (!items)
     return {
       activeItems: [],
       menu: null,
-      activeOffset: 0
+      activeOffset: 0,
+      reset,
     };
 
   const tot = items.length;
@@ -15,7 +21,8 @@ function usePagination(items, {maxPageSize = 30} = {}) {
     return {
       activeItems: items,
       menu: null,
-      activeOffset: 0
+      activeOffset: 0,
+      reset,
     };
 
   const totalPages = Math.ceil(tot / maxPageSize);
@@ -34,6 +41,7 @@ function usePagination(items, {maxPageSize = 30} = {}) {
       totalPages={totalPages}
       firstItem={null}
       lastItem={null}
+      {...menuProps}
     />
   );
 
@@ -41,6 +49,7 @@ function usePagination(items, {maxPageSize = 30} = {}) {
     activeItems,
     menu,
     activeOffset,
+    reset,
   };
 }
 
