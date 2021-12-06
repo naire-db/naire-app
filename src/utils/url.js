@@ -1,5 +1,5 @@
 function redirect_login() {
-  window.location = '/login?r=' + decodeURIComponent(
+  window.location = '/login?r=' + encodeURIComponent(
     window.location.pathname + window.location.search
   );
 }
@@ -15,7 +15,7 @@ function with_origin(path) {
 function get_query_param(key) {
   const qs = window.location.search;
   if (qs.startsWith('?' + key + '='))
-    return qs.slice(key.length + 2);
+    return decodeURIComponent(qs.slice(key.length + 2));
   else
     return null;
 }
