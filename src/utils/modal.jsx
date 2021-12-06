@@ -173,14 +173,12 @@ function createModalHandle() {
         onConfirmed: onConfirmed ? () => {
           onConfirmed(modalState.state, closeModal);
         } : () => {
-          resolve(true);
-          closeModal();
+          closeModal(true);
         },
         onCancelled: onCancelled ? () => {
           onCancelled(modalState.state, closeModal);
         } : () => {
-          resolve(false);
-          closeModal();
+          closeModal(false);
         }
       };
       modalState.start(n, initialState, resolve);
