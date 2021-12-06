@@ -58,6 +58,8 @@ function AppRouter() {
         {mount('/form/:fid/resps', () => import('routes/form/detail/FormResps'))}
         {mount('/form/:fid/stats', () => import('routes/form/detail/FormStats'))}
         {mount('/form/:fid/settings', () => import('routes/form/detail/FormSettings'))}
+        {mount('/form/:fid/tmpl', () => import('routes/form/detail/FormTmplSettings'))}
+
         {mount('/f/:fid', () => import('routes/form/FormFill'))}
         {mount('*', () => import('routes/Home'))}
       </Routes>
