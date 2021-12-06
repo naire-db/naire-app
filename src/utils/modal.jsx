@@ -28,10 +28,6 @@ class ModalState {
     makeAutoObservable(this);
   }
 
-  setOpen = action(v => {
-    this.open = v;
-  });
-
   start = action((props, initialState, resolve) => {
     Object.assign(this, props);
     if (initialState)
