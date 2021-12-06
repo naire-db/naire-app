@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Button, Container, Grid, Header, Image, Message, Modal, Segment } from 'semantic-ui-react';
+import { Button, Container, Form, Grid, Header, Image, Message, Modal, Segment } from 'semantic-ui-react';
 
 import api, { api_unwrap } from 'api';
 import { useAsyncEffect } from 'utils';
@@ -11,6 +11,7 @@ import AppLayout from 'layouts/AppLayout';
 
 import { aMap, initialMap, viewMap } from './views';
 import { useErrorContext } from './errorContext';
+import { PASSPHRASE_MAX_LENGTH } from './config';
 
 import './form.css';
 
@@ -153,6 +154,8 @@ function getErrorPrompt(code, step) {
       return '当前没有访问该问卷的权限';
     case api.ERR_LIMITED:
       return '该问卷的填写次数已达上限';
+    case api.ERR_BAD_PASSPHRASE:
+      return '访问该问卷需要提供密码';
     default:
       if (code !== api.ERR_FAILURE)
         console.error('code unexpected', code);
@@ -166,14 +169,47 @@ function FormFill() {
   const fid = parseInt(useParams().fid, 10);
 
   useAsyncEffect(async () => {
-    const res = await api.form.get_detail(fid);
+    let res = await api.form.get_detail(fid);
+
+    if (res.code === api.ERR_BAD_PASSPHRASE) {
+      await showModal({
+        title: '需要密码',
+        content: s => (
+          <Form error={s.fail}>
+            <Form.Input
+              value={s.value}
+              onChange={(e, d) => (s.value = d.value)}
+              maxLength={PASSPHRASE_MAX_LENGTH}
+            />
+            <Message
+              error
+              content='密码错误'
+            />
+          </Form>
+        ),
+        confirmProps: s => ({
+          disabled: !s.value.trim()
+        }),
+        onConfirmed: async (s, close) => {
+          res = await api.form.get_detail(fid, s.value.trim());
+          if (res.code === api.ERR_BAD_PASSPHRASE)
+            s.fail = true;
+          else
+            close();
+        },
+        initialState: {
+          value: '',
+          fail: false
+        },
+        closeOnDimmerClick: false
+      });
+    }
+
     const {code, data} = res;
     if (code === 0) {
-      for (const q of data.body.questions) {
+      for (const q of data.body.questions)
         if (initialMap[q.type])  // TODO: drop checks
           aMap[q.id] = initialMap[q.type]();
-      }
-      console.log('got details', JSON.stringify(res.data));
       setDetail(data);
     } else if (code === api.ERR_AUTH_REQUIRED)
       redirect_login();
@@ -192,6 +228,9 @@ function FormFill() {
       </AppLayout>
     );
 
+  if (!detail)
+    return <AppLayout />;
+
   return (detail &&
     <AppLayout offset>
       <FormView fid={fid} title={detail.title} body={detail.body} />
@@ -201,17 +240,13 @@ function FormFill() {
 
 async function loadResp(fid, rid, {body: {questions}}) {
   const {answers} = api_unwrap(await api.form.get_resp_detail(fid, rid)).body;
-  console.log('got answers', answers, questions);
   for (let i = 0; i < answers.length; ++i)
     aMap[questions[i].id] = answers[i];
-  console.log('make amap', aMap);
 }
 
 function loadBareForm({body: {questions}}) {
-  for (const q of questions) {
-    console.log('loadq', q);
+  for (const q of questions)
     aMap[q.id] = initialMap[q.type]();
-  }
 }
 
 export default FormFill;
