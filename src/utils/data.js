@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import _ from 'lodash';
 
+import { usePagination } from './paginate';
+
 function useSorted(initialData = []) {
   const [state, setState] = useState(() => ({
     column: null,
@@ -42,4 +44,4 @@ function useSorted(initialData = []) {
   };
 }
 
-export { useSorted };
+export { useSorted, usePagination };
