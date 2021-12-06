@@ -1,15 +1,29 @@
-import React from 'react';
-import { Button, Grid, Table } from 'semantic-ui-react';
+import React, { useMemo, useState } from 'react';
+import { Button, Grid, Input, Table } from 'semantic-ui-react';
 
 import api, { api_unwrap_fut } from 'api';
 import appState from 'appState';
-import { useAsyncResult } from 'utils';
+import { useAsyncEffect } from 'utils';
 import { formatTimestamp, formatUser } from 'utils/render';
+import { useSorted } from 'utils/data';
 
 import AppLayout from 'layouts/AppLayout';
 
 function TmplList() {
-  const tmpls = useAsyncResult(() => api_unwrap_fut(api.tmpl.get_all()));
+  const [filterWord, setFilterWord] = useState('');
+
+  const {data: tmpls, setData, headerProps} = useSorted();
+  useAsyncEffect(async () => {
+    setData(await api_unwrap_fut(api.tmpl.get_all()));
+  });
+
+  const filteredTmpls = useMemo(() => {
+    if (tmpls === null)
+      return null;
+    const s = filterWord.toLowerCase().trim();
+    return tmpls.filter(t => t.title.toLowerCase().trim().includes(s) || formatUser(t.user).includes(s));
+  }, [filterWord, tmpls]);
+
   if (tmpls === null)
     return null;
 
@@ -29,22 +43,48 @@ function TmplList() {
       <Grid>
         <Grid.Row>
           <Grid.Column>
-            <Table basic='very' compact>
+            <Input
+              fluid
+              icon='search'
+              placeholder='搜索模板'
+              iconPosition='left'
+              value={filterWord}
+              onChange={(e, d) => setFilterWord(d.value)}
+            />
+          </Grid.Column>
+        </Grid.Row>
+        <Grid.Row>
+          <Grid.Column>
+            <Table basic='very' compact sortable>
               <Table.Header>
                 <Table.Row>
-                  <Table.HeaderCell>标题</Table.HeaderCell>
-                  <Table.HeaderCell>作者</Table.HeaderCell>
-                  <Table.HeaderCell textAlign='center'>
+                  <Table.HeaderCell
+                    {...headerProps('title')}
+                  >
+                    标题
+                  </Table.HeaderCell>
+                  <Table.HeaderCell
+                    {...headerProps('user', t => formatUser(t.user))}
+                  >
+                    作者
+                  </Table.HeaderCell>
+                  <Table.HeaderCell
+                    textAlign='center'
+                    {...headerProps('use_count')}
+                  >
                     使用次数
                   </Table.HeaderCell>
-                  <Table.HeaderCell textAlign='center'>
+                  <Table.HeaderCell
+                    textAlign='center'
+                    {...headerProps('mtime')}
+                  >
                     更新时间
                   </Table.HeaderCell>
                   <Table.HeaderCell />
                 </Table.Row>
               </Table.Header>
               <Table.Body>
-                {tmpls.map(t => (
+                {filteredTmpls.map(t => (
                   <Table.Row key={t.id}>
                     <Table.Cell>
                       {t.title}
@@ -58,7 +98,7 @@ function TmplList() {
                     <Table.Cell textAlign='center'>
                       {formatTimestamp(t.mtime)}
                     </Table.Cell>
-                    <Table.Cell width={4}>
+                    <Table.Cell>
                       <Button
                         primary
                         icon='edit'

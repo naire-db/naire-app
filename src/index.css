@@ -51,3 +51,7 @@ code {
 .question-image-group-row {
   margin-bottom: -16px;
 }
+
+.ui.sortable.table thead th {
+  border-left: none !important;
+}
