@@ -30,6 +30,10 @@ function DetailLayout(props) {
                 <Icon name='settings' />
                 问卷设置
               </Menu.Item>
+              <Menu.Item active={offset === 'tmpl'} href={'/form/' + fid + '/tmpl'}>
+                <Icon name='theme' />
+                模板选项
+              </Menu.Item>
             </Menu>
           </Grid.Column>
           <Grid.Column width={13} className='detail-content'>
