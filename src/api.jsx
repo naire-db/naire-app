@@ -112,9 +112,9 @@ class Api {
     });
 
   form = {
-    create: (title, body, folder_id) =>
+    create: (title, body, folder_id, tid) =>
       this.post('/form/create/', {
-        title, body, folder_id
+        title, body, folder_id, tid
       }),
 
     /*
@@ -368,6 +368,11 @@ class Api {
 
     get_all: () =>
       this.get('/tmpl/get_all/'),
+
+    get_detail: tid =>
+      this.post('/tmpl/get_detail/', {
+        tid
+      }),
   };
 }
 
