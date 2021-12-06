@@ -58,6 +58,7 @@ function TmplList() {
     });
   }
 
+  // TODO: pagination
   return <>
     <AppLayout offset>
       <Grid>
@@ -73,12 +74,15 @@ function TmplList() {
             />
           </Grid.Column>
         </Grid.Row>
-        <Grid.Row>
+        <Grid.Row style={{
+          marginTop: -18
+        }}>
           <Grid.Column>
             <Table basic='very' compact sortable>
               <Table.Header>
                 <Table.Row>
                   <Table.HeaderCell
+                    width={4}
                     {...headerProps('title')}
                   >
                     标题
