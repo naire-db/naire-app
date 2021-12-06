@@ -18,7 +18,7 @@ class FileQuestion extends BaseQuestion {
   max_size = null;  // in MiB
   optional = false;
 
-  is_mb = true;
+  is_mb = false;
 
   onSave() {
     if (this.is_mb) {
@@ -36,7 +36,7 @@ function FileSizeInput(props) {
     <Dropdown
       className='size-dd'
       options={units}
-      defaultValue='mib'
+      defaultValue='kib'
     />;
 
   return <Input
@@ -107,7 +107,7 @@ function FileQuestionEditor(props) {
       <Form.Checkbox
         toggle
         label='可选上传'
-        value={optional}
+        checked={optional}
         onChange={(e, d) => setOptional(d.checked)}
       />
     </Form>
