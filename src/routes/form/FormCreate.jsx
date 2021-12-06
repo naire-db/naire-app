@@ -16,7 +16,7 @@ import {
 
 import AppLayout from 'layouts/AppLayout';
 import api, { api_unwrap_fut } from 'api';
-import { int_or_null } from 'utils';
+import { int_or_null, useAsyncResult } from 'utils';
 import { get_query_param } from 'utils/url';
 import { closeModal, showModal } from 'utils/modal';
 
@@ -350,18 +350,51 @@ function FormEditor(props) {
   );
 }
 
+function makeEditorState(questions, title) {
+  let maxQid = -1, maxOid = -1;
+  const qids = [];
+  for (const q of questions) {
+    maxQid = Math.max(maxQid, q.id);
+    qids.push(q.id);
+    if (q.options) for (const o of q.options)
+      maxOid = Math.max(maxOid, o.id);
+  }
+  return {
+    nextQid: maxQid + 1,
+    nextOid: maxOid + 1,
+    qids,
+    title,
+    questions
+  };
+}
+
 function FormCreate() {
+  const res = useAsyncResult(async () => {
+    const param = get_query_param('t');
+    if (param === null)
+      return [];
+    const tid = Number(param);
+    const res = await api_unwrap_fut(api.tmpl.get_detail(tid));
+    return [tid, () => makeEditorState(res.body.questions, res.title)];
+  }, []);
+
+  if (res === null)
+    return null;
+
+  const [tid, fn] = res;
+
   async function onSaved(body, title) {
     const fid = int_or_null(get_query_param('f'));
-    await api_unwrap_fut(api.form.create(title, body, fid));
+    await api_unwrap_fut(api.form.create(title, body, fid, tid));
     window.location = '/form/all' + window.location.search;
   }
 
   return <FormEditor
     onSaved={onSaved}
     saveText='创建'
+    initialStateFn={fn}
   />;
 }
 
 export default FormCreate;
-export { FormEditor };
+export { FormEditor, makeEditorState };

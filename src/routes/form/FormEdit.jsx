@@ -1,28 +1,11 @@
 import React from 'react';
-
-import { FormEditor } from './FormCreate';
 import { useParams } from 'react-router-dom';
-import { useAsyncResult } from '../../utils';
-import api, { api_unwrap_fut } from '../../api';
-import { showModal } from '../../utils/modal';
 
-function makeEditorState(questions, title) {
-  let maxQid = -1, maxOid = -1;
-  const qids = [];
-  for (const q of questions) {
-    maxQid = Math.max(maxQid, q.id);
-    qids.push(q.id);
-    if (q.options) for (const o of q.options)
-      maxOid = Math.max(maxOid, o.id);
-  }
-  return {
-    nextQid: maxQid + 1,
-    nextOid: maxOid + 1,
-    qids,
-    title,
-    questions
-  };
-}
+import api, { api_unwrap_fut } from 'api';
+import { useAsyncResult } from 'utils';
+import { showModal } from 'utils/modal';
+
+import { FormEditor, makeEditorState } from './FormCreate';
 
 function FormEdit() {
   const fid = parseInt(useParams().fid, 10);
