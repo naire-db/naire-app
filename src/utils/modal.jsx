@@ -28,21 +28,21 @@ class ModalState {
     makeAutoObservable(this);
   }
 
-  update = action(o => {
-    console.log('modal updated', o);
-    Object.assign(this, o);
-  });
-
   setOpen = action(v => {
     this.open = v;
   });
 
-  setState = action(s => {
-    this.state = s;
+  start = action((props, initialState, resolve) => {
+    Object.assign(this, props);
+    if (initialState)
+      this.state = resolvePossibleAction(initialState);
+    this.resolve = resolve;
+    this.open = true;
   });
 
-  setResolve = action(fn => {
-    this.resolve = fn;
+  stop = action(v => {
+    this.open = false;
+    this.resolve?.(v);
   });
 }
 
@@ -80,7 +80,7 @@ const CommonModal = observer(props => {
         };
       }
     }
-  }, [closeOnDimmerClick]);
+  });
 
   return (
     <Ref innerRef={ref}>
@@ -148,8 +148,7 @@ function createModalHandle() {
   const modalState = new ModalState();
 
   function closeModal(v) {
-    modalState.setOpen(false);
-    modalState.resolve?.(v);
+    modalState.stop(v);
   }
 
   function showModal(
@@ -171,7 +170,7 @@ function createModalHandle() {
       initialState = null,
     }) {
     return new Promise(resolve => {
-      modalState.update({
+      const n = {
         title, subtitle, description, content, size, confirmText, confirmProps,
         cancelText, noConfirm,
         inputProps, closeOnDimmerClick,
@@ -187,11 +186,8 @@ function createModalHandle() {
           resolve(false);
           closeModal();
         }
-      });
-      if (initialState)
-        modalState.setState(resolvePossibleAction(initialState));
-      modalState.setResolve(resolve);
-      modalState.setOpen(true);
+      };
+      modalState.start(n, initialState, resolve);
     });
   }
 
