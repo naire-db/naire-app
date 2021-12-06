@@ -26,11 +26,11 @@ const Nav = observer(() => {
         {
           info ?
             <Menu.Item href='/form/all'>
-              问卷列表
+              我的问卷
             </Menu.Item> : null
         }
-        <Menu.Item href='/demo'>
-          Demo
+        <Menu.Item href='/tmpl/all'>
+          模板列表
         </Menu.Item>
         <Menu.Menu position='right'>
           {
