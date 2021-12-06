@@ -215,6 +215,7 @@ function FormEditor(props) {
     });
   }
 
+  // FIXME: the sticky seems not working when editing lots of questions.
   return (
     <AppLayout offset>
       <Grid>
