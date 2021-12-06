@@ -1,5 +1,7 @@
 function redirect_login() {
-  window.location = '/login?r=' + decodeURIComponent(window.location.pathname);
+  window.location = '/login?r=' + decodeURIComponent(
+    window.location.pathname + window.location.search
+  );
 }
 
 function get_invite_url(token) {
