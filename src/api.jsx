@@ -344,6 +344,28 @@ class Api {
 
     image_url: image_id => entry + '/file/image/' + image_id,
   };
+
+  tmpl = {
+    check_form: fid =>
+      this.post('/tmpl/check_form/', {
+        fid
+      }),
+
+    create: fid =>
+      this.post('/tmpl/create/', {
+        fid
+      }),
+
+    update: fid =>
+      this.post('/tmpl/update/', {
+        fid
+      }),
+
+    remove: tid =>
+      this.post('/tmpl/remove/', {
+        tid
+      }),
+  };
 }
 
 const api = new Api();
