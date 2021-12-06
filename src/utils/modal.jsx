@@ -5,36 +5,45 @@ import { observer } from 'mobx-react-lite';
 
 import { resolvePossibleAction } from './index';
 
-const modalState = makeAutoObservable({
-  title: 'Title',
-  subtitle: 'Subtitle',
-  description: 'Description',
-  content: null,
-  open: false,
-  size: 'mini',
-  onCancelled: null,
-  onConfirmed: null,
-  confirmText: '确认',
-  confirmProps: null,
-  cancelText: '取消',
-  noConfirm: false,
-  inputProps: null,
-  state: {},
+class ModalState {
+  title = 'Title';
+  subtitle = 'Subtitle';
+  description = 'Description';
+  content = null;
+  open = false;
+  size = 'mini';
+  onCancelled = null;
+  onConfirmed = null;
+  confirmText = '确认';
+  confirmProps = null;
+  cancelText = '取消';
+  noConfirm = false;
+  inputProps = null;
+  state = {};
 
-  update: action(function (o) {
+  constructor() {
+    makeAutoObservable(this);
+  }
+
+
+  update = action(o => {
     console.log('modal updated', o);
     Object.assign(this, o);
-  }),
-  setOpen: action(function (v) {
-    this.open = v;
-  }),
-  setState: action(function (s) {
-    this.state = s;
-  })
-});
+  });
 
-const CommonModal = observer(() => {
+  setOpen = action(v => {
+    this.open = v;
+  });
+
+  setState = action(s => {
+    this.state = s;
+  });
+}
+
+const CommonModal = observer(props => {
   // TODO: handle pressing Enter
+
+  const {state: modalState} = props;
 
   // closeOnDimmerClick is somehow broken, so we do it on our own
   const ref = useRef();
@@ -125,49 +134,59 @@ const CommonModal = observer(() => {
   );
 });
 
-function closeModal() {
-  modalState.setOpen(false);
-}
+function createModalHandle() {
+  const modalState = new ModalState();
 
-function showModal(
-  {
-    title,
-    subtitle = null,
-    description = null,
-    content = null,
-    size = 'mini',
-    onCancelled = null,
-    onConfirmed = null,
-    confirmText = '确认',
-    confirmProps = null,
-    cancelText = '取消',
-    noConfirm = false,
-    inputProps = null,
+  function closeModal() {
+    modalState.setOpen(false);
+  }
 
-    initialState = null,
-  }) {
-  return new Promise(resolve => {
-    modalState.update({
-      title, subtitle, description, content, size, confirmText, confirmProps,
-      cancelText, noConfirm,
-      inputProps,
-      onConfirmed: onConfirmed ? () => {
-        resolve(onConfirmed(modalState.state));
-      } : () => {
-        resolve(true);
-        closeModal();
-      },
-      onCancelled: onCancelled ? () => {
-        resolve(onCancelled(modalState.state));
-      } : () => {
-        resolve(false);
-        closeModal();
-      }
+  function showModal(
+    {
+      title,
+      subtitle = null,
+      description = null,
+      content = null,
+      size = 'mini',
+      onCancelled = null,
+      onConfirmed = null,
+      confirmText = '确认',
+      confirmProps = null,
+      cancelText = '取消',
+      noConfirm = false,
+      inputProps = null,
+
+      initialState = null,
+    }) {
+    return new Promise(resolve => {
+      modalState.update({
+        title, subtitle, description, content, size, confirmText, confirmProps,
+        cancelText, noConfirm,
+        inputProps,
+        onConfirmed: onConfirmed ? () => {
+          resolve(onConfirmed(modalState.state));
+        } : () => {
+          resolve(true);
+          closeModal();
+        },
+        onCancelled: onCancelled ? () => {
+          resolve(onCancelled(modalState.state));
+        } : () => {
+          resolve(false);
+          closeModal();
+        }
+      });
+      if (initialState)
+        modalState.setState(resolvePossibleAction(initialState));
+      modalState.setOpen(true);
     });
-    if (initialState)
-      modalState.setState(resolvePossibleAction(initialState));
-    modalState.setOpen(true);
-  });
+  }
+
+  return {
+    modalState, closeModal, showModal
+  };
 }
 
-export { CommonModal, showModal, closeModal };
+const {modalState, closeModal, showModal} = createModalHandle();
+
+export { CommonModal, modalState, showModal, closeModal, createModalHandle };

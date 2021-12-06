@@ -4,7 +4,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import api from 'api';
 import appState from 'appState';
 import { useAsyncEffect } from './utils';
-import { CommonModal } from './utils/modal';
+import { CommonModal, modalState } from './utils/modal';
 
 function make_lazy(f) {
   const E = lazy(f);
@@ -65,7 +65,7 @@ function AppRouter() {
         {mount('*', () => import('routes/Home'))}
       </Routes>
     </BrowserRouter>
-    <CommonModal />
+    <CommonModal state={modalState} />
   </>;
 }
 
