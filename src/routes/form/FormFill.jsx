@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Button, Container, Grid, Header, Image, Message, Modal, Segment } from 'semantic-ui-react';
 
-import api from 'api';
+import api, { api_unwrap } from 'api';
 import { useAsyncEffect } from 'utils';
 import { redirect_login } from 'utils/url';
+import { showModal } from 'utils/modal';
 import { ModalTransition } from 'components/transitedModal';
 import AppLayout from 'layouts/AppLayout';
 
@@ -12,7 +13,6 @@ import { aMap, initialMap, viewMap } from './views';
 import { useErrorContext } from './errorContext';
 
 import './form.css';
-import { showModal } from '../../utils/modal';
 
 function QuestionView(props) {
   const q = props.question;
@@ -199,5 +199,20 @@ function FormFill() {
   );
 }
 
+async function loadResp(fid, rid, {body: {questions}}) {
+  const {answers} = api_unwrap(await api.form.get_resp_detail(fid, rid)).body;
+  console.log('got answers', answers, questions);
+  for (let i = 0; i < answers.length; ++i)
+    aMap[questions[i].id] = answers[i];
+  console.log('make amap', aMap);
+}
+
+function loadBareForm({body: {questions}}) {
+  for (const q of questions) {
+    console.log('loadq', q);
+    aMap[q.id] = initialMap[q.type]();
+  }
+}
+
 export default FormFill;
-export { QuestionView, aMap };
+export { QuestionView, loadResp, loadBareForm };

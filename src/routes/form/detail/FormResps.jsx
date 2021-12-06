@@ -9,9 +9,10 @@ import { useAsyncResult } from 'utils';
 import { usePagination } from 'utils/paginate';
 import { formatTimestamp, formatUser } from 'utils/render';
 
+import { loadResp } from '../FormFill';
 import { renderMap } from './stats';
 import DetailLayout from './DetailLayout';
-import RespView, { loadResp } from './RespView';
+import RespView from './RespView';
 
 function RemoveModal(props) {
   const {ind, fid, rid, onClosed} = props;
