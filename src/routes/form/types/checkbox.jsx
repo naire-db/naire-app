@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Button, Checkbox, Form, Input, Radio, Table } from 'semantic-ui-react';
 
-import { BaseQuestion, registerQuestionType, useQState } from './base';
 import NumberInput from 'components/NumberInput';
-import { makeRangeNumberInputProps } from './utils';
+
+import { BaseQuestion, registerQuestionType, useQState } from './base';
+import { makeRangeNumberInputProps, unwrap_nullable, wrap_nullable } from './utils';
 
 class CheckboxQuestion extends BaseQuestion {
   type = 'checkbox';
@@ -16,15 +17,13 @@ class CheckboxQuestion extends BaseQuestion {
   }
 
   onSave() {
-    if (this.min_choices === null)
-      this.min_choices = 0;
-    if (this.max_choices === null)
-      this.max_choices = this.options.length;
+    this.min_choices = unwrap_nullable(this.min_choices, 0);
+    this.max_choices = unwrap_nullable(this.max_choices, this.options.length);
   }
 
   afterLoad() {
-    if (this.max_choices === this.options.length)
-      this.max_choices = null;
+    this.min_choices = wrap_nullable(this.min_choices, 0);
+    this.max_choices = wrap_nullable(this.max_choices, this.options.length);
   }
 }
 

@@ -2,6 +2,10 @@ function unwrap_nullable(v, d) {
   return v === null ? d : v;
 }
 
+function wrap_nullable(v, d) {
+  return v === d ? null : v;
+}
+
 function makeRangeNumberInputProps(minValue, minSetter, minDefault, maxValue, maxSetter, maxDefault, setError) {
   function onMinChanged(v) {
     setError(unwrap_nullable(v, minDefault) > unwrap_nullable(maxValue, maxDefault));
@@ -30,4 +34,4 @@ function makeRangeNumberInputProps(minValue, minSetter, minDefault, maxValue, ma
   ];
 }
 
-export { makeRangeNumberInputProps, unwrap_nullable };
+export { makeRangeNumberInputProps, unwrap_nullable, wrap_nullable };

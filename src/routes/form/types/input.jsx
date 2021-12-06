@@ -3,7 +3,7 @@ import { Form } from 'semantic-ui-react';
 
 import NumberInput from 'components/NumberInput';
 import { BaseQuestion, registerQuestionType, useQState } from './base';
-import { makeRangeNumberInputProps, unwrap_nullable } from './utils';
+import { makeRangeNumberInputProps, unwrap_nullable, wrap_nullable } from './utils';
 
 const MAX_LENGTH = 200;
 
@@ -17,6 +17,11 @@ class InputQuestion extends BaseQuestion {
   onSave() {
     this.min_length = unwrap_nullable(this.min_length, 0);
     this.max_length = unwrap_nullable(this.max_length, MAX_LENGTH);
+  }
+
+  afterLoad() {
+    this.min_length = wrap_nullable(this.min_length, 0);
+    this.max_length = wrap_nullable(this.max_length, MAX_LENGTH);
   }
 }
 
