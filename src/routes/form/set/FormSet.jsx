@@ -260,7 +260,11 @@ function FormSet() {
   }
 
   async function edit(form) {
-    // TODO: warn only when resp_count > 0 or form is visible
+    const url = '/form/' + form.id + '/edit?f=' + currFolderId;
+    if (!form.resp_count && !form.published) {
+      window.location = url;
+      return;
+    }
     return await showModal({
       title: '修改问卷',
       subtitle: form.title,
@@ -270,7 +274,7 @@ function FormSet() {
         negative: true
       },
       onConfirmed() {
-        window.location = '/form/' + form.id + '/edit?f=' + currFolderId;
+        window.location = url;
       }
     });
   }
