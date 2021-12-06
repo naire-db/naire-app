@@ -60,6 +60,7 @@ class Api {
   ERR_EXPIRED = 5;
   ERR_DENIED = 6;
   ERR_LIMITED = 7;
+  ERR_BAD_PASSPHRASE = 8;
 
   async post(path, data) {
     const options = {
@@ -122,9 +123,9 @@ class Api {
      TODO: Before we work on Form visibility, this means no permission limitations
      */
 
-    get_detail: fid =>
+    get_detail: (fid, pass) =>
       this.post('/form/get_detail/', {
-        fid
+        fid, pass: pass
       }),
 
     save_resp: (fid, resp_body) =>
