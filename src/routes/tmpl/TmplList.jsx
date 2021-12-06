@@ -6,8 +6,13 @@ import appState from 'appState';
 import { useAsyncEffect } from 'utils';
 import { formatTimestamp, formatUser } from 'utils/render';
 import { useSorted } from 'utils/data';
-
+import { CommonModal, createModalHandle } from 'utils/modal';
 import AppLayout from 'layouts/AppLayout';
+
+import { loadBareForm } from '../form/FormFill';
+import RespView from '../form/detail/RespView';
+
+const {modalState, showModal} = createModalHandle();
 
 function TmplList() {
   const [filterWord, setFilterWord] = useState('');
@@ -38,7 +43,22 @@ function TmplList() {
     window.location.reload();
   }
 
-  return (
+  async function preview({id}) {
+    const res = await api_unwrap_fut(api.tmpl.get_detail(id));
+    loadBareForm(res);
+    await showModal({
+      title: '模板预览',
+      noConfirm: true,
+      cancelText: '关闭',
+      size: 'small',
+      content: () =>
+        <RespView
+          form={res}
+        />
+    });
+  }
+
+  return <>
     <AppLayout offset>
       <Grid>
         <Grid.Row>
@@ -87,7 +107,9 @@ function TmplList() {
                 {filteredTmpls.map(t => (
                   <Table.Row key={t.id}>
                     <Table.Cell>
-                      {t.title}
+                      <a onClick={() => preview(t)} href='#'>
+                        {t.title}
+                      </a>
                     </Table.Cell>
                     <Table.Cell>
                       {formatUser(t.user)}
@@ -129,7 +151,8 @@ function TmplList() {
         </Grid.Row>
       </Grid>
     </AppLayout>
-  );
+    <CommonModal state={modalState} />
+  </>;
 }
 
 export default TmplList;
