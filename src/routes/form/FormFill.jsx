@@ -177,6 +177,7 @@ function FormFill() {
         content: s => (
           <Form error={s.fail}>
             <Form.Input
+              type='password'
               value={s.value}
               onChange={(e, d) => (s.value = d.value)}
               maxLength={PASSPHRASE_MAX_LENGTH}
