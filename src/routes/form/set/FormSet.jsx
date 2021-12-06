@@ -75,9 +75,9 @@ function FormSet() {
 
   function updateFilterWord(v, withForms) {
     setFilterWord_(v);
-    const pin = v.trim();
+    const pin = v.trim().toLowerCase();
     if (pin)
-      setFilteredForms(withForms.filter(f => f.title.includes(pin)));
+      setFilteredForms(withForms.filter(f => f.title.toLowerCase().includes(pin)));
     else
       setFilteredForms(withForms);
   }
