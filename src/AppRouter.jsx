@@ -39,7 +39,6 @@ function AppRouter() {
     <BrowserRouter>
       <Routes>
         {mount('/', () => import('routes/Home'))}
-        {mount('/demo', () => import('routes/Demo'))}
         {mount('/login', () => import('routes/Login'))}
         {mount('/register', () => import('routes/Register'))}
 
