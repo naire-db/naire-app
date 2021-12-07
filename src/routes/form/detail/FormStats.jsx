@@ -60,7 +60,10 @@ function FormStats() {
   }
 
   return (
-    <DetailLayout offset='stats' fid={fid} title={form.title}>
+    <DetailLayout
+      offset='stats' fid={fid} form={form}
+      respCount={resps.count}
+    >
       <Header className='print-only' as='h1' content={form.title} style={{
         textAlign: 'center'
       }} />

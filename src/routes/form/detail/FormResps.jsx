@@ -218,8 +218,8 @@ function FormResps() {
   const {form, resps} = resData;
   return (
     <DetailLayout
-      title={form.title} fid={fid} offset='resps'
-      statsDisabled={!resps.length}
+      form={form} fid={fid} offset='resps'
+      respCount={resps.length}
     >
       <FormRespsInner fid={fid} form={form} resps={resps} />
     </DetailLayout>

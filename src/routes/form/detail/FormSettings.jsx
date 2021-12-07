@@ -131,8 +131,8 @@ function FormSettings() {
 
   return (
     <DetailLayout
-      offset='settings' fid={fid} title={form.title}
-      statsDisabled={!form.resp_count}
+      offset='settings' fid={fid} form={form}
+      respCount={form.resp_count}
     >
       <Form>
         <Form.Input

@@ -17,6 +17,7 @@ import RetitleModal from './RetitleModal';
 import RemoveModal from './RemoveModal';
 
 import './form-set.css';
+import { onEditForm } from '../common';
 
 function getFormUrl(fid) {
   return window.location.origin + '/f/' + fid;
@@ -261,22 +262,7 @@ function FormSet() {
 
   async function edit(form) {
     const url = '/form/' + form.id + '/edit?f=' + currFolderId;
-    if (!form.resp_count && !form.published) {
-      window.location = url;
-      return;
-    }
-    return await showModal({
-      title: '修改问卷',
-      subtitle: form.title,
-      description: '这将删除所有已有的答卷。',
-      confirmText: '修改',
-      confirmProps: {
-        negative: true
-      },
-      onConfirmed() {
-        window.location = url;
-      }
-    });
+    await onEditForm(url, form.resp_count || form.published, form.title);
   }
 
   const {activeItems, menu} = usePagination(filteredForms, {

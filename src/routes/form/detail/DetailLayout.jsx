@@ -2,16 +2,27 @@ import React from 'react';
 import { Grid, Header, Icon, Menu } from 'semantic-ui-react';
 
 import AppLayout from 'layouts/AppLayout';
+import { onEditForm } from '../common';
 
 function DetailLayout(props) {
-  const {offset, fid, statsDisabled} = props;
+  const {offset, fid, respCount, form} = props;
+  const {title, published} = form;
+
+  const editWarn = published || respCount;
+  const statsDisabled = !respCount;
+
+  async function edit() {
+    const url = '/form/' + fid + '/edit';
+    await onEditForm(url, editWarn);
+  }
+
   return (
     <AppLayout offset>
       <Grid>
         <Grid.Row>
           <Grid.Column width={3} className='no-print'>
             <Header>
-              {props.title}
+              {title}
             </Header>
             <Menu secondary vertical fluid>
               <Menu.Item active={offset === 'resps'} href={'/form/' + fid + '/resps'}>
@@ -30,14 +41,16 @@ function DetailLayout(props) {
                 <Icon name='settings' />
                 权限控制
               </Menu.Item>
-              <Menu.Item href={'/form/' + fid + '/edit'}>
-                <Icon name='edit' />
-                编辑问卷
-              </Menu.Item>
-              {/* FIXME: show a warning modal like in FormSet */}
               <Menu.Item active={offset === 'tmpl'} href={'/form/' + fid + '/tmpl'}>
                 <Icon name='theme' />
                 模板和导出
+              </Menu.Item>
+              {/* FIXME: show a warning modal like in FormSet */}
+              <Menu.Item
+                onClick={edit}
+              >
+                <Icon name='edit' />
+                编辑问卷
               </Menu.Item>
             </Menu>
           </Grid.Column>
