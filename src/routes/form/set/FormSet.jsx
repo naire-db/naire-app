@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Button, Card, Dropdown, Form, Grid, Icon, Input, Label, Menu, Segment } from 'semantic-ui-react';
+import { Card, Dropdown, Form, Grid, Icon, Input, Label, Menu, Segment } from 'semantic-ui-react';
 
 import api, { api_unwrap_fut } from 'api';
 import appState from 'appState';
@@ -18,6 +18,7 @@ import RemoveModal from './RemoveModal';
 
 import './form-set.css';
 import { onEditForm } from '../common';
+import NavButton from '../../../components/NavButton';
 
 function getFormUrl(fid) {
   return window.location.origin + '/f/' + fid;
@@ -431,9 +432,9 @@ function FormSet() {
 
   return (
     <AppLayout offset>
-      <Grid>
+      <Grid relaxed>
         <Grid.Row>
-          <Grid.Column width={3}>
+          <Grid.Column width={4}>
             {ctxOptions && <Dropdown
               fluid
               selection
@@ -441,14 +442,15 @@ function FormSet() {
               options={ctxOptions}
               onChange={(e, d) => switchContext(d.value)}
             />}
-            <Menu vertical pointing>
+            <Menu vertical pointing fluid>
               {folders.map(f => (
                 <Menu.Item
                   key={f.id}
                   active={f.id === currFolderId}
                   onClick={() => onFolderChanged(f)}
                 >
-                  <Label>{f.form_count}
+                  <Label>
+                    {f.form_count}
                   </Label>
                   {f.name}
                 </Menu.Item>
@@ -470,42 +472,46 @@ function FormSet() {
               </Menu.Item>
             </Menu>
           </Grid.Column>
-          <Grid.Column width={1} />
           <Grid.Column width={12}>
             <Grid>
               <Grid.Row>
-                <Grid.Column width={10} verticalAlign='middle'>
+                <Grid.Column verticalAlign='middle'>
                   <Input
-                    fluid
                     icon='search'
                     placeholder='搜索问卷'
                     size='large'
                     value={filterWord}
                     onChange={(e, d) => onFiltered(d.value)}
+                    style={{
+                      width: 'calc(100% - 270px)'
+                    }}
                   />
-                </Grid.Column>
-                <Grid.Column width={3} verticalAlign='middle'>
-                  <Dropdown
-                    className='form-card-sort-dd'
-                    selection
-                    simple
-                    compact
-                    fluid
-                    placeholder='State'
-                    options={sortOptions}
-                    defaultValue='ctime'  // behaviour of API
-                    style={{}}
-                    onChange={(e, d) => onSorted(d.value)}
-                  />
-                </Grid.Column>
-                <Grid.Column width={3} verticalAlign='middle'>
-                  <Button
-                    floated='right'
-                    primary size='large'
-                    href={'/form/create?f=' + currFolderId}
-                  >
-                    创建问卷
-                  </Button>
+                  <div style={{float: 'right'}}>
+                    <Dropdown
+                      className='form-card-sort-dd'
+                      size='large'
+                      compact
+                      selection
+                      simple
+                      placeholder='State'
+                      options={sortOptions}
+                      defaultValue='ctime'  // behaviour of API
+                      onChange={(e, d) => onSorted(d.value)}
+                      style={{
+                        width: 110,
+                      }}
+                    />
+                    <NavButton
+                      size='large'
+                      primary
+                      href={'/form/create?f=' + currFolderId}
+                      style={{
+                        marginLeft: 20
+                      }}
+                    >
+                      创建问卷
+                    </NavButton>
+                  </div>
                 </Grid.Column>
               </Grid.Row>
               <ShareRow
