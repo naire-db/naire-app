@@ -43,3 +43,5 @@ function RadioAnswerRenderFactory(q) {
 }
 
 registerQuestionStat('radio', RadioStat, RadioAnswerRenderFactory);
+
+export { RadioStat, RadioAnswerRenderFactory };
