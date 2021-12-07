@@ -12,6 +12,7 @@ class ModalState {
   content = null;
   open = false;
   size = 'mini';
+
   onCancelled = null;
   onConfirmed = null;
   confirmText = '确认';
@@ -19,6 +20,8 @@ class ModalState {
   cancelText = '取消';
   cancelProps = null;
   noConfirm = false;
+  buttons = null;
+
   inputProps = null;
   closeOnDimmerClick = true;
 
@@ -47,7 +50,7 @@ const CommonModal = observer(props => {
   // TODO: handle pressing Enter
 
   const {state: modalState} = props;
-  const {closeOnDimmerClick} = modalState;
+  const {closeOnDimmerClick, buttons} = modalState;
 
   // closeOnDimmerClick is somehow broken, so we do it on our own
   const ref = useRef();
@@ -63,7 +66,7 @@ const CommonModal = observer(props => {
         function dimHandler(e) {
           // XXX: Closed directly without calling onCancelled, which can be unwanted.
           if (!vis.get(e))
-            modalState.stop(false);
+            modalState.onCancelled();
         }
 
         function modalHandler(e) {
@@ -79,6 +82,41 @@ const CommonModal = observer(props => {
       }
     }
   });
+
+  let actions;
+  if (buttons && modalState.open) {
+    const btns = resolvePossibleAction(buttons, modalState.state, modalState.stop);
+    if (btns.length)
+      actions = <Modal.Actions>
+        {btns.map(props => <Button {...props} />)}
+      </Modal.Actions>;
+    else
+      actions = null;
+  } else {
+    actions = <Modal.Actions>
+      <Button
+        content={modalState.cancelText}
+        onClick={modalState.onCancelled}
+        {...(
+          modalState.open && modalState.cancelProps
+            ? resolvePossibleAction(modalState.cancelProps, modalState.state)
+            : {}
+        )}
+      />
+      {!modalState.noConfirm &&
+        <Button
+          primary
+          content={modalState.confirmText}
+          onClick={modalState.onConfirmed}
+          {...(
+            modalState.open && modalState.confirmProps
+              ? resolvePossibleAction(modalState.confirmProps, modalState.state)
+              : {}
+          )}
+        />
+      }
+    </Modal.Actions>;
+  }
 
   return (
     <Ref innerRef={ref}>
@@ -118,29 +156,7 @@ const CommonModal = observer(props => {
               </Form>
             )}
           </Modal.Content>
-          <Modal.Actions>
-            <Button
-              content={modalState.cancelText}
-              onClick={modalState.onCancelled}
-              {...(
-                modalState.open && modalState.cancelProps
-                  ? resolvePossibleAction(modalState.cancelProps, modalState.state)
-                  : {}
-              )}
-            />
-            {!modalState.noConfirm &&
-              <Button
-                primary
-                content={modalState.confirmText}
-                onClick={modalState.onConfirmed}
-                {...(
-                  modalState.open && modalState.confirmProps
-                    ? resolvePossibleAction(modalState.confirmProps, modalState.state)
-                    : {}
-                )}
-              />
-            }
-          </Modal.Actions>
+          {actions}
         </Modal>
       </TransitionablePortal>
     </Ref>
@@ -161,6 +177,7 @@ function createModalHandle() {
       description = null,
       content = null,
       size = 'mini',
+
       onCancelled = null,
       onConfirmed = null,
       confirmText = '确认',
@@ -168,6 +185,8 @@ function createModalHandle() {
       cancelText = '取消',
       cancelProps = null,
       noConfirm = false,
+      buttons = null,
+
       inputProps = null,
       closeOnDimmerClick = true,
 
@@ -177,7 +196,7 @@ function createModalHandle() {
       const n = {
         title, subtitle, description, content, size,
         confirmText, confirmProps,
-        cancelText, cancelProps, noConfirm,
+        cancelText, cancelProps, noConfirm, buttons,
         inputProps, closeOnDimmerClick,
         onConfirmed: onConfirmed ? () => {
           onConfirmed(modalState.state, closeModal);
