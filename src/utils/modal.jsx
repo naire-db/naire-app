@@ -61,8 +61,9 @@ const CommonModal = observer(props => {
         const vis = new Map();
 
         function dimHandler(e) {
+          // XXX: Closed directly without calling onCancelled, which can be unwanted.
           if (!vis.get(e))
-            modalState.onCancelled();
+            modalState.stop(false);
         }
 
         function modalHandler(e) {
