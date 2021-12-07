@@ -179,7 +179,7 @@ function FormEditor(props) {
       content(s) {
         return <Form className='image-form'>
           <Form.Input
-            label='上传图片文件（不超过 10M）'
+            label='上传图片文件（最大 10 MiB）'
             type='file'
             accept='image/*'
             onChange={e => {
