@@ -24,11 +24,12 @@ import { closeModal, showModal } from 'utils/modal';
 import { editorMap, nameMap, qMap, typeMap } from './types';
 import { useErrorContext } from './errorContext';
 import { FORM_TITLE_MAX_LENGTH, QUESTION_TITLE_MAX_LENGTH } from './config';
+import { consume_signed } from './exchange';
 
 import './form.css';
 
 function loadQMap(questions, ctx) {
-  console.log('load qmap', questions);
+  console.log('loading qmap', questions);
   for (const q of questions) {
     const n = qMap[q.id] = new typeMap[q.type](q.id, ctx);
     Object.assign(n, _.cloneDeep(q));
@@ -77,17 +78,20 @@ function FormEditor(props) {
     }
   };
 
-  useEffect(() => {
-    if (!initialStateFn)
-      return;
-
-    const {nextQid, nextOid, qids, title, questions} = initialStateFn();
+  function loadEditorState(state) {
+    console.log('load editor state', state);
+    const {nextQid, nextOid, qids, title, questions} = state;
+    loadQMap(questions, ctx);
     setNextQid(nextQid);
     setNextOid(nextOid);
     setQids(qids);
     setTitle(title);
     // Assume initialStateFn never changes after FormEditor's first time rendering
-    loadQMap(questions, ctx);
+  }
+
+  useEffect(() => {
+    if (initialStateFn)
+      loadEditorState(initialStateFn());
   }, []);
 
   // XXX: Putting initialStateFn in deps causes random reloading.
@@ -225,8 +229,9 @@ function FormEditor(props) {
 
   async function onImport() {
     // TODO
+    let text;
     const res = await showModal({
-      title: '导入问卷',
+      title: '导入问卷题目',
       cancelText: '从剪切板导入',
       confirmText: '上传文件',
       description: '正在编辑的内容将被覆盖。',
@@ -236,7 +241,75 @@ function FormEditor(props) {
       cancelProps: {
         size: 'small'
       },
+      content() {
+        return (
+          <input
+            type='file'
+            id='import-input'
+            style={{
+              display: 'none'
+            }}
+          />
+        );
+      },
+      async onCancelled(s, close) {
+        try {
+          text = await navigator.clipboard.readText();
+        } catch (e) {  // denied
+          return close(1);
+        }
+        return close(0);
+      },
+      onConfirmed(s, close) {
+        const input = document.getElementById('import-input');
+
+        function handleFile(e) {
+          text = e.target.result;
+          close(0);
+        }
+
+        function handler(e) {
+          const f = e.target.files[0];
+          console.log('uploaded', f);
+          if (f) {
+            const reader = new FileReader();
+            reader.onload = handleFile;
+            reader.readAsText(f);
+          }
+          input.removeEventListener('change', handler);
+        }
+
+        input.addEventListener('change', handler);
+        input.click();
+      }
     });
+
+    function work() {
+      if (res === 0) {
+        let data;
+        try {
+          data = JSON.parse(text);
+        } catch (e) {  // bad json
+          return '提供的问卷数据不合法。';
+        }
+        if (consume_signed(data)) {
+          loadEditorState(makeEditorState(data.body.questions, data.title));
+        } else
+          return '提供的问卷数据不合法。';
+      } else if (res === 2)
+        return '提供的问卷数据不合法。';
+      else if (res === 1)
+        return '对剪切板的访问被拒绝。';
+    }
+
+    const error = work();
+    if (error)
+      await showModal({
+        title: '导入失败',
+        description: error,
+        noConfirm: true,
+        cancelText: '关闭',
+      });
   }
 
   // FIXME: the sticky seems not working when editing lots of questions.
