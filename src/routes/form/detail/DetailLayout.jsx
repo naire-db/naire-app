@@ -28,11 +28,11 @@ function DetailLayout(props) {
               </Menu.Item>
               <Menu.Item active={offset === 'settings'} href={'/form/' + fid + '/settings'}>
                 <Icon name='settings' />
-                问卷设置
+                权限控制
               </Menu.Item>
               <Menu.Item active={offset === 'tmpl'} href={'/form/' + fid + '/tmpl'}>
                 <Icon name='theme' />
-                模板选项
+                模板和导出
               </Menu.Item>
             </Menu>
           </Grid.Column>
