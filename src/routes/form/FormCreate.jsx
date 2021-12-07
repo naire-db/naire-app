@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Button,
+  Container,
   Form,
   Grid,
   Header,
@@ -9,6 +10,7 @@ import {
   Input,
   Label,
   Message,
+  Ref,
   Segment,
   Sticky,
   Transition
@@ -330,149 +332,154 @@ function FormEditor(props) {
       });
   }
 
-  // FIXME: the sticky seems not working when editing lots of questions.
+  const ref = useRef();
+
   return (
     <AppLayout offset>
-      <Grid>
-        <Grid.Row>
-          <Grid.Column width={4}>
-            <Sticky offset={70}>
-              <Segment>
-                <Header>添加题目</Header>
-                {qTypes.map(l => (
-                  <Label key={l[0]} as='a' onClick={() => addQuestion(l[0])} style={{'margin': 3}}>
-                    <Icon name={l[2]} />
-                    {l[1]}
-                  </Label>
-                ))}
-              </Segment>
-            </Sticky>
-          </Grid.Column>
-          <Grid.Column width={12}>
-            <Grid>
-              <Grid.Row>
-                <Grid.Column>
-                  <Input
-                    style={{
-                      width: 'calc(100% - 170px)'
-                    }}
-                    className='qeditor-title-input-box'
-                    error={titleError}
-                    placeholder='问卷标题'
-                    value={title}
-                    maxLength={FORM_TITLE_MAX_LENGTH}
-                    onChange={e => {
-                      const v = e.target.value;
-                      window.titleNonEmpty = v.trim();
-                      setTitleError(false);
-                      setTitle(v);
-                    }}
-                  />
-                  {/* FIXME: Cannot use NavButton here since submit can fail when title is empty.  */}
-                  <Button
-                    primary
-                    floated='right'
-                    onClick={onSubmit}
-                    disabled={titleError || errorCtx.dirty()}
-                  >
-                    {saveText}
-                  </Button>
-                  <Button
-                    floated='right'
-                    content='导入'
-                    style={{
-                      marginRight: 5
-                    }}
-                    onClick={onImport}
-                  />
-                </Grid.Column>
-              </Grid.Row>
-              <Grid.Row>
-                <Grid.Column>
-                  <Transition.Group duration={120}>
-                    {qids.map(qid => {
-                      const q = qMap[qid];
-                      const {type, title} = q;
-                      const E = editorMap[type];
-                      return <Segment.Group key={qid}>
-                        <Segment>
-                          <Grid>
-                            <Grid.Row>
-                              <Grid.Column width={13} verticalAlign='middle'>
-                                <Header as='h4'>
-                                  {nameMap[type]}
-                                </Header>
-                              </Grid.Column>
-                              <Grid.Column width={3} verticalAlign='middle'>
-                                <Icon
-                                  link name='delete' size='large' className='rfloated'
-                                  onClick={() => onRemoved(qid)}
-                                />
-                              </Grid.Column>
-                            </Grid.Row>
-                          </Grid>
-                        </Segment>
-                        <Segment>
-                          <Grid>
-                            <Grid.Row className='qeditor-meta-row'>
-                              <Grid.Column>
-                                <Input
-                                  className='qeditor-title-input-box'
-                                  placeholder='问题'
-                                  maxLength={QUESTION_TITLE_MAX_LENGTH}
-                                  value={title}
-                                  onChange={e => {
-                                    q.title = e.target.value;
-                                    setQids([...qids]);  // dirty way to make this part rerendered
-                                  }}
-                                />
-                              </Grid.Column>
-                            </Grid.Row>
-                            <Grid.Row className='question-image-group-row'>
-                              <Grid.Column>
-                                <Image.Group size='tiny'>
-                                  {q.images?.map(iid => (
-                                    <Image
-                                      key={iid}
-                                      bordered rounded
-                                      src={api.file.image_url(iid)}
-                                      as='a' href='#'
-                                      onClick={() => openImage(qid, iid)}
-                                    />
-                                  ))
-                                  }
-                                </Image.Group>
-                                {(!q.images || q.images.length) < 5 &&
-                                  <Button
-                                    icon='add'
-                                    onClick={() => addImage(qid)}
-                                    content='添加图片'
-                                    size='mini'
+      <Ref innerRef={ref}>
+        <Grid>
+          <Grid.Row>
+            <Grid.Column width={4}>
+              <Container>
+                <Sticky offset={70} context={qids.length ? ref : undefined}>
+                  <Segment>
+                    <Header>添加题目</Header>
+                    {qTypes.map(l => (
+                      <Label key={l[0]} as='a' onClick={() => addQuestion(l[0])} style={{'margin': 3}}>
+                        <Icon name={l[2]} />
+                        {l[1]}
+                      </Label>
+                    ))}
+                  </Segment>
+                </Sticky>
+              </Container>
+            </Grid.Column>
+            <Grid.Column width={12}>
+              <Grid>
+                <Grid.Row>
+                  <Grid.Column>
+                    <Input
+                      style={{
+                        width: 'calc(100% - 170px)'
+                      }}
+                      className='qeditor-title-input-box'
+                      error={titleError}
+                      placeholder='问卷标题'
+                      value={title}
+                      maxLength={FORM_TITLE_MAX_LENGTH}
+                      onChange={e => {
+                        const v = e.target.value;
+                        window.titleNonEmpty = v.trim();
+                        setTitleError(false);
+                        setTitle(v);
+                      }}
+                    />
+                    {/* FIXME: Cannot use NavButton here since submit can fail when title is empty.  */}
+                    <Button
+                      primary
+                      floated='right'
+                      onClick={onSubmit}
+                      disabled={titleError || errorCtx.dirty()}
+                    >
+                      {saveText}
+                    </Button>
+                    <Button
+                      floated='right'
+                      content='导入'
+                      style={{
+                        marginRight: 5
+                      }}
+                      onClick={onImport}
+                    />
+                  </Grid.Column>
+                </Grid.Row>
+                <Grid.Row>
+                  <Grid.Column>
+                    <Transition.Group duration={120}>
+                      {qids.map(qid => {
+                        const q = qMap[qid];
+                        const {type, title} = q;
+                        const E = editorMap[type];
+                        return <Segment.Group key={qid}>
+                          <Segment>
+                            <Grid>
+                              <Grid.Row>
+                                <Grid.Column width={13} verticalAlign='middle'>
+                                  <Header as='h4'>
+                                    {nameMap[type]}
+                                  </Header>
+                                </Grid.Column>
+                                <Grid.Column width={3} verticalAlign='middle'>
+                                  <Icon
+                                    link name='delete' size='large' className='rfloated'
+                                    onClick={() => onRemoved(qid)}
                                   />
-                                }
-                              </Grid.Column>
-                            </Grid.Row>
-                            <Grid.Row>
-                              <Grid.Column>
-                                <E
-                                  qid={qid}
-                                  ctx={ctx}
-                                  useErrorFlag={errorCtx.createFlagHook(qid)}
-                                  useErrorState={errorCtx.createStateHook(qid)}
-                                />
-                              </Grid.Column>
-                            </Grid.Row>
-                          </Grid>
-                        </Segment>
-                      </Segment.Group>;
-                    })}
-                  </Transition.Group>
-                </Grid.Column>
-              </Grid.Row>
-            </Grid>
-          </Grid.Column>
-        </Grid.Row>
-      </Grid>
+                                </Grid.Column>
+                              </Grid.Row>
+                            </Grid>
+                          </Segment>
+                          <Segment>
+                            <Grid>
+                              <Grid.Row className='qeditor-meta-row'>
+                                <Grid.Column>
+                                  <Input
+                                    className='qeditor-title-input-box'
+                                    placeholder='问题'
+                                    maxLength={QUESTION_TITLE_MAX_LENGTH}
+                                    value={title}
+                                    onChange={e => {
+                                      q.title = e.target.value;
+                                      setQids([...qids]);  // dirty way to make this part rerendered
+                                    }}
+                                  />
+                                </Grid.Column>
+                              </Grid.Row>
+                              <Grid.Row className='question-image-group-row'>
+                                <Grid.Column>
+                                  <Image.Group size='tiny'>
+                                    {q.images?.map(iid => (
+                                      <Image
+                                        key={iid}
+                                        bordered rounded
+                                        src={api.file.image_url(iid)}
+                                        as='a' href='#'
+                                        onClick={() => openImage(qid, iid)}
+                                      />
+                                    ))
+                                    }
+                                  </Image.Group>
+                                  {(!q.images || q.images.length) < 5 &&
+                                    <Button
+                                      icon='add'
+                                      onClick={() => addImage(qid)}
+                                      content='添加图片'
+                                      size='mini'
+                                    />
+                                  }
+                                </Grid.Column>
+                              </Grid.Row>
+                              <Grid.Row>
+                                <Grid.Column>
+                                  <E
+                                    qid={qid}
+                                    ctx={ctx}
+                                    useErrorFlag={errorCtx.createFlagHook(qid)}
+                                    useErrorState={errorCtx.createStateHook(qid)}
+                                  />
+                                </Grid.Column>
+                              </Grid.Row>
+                            </Grid>
+                          </Segment>
+                        </Segment.Group>;
+                      })}
+                    </Transition.Group>
+                  </Grid.Column>
+                </Grid.Row>
+              </Grid>
+            </Grid.Column>
+          </Grid.Row>
+        </Grid>
+      </Ref>
     </AppLayout>
   );
 }
