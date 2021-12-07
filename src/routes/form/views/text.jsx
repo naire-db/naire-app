@@ -24,6 +24,7 @@ function TextView(props) {
       maxLength={max_length}
       placeholder='输入...'
       onChange={onChange}
+      value={resp}
     />
     {
       min_length !== 0 &&
@@ -38,4 +39,4 @@ function TextView(props) {
   </Form>
 }
 
-registerQuestionView('text', TextView, () => null);
+registerQuestionView('text', TextView, () => '');
