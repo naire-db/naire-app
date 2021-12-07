@@ -13,6 +13,7 @@ import {
   Sticky,
   Transition
 } from 'semantic-ui-react';
+import _ from 'lodash';
 
 import AppLayout from 'layouts/AppLayout';
 import api, { api_unwrap_fut } from 'api';
@@ -30,7 +31,7 @@ function loadQMap(questions, ctx) {
   console.log('load qmap', questions);
   for (const q of questions) {
     const n = qMap[q.id] = new typeMap[q.type](q.id, ctx);
-    Object.assign(n, q);
+    Object.assign(n, _.cloneDeep(q));
     n.afterLoad?.();
   }
   console.log('loaded qmap', qMap);
@@ -87,7 +88,9 @@ function FormEditor(props) {
     setTitle(title);
     // Assume initialStateFn never changes after FormEditor's first time rendering
     loadQMap(questions, ctx);
-  }, [initialStateFn]);
+  }, []);
+
+  // XXX: Putting initialStateFn in deps causes random reloading.
 
   function addQuestion(type) {
     console.log('adding question type', type);
@@ -141,7 +144,7 @@ function FormEditor(props) {
     setQids([...qids]);
   }
 
-  async function openImage(q, iid) {
+  async function openImage(qid, iid) {
     await showModal({
       title: '查看图片',
       size: 'small',
@@ -159,6 +162,7 @@ function FormEditor(props) {
         negative: true
       },
       onConfirmed() {
+        const q = qMap[qid];
         q.images = q.images.filter(x => x !== iid);
         refreshQuestions();
         closeModal();
@@ -166,7 +170,7 @@ function FormEditor(props) {
     });
   }
 
-  async function addImage(q) {
+  async function addImage(qid) {
     let file = null;
     await showModal({
       title: '添加图片',
@@ -179,10 +183,15 @@ function FormEditor(props) {
             type='file'
             accept='image/*'
             onChange={e => {
-              s.uploaded = true;
               file = e.target.files[0];
-              s.size = file.size / 1024 / 1024;
-              s.oversized = s.size > 10;
+              if (file) {
+                s.uploaded = true;
+                s.size = file.size / 1024 / 1024;
+                s.oversized = s.size > 10;
+              } else {
+                s.uploaded = false;
+                s.oversized = false;
+              }
             }}
           />
           {s.uploaded && s.oversized &&
@@ -202,8 +211,7 @@ function FormEditor(props) {
         const data = new FormData();
         data.append('file', file);
         const image_id = await api_unwrap_fut(api.file.upload_image(data));
-        q.images.push(image_id);
-        console.log('with image', image_id, q);
+        qMap[qid].images.push(image_id);
         refreshQuestions();
         closeModal();
       },
@@ -311,7 +319,7 @@ function FormEditor(props) {
                                       bordered rounded
                                       src={api.file.image_url(iid)}
                                       as='a' href='#'
-                                      onClick={() => openImage(q, iid)}
+                                      onClick={() => openImage(qid, iid)}
                                     />
                                   ))
                                   }
@@ -319,7 +327,7 @@ function FormEditor(props) {
                                 {q.images.length < 5 &&
                                   <Button
                                     icon='add'
-                                    onClick={() => addImage(q)}
+                                    onClick={() => addImage(qid)}
                                     content='添加图片'
                                     size='mini'
                                   />
