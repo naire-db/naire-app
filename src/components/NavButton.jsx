@@ -17,6 +17,7 @@ function NavButton(props) {
   return <Control
     {...props}
     control={undefined}
+    recoverable={undefined}
     loading={loading}
     disabled={loading}
     onClick={onClick}
