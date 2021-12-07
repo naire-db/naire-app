@@ -14,13 +14,17 @@ function NavButton(props) {
     props.onClick?.(...args);
   };
 
+  const p = {
+    ...props,
+    loading: props.loading || loading,
+    disabled: props.disabled || loading,
+    control: undefined,
+    recoverable: undefined,
+    onClick
+  };
+
   return <Control
-    {...props}
-    control={undefined}
-    recoverable={undefined}
-    loading={loading}
-    disabled={loading}
-    onClick={onClick}
+    {...p}
   />;
 }
 
