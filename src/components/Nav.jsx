@@ -17,11 +17,11 @@ const Nav = observer(() => {
   const info = appState.user_info;
 
   return (
-    <Menu fixed='top' className='no-print'>
+    <Menu fixed='top' className='no-print' inverted>
       <Container>
         <Menu.Item header href='/'>
           <Icon name='fire' size='large' />
-          Naire
+          naire
         </Menu.Item>
         {
           info ?
