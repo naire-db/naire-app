@@ -30,6 +30,11 @@ function DetailLayout(props) {
                 <Icon name='settings' />
                 权限控制
               </Menu.Item>
+              <Menu.Item href={'/form/' + fid + '/edit'}>
+                <Icon name='edit' />
+                编辑问卷
+              </Menu.Item>
+              {/* FIXME: show a warning modal like in FormSet */}
               <Menu.Item active={offset === 'tmpl'} href={'/form/' + fid + '/tmpl'}>
                 <Icon name='theme' />
                 模板和导出
