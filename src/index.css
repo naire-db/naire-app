@@ -55,3 +55,7 @@ code {
 .ui.sortable.table thead th {
   border-left: none !important;
 }
+
+.grouped-btn {
+  align-self: end;
+}
