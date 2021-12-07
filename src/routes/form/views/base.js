@@ -3,10 +3,12 @@ import { useState } from 'react';
 const aMap = {};
 const viewMap = {};
 const initialMap = {};
+const beforeSaveHookMap = {};
 
-function registerQuestionView(type, View, initial) {
+function registerQuestionView(type, View, initial, beforeSave) {
   viewMap[type] = View;
   initialMap[type] = initial;
+  beforeSaveHookMap[type] = beforeSave;
 }
 
 function useAState(q) {
@@ -46,4 +48,5 @@ export {
   useAStore,
   aMap,
   initialMap,
+  beforeSaveHookMap,
 };

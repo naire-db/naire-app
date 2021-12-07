@@ -3,13 +3,13 @@ import { useParams } from 'react-router-dom';
 import { Button, Container, Form, Grid, Header, Image, Message, Modal, Segment } from 'semantic-ui-react';
 
 import api, { api_unwrap } from 'api';
-import { useAsyncEffect } from 'utils';
+import { resolvePossibleAction, useAsyncEffect } from 'utils';
 import { redirect_login } from 'utils/url';
 import { showModal } from 'utils/modal';
 import { ModalTransition } from 'components/transitedModal';
 import AppLayout from 'layouts/AppLayout';
 
-import { aMap, initialMap, viewMap } from './views';
+import { aMap, beforeSaveHookMap, initialMap, viewMap } from './views';
 import { useErrorContext } from './errorContext';
 import { PASSPHRASE_MAX_LENGTH } from './config';
 
@@ -95,9 +95,15 @@ function FormView(props) {
   async function onSubmit() {
     if (errorCtx.dirty())
       return setTried(true);
-    const body = {
-      answers: questions.map(q => aMap[q.id])
-    };
+    const answers = [];
+    for (const q of questions) {
+      let v = aMap[q.id];
+      const fn = beforeSaveHookMap[q.type];
+      if (fn)
+        v = await fn(v);
+      answers.push(v);
+    }
+    const body = {answers};
     const {code} = await api.form.save_resp(props.fid, body);
     if (code === 0)
       setSubmitted(true);
@@ -210,7 +216,7 @@ function FormFill() {
     if (code === 0) {
       for (const q of data.body.questions)
         if (initialMap[q.type])  // TODO: drop checks
-          aMap[q.id] = initialMap[q.type]();
+          aMap[q.id] = resolvePossibleAction(initialMap[q.type]);
       setDetail(data);
     } else if (code === api.ERR_AUTH_REQUIRED)
       redirect_login();
@@ -247,7 +253,7 @@ async function loadResp(fid, rid, {body: {questions}}) {
 
 function loadBareForm({body: {questions}}) {
   for (const q of questions)
-    aMap[q.id] = initialMap[q.type]();
+    aMap[q.id] = resolvePossibleAction(initialMap[q.type]);
 }
 
 export default FormFill;
