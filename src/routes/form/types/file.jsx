@@ -72,6 +72,8 @@ function FileQuestionEditor(props) {
       function handler(e) {
         const nextIsMega = e.target.innerText === 'MiB';
         setIsMega(nextIsMega);
+        if (nextIsMega && maxSize > MAX_SIZE_MB)
+          setMaxSize(MAX_SIZE_MB);
       }
 
       dd.addEventListener('click', handler);
