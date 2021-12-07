@@ -4,7 +4,7 @@ const qMap = {};
 
 class BaseQuestion {
   title = '';
-  images = [];
+  images = undefined;
 
   constructor(id) {
     this.id = id;

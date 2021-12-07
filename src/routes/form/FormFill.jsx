@@ -52,7 +52,7 @@ function QuestionView(props) {
         }}>
           <Grid.Column>
             <Image.Group size='small'>
-              {q.images.map(iid => (
+              {q.images?.map(iid => (
                 <Image
                   key={iid}
                   bordered rounded

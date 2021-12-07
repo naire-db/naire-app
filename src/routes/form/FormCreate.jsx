@@ -214,8 +214,12 @@ function FormEditor(props) {
       async onConfirmed() {
         const data = new FormData();
         data.append('file', file);
-        const image_id = await api_unwrap_fut(api.file.upload_image(data));
-        qMap[qid].images.push(image_id);
+        const image_id_fut = api_unwrap_fut(api.file.upload_image(data));
+        const q = qMap[qid];
+        if (q.images)
+          q.images.push(await image_id_fut);
+        else
+          q.images = [await image_id_fut];
         refreshQuestions();
         closeModal();
       },
@@ -412,7 +416,7 @@ function FormEditor(props) {
                             <Grid.Row className='question-image-group-row'>
                               <Grid.Column>
                                 <Image.Group size='tiny'>
-                                  {q.images.map(iid => (
+                                  {q.images?.map(iid => (
                                     <Image
                                       key={iid}
                                       bordered rounded
@@ -423,7 +427,7 @@ function FormEditor(props) {
                                   ))
                                   }
                                 </Image.Group>
-                                {q.images.length < 5 &&
+                                {(!q.images || q.images.length) < 5 &&
                                   <Button
                                     icon='add'
                                     onClick={() => addImage(qid)}
