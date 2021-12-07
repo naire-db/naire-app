@@ -21,54 +21,57 @@ function FormStats() {
   const {form, resps} = details;
   const {questions} = form.body;
 
-  // TODO: when there are no questions
-  // TODO: when there are no responses
+  const segs = [];
+  for (let i = 0; i < questions.length; ++i) {
+    const q = questions[i];
+    const E = statMap[q.type];
+    if (!E)
+      continue;
+    const e = <Segment key={q.id}>
+      <Grid>
+        <Grid.Row>
+          <Grid.Column>
+            {q.title}
+            <Label horizontal style={{
+              marginLeft: 15
+            }}>
+              {nameMap[q.type]}
+            </Label>
+          </Grid.Column>
+        </Grid.Row>
+        <Grid.Row>
+          <Grid.Column>
+            <div
+              style={{
+                paddingBottom: 4,
+                paddingTop: 4
+              }}
+            >
+              <E
+                question={q}
+                values={resps.map(r => r.body.answers[i])}
+              />
+            </div>
+          </Grid.Column>
+        </Grid.Row>
+      </Grid>
+    </Segment>;
+    segs.push(e);
+  }
+
   return (
     <DetailLayout offset='stats' fid={fid} title={form.title}>
       <Header className='print-only' as='h1' content={form.title} style={{
         textAlign: 'center'
       }} />
-      {questions.length ? <>
+      {segs.length ? <>
         <Button
           className='no-print'
           primary
           content='导出统计信息'
           onClick={() => window.print()}
         /> {/* TODO: set A3 to default printing page size before demonstration */}
-        {questions.map((q, i) => {
-          const E = statMap[q.type];
-          if (!E)
-            return null;  // TODO: remove checks
-          return <Segment key={q.id}>
-            <Grid>
-              <Grid.Row>
-                <Grid.Column>
-                  {q.title}
-                  <Label horizontal style={{
-                    marginLeft: 15
-                  }}>
-                    {nameMap[q.type]}
-                  </Label>
-                </Grid.Column>
-              </Grid.Row>
-              <Grid.Row>
-                <Grid.Column>
-                  <div
-                    style={{
-                      paddingBottom: 4,
-                      paddingTop: 4
-                    }}
-                  >
-                    <E
-                      question={q}
-                      values={resps.map(r => r.body.answers[i])}
-                    />
-                  </div>
-                </Grid.Column>
-              </Grid.Row>
-            </Grid>
-          </Segment>;
-        })}
+        {segs}
       </> : <Segment>
         问卷暂不包含可统计的问题
       </Segment>
