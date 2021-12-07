@@ -17,8 +17,27 @@ function FileQuestionView(props) {
 
   const [, setError] = props.useErrorState(() => !optional);
 
-  if (file && file.length === 1) {
-    return <Form>
+  if (!file)
+    return <Button
+      disabled
+      content='未上传文件'
+    />;
+
+  if (file.length > 1) {
+    const [token, filename, size] = file;
+    return (
+      <Button
+        icon='download'
+        labelPosition='left'
+        content={`${filename} (${formatBytes(size)})`}
+        href={api.file.file_url(token)}
+        target='_blank'
+      />
+    );
+  }
+
+  return (
+    <Form>
       <Form.Input
         label='上传文件'
         type='file'
@@ -40,24 +59,7 @@ function FileQuestionView(props) {
         text={`最大 ${formatBytes(max_size * 1024)}`}
         error={file[0] && file[0].size > max_size * 1024}
       />
-    </Form>;
-  }
-
-  if (!file)
-    return <Button
-      disabled
-      content='未上传文件'
-    />;
-
-  const [token, filename, size] = file;
-  return (
-    <Button
-      icon='download'
-      labelPosition='left'
-      content={`${filename} (${formatBytes(size)})`}
-      href={api.file.file_url(token)}
-      target='_blank'
-    />
+    </Form>
   );
 }
 
