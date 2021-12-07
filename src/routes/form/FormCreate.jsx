@@ -27,6 +27,7 @@ import { FORM_TITLE_MAX_LENGTH, QUESTION_TITLE_MAX_LENGTH } from './config';
 import { consume_signed } from './exchange';
 
 import './form.css';
+import NavButton from '../../components/NavButton';
 
 function loadQMap(questions, ctx) {
   console.log('loading qmap', questions);
@@ -367,14 +368,14 @@ function FormEditor(props) {
                       setTitle(v);
                     }}
                   />
-                  <Button
+                  <NavButton
                     primary
                     floated='right'
                     onClick={onSubmit}
                     disabled={titleError || errorCtx.dirty()}
                   >
                     {saveText}
-                  </Button>
+                  </NavButton>
                   <Button
                     floated='right'
                     content='导入'
