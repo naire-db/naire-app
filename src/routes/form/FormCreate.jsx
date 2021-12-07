@@ -27,7 +27,6 @@ import { FORM_TITLE_MAX_LENGTH, QUESTION_TITLE_MAX_LENGTH } from './config';
 import { consume_signed } from './exchange';
 
 import './form.css';
-import NavButton from '../../components/NavButton';
 
 function loadQMap(questions, ctx) {
   console.log('loading qmap', questions);
@@ -181,6 +180,7 @@ function FormEditor(props) {
       title: '添加图片',
       size: 'small',
       confirmText: '上传',
+      confirmNav: true,
       content(s) {
         return <Form className='image-form'>
           <Form.Input
@@ -368,14 +368,15 @@ function FormEditor(props) {
                       setTitle(v);
                     }}
                   />
-                  <NavButton
+                  {/* FIXME: Cannot use NavButton here since submit can fail when title is empty.  */}
+                  <Button
                     primary
                     floated='right'
                     onClick={onSubmit}
                     disabled={titleError || errorCtx.dirty()}
                   >
                     {saveText}
-                  </NavButton>
+                  </Button>
                   <Button
                     floated='right'
                     content='导入'
