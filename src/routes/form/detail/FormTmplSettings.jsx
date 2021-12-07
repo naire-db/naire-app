@@ -8,6 +8,7 @@ import CopyButton from 'components/CopyButton';
 import { useAsyncResult } from 'utils';
 import { formatTimestamp } from 'utils/render';
 
+import { make_signed } from '../exchange';
 import DetailLayout from './DetailLayout';
 
 
@@ -41,7 +42,9 @@ function FormTmplSettings() {
   }
 
   function onExported() {
-    setExported(JSON.stringify({title: form.title, body: form.body}));
+    const d = {title: form.title, body: form.body};
+    make_signed(d);
+    setExported(JSON.stringify(d));
   }
 
   function download() {
