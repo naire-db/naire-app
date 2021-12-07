@@ -45,7 +45,6 @@ function DetailLayout(props) {
                 <Icon name='theme' />
                 模板和导出
               </Menu.Item>
-              {/* FIXME: show a warning modal like in FormSet */}
               <Menu.Item
                 onClick={edit}
               >
