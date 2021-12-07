@@ -17,6 +17,7 @@ class ModalState {
   confirmText = '确认';
   confirmProps = null;
   cancelText = '取消';
+  cancelProps = null;
   noConfirm = false;
   inputProps = null;
   closeOnDimmerClick = true;
@@ -120,6 +121,11 @@ const CommonModal = observer(props => {
             <Button
               content={modalState.cancelText}
               onClick={modalState.onCancelled}
+              {...(
+                modalState.open && modalState.cancelProps
+                  ? resolvePossibleAction(modalState.cancelProps, modalState.state)
+                  : {}
+              )}
             />
             {!modalState.noConfirm &&
               <Button
@@ -159,6 +165,7 @@ function createModalHandle() {
       confirmText = '确认',
       confirmProps = null,
       cancelText = '取消',
+      cancelProps = null,
       noConfirm = false,
       inputProps = null,
       closeOnDimmerClick = true,
@@ -167,8 +174,9 @@ function createModalHandle() {
     }) {
     return new Promise(resolve => {
       const n = {
-        title, subtitle, description, content, size, confirmText, confirmProps,
-        cancelText, noConfirm,
+        title, subtitle, description, content, size,
+        confirmText, confirmProps,
+        cancelText, cancelProps, noConfirm,
         inputProps, closeOnDimmerClick,
         onConfirmed: onConfirmed ? () => {
           onConfirmed(modalState.state, closeModal);
