@@ -239,12 +239,16 @@ function FormEditor(props) {
       cancelText: '从剪切板导入',
       confirmText: '上传文件',
       description: '正在编辑的内容将被覆盖。',
-      confirmProps: {
-        size: 'small'
-      },
-      cancelProps: {
-        size: 'small'
-      },
+      confirmProps: s => ({
+        size: 'small',
+        loading: s.loading === 1,
+        disabled: s.loading !== 0,
+      }),
+      cancelProps: s => ({
+        size: 'small',
+        loading: s.loading === 2,
+        disabled: s.loading !== 0,
+      }),
       content() {
         return (
           <input
@@ -257,6 +261,7 @@ function FormEditor(props) {
         );
       },
       async onCancelled(s, close) {
+        s.loading = 2;
         try {
           text = await navigator.clipboard.readText();
         } catch (e) {  // denied
@@ -265,6 +270,7 @@ function FormEditor(props) {
         return close(0);
       },
       onConfirmed(s, close) {
+        s.loading = 1;
         const input = document.getElementById('import-input');
 
         function handleFile(e) {
@@ -285,6 +291,9 @@ function FormEditor(props) {
 
         input.addEventListener('change', handler);
         input.click();
+      },
+      initialState: {
+        loading: 0
       }
     });
 
