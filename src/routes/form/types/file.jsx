@@ -8,8 +8,8 @@ const units = [
   {keys: 'mib', text: 'MiB', value: 'mib'}
 ];
 
-const MAX_SIZE_MB = 50;
-const MAX_SIZE_KB = 51200;
+const MAX_SIZE_MB = 20;
+const MAX_SIZE_KB = 20480;
 
 class FileQuestion extends BaseQuestion {
   type = 'file';
