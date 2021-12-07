@@ -43,6 +43,7 @@ function TmplList() {
     window.location.reload();
   }
 
+  // FIXME: Images in preview modals pops new modals, glitching when clicking
   async function preview({id}) {
     const res = await api_unwrap_fut(api.tmpl.get_detail(id));
     loadBareForm(res);
