@@ -344,6 +344,11 @@ class Api {
       this.post_data('/file/upload_image/', form),
 
     image_url: image_id => entry + '/file/image/' + image_id,
+
+    upload_file: form =>
+      this.post_data('/file/upload_file/', form),
+
+    file_url: token => entry + '/file/file/' + token,
   };
 
   tmpl = {
