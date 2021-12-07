@@ -223,6 +223,22 @@ function FormEditor(props) {
     });
   }
 
+  async function onImport() {
+    // TODO
+    const res = await showModal({
+      title: '导入问卷',
+      cancelText: '从剪切板导入',
+      confirmText: '上传文件',
+      description: '正在编辑的内容将被覆盖。',
+      confirmProps: {
+        size: 'small'
+      },
+      cancelProps: {
+        size: 'small'
+      },
+    });
+  }
+
   // FIXME: the sticky seems not working when editing lots of questions.
   return (
     <AppLayout offset>
@@ -244,8 +260,11 @@ function FormEditor(props) {
           <Grid.Column width={12}>
             <Grid>
               <Grid.Row>
-                <Grid.Column width={13}>
+                <Grid.Column>
                   <Input
+                    style={{
+                      width: 'calc(100% - 170px)'
+                    }}
                     className='qeditor-title-input-box'
                     error={titleError}
                     placeholder='问卷标题'
@@ -258,15 +277,22 @@ function FormEditor(props) {
                       setTitle(v);
                     }}
                   />
-                </Grid.Column>
-                <Grid.Column width={3}>
                   <Button
-                    primary floated='right'
+                    primary
+                    floated='right'
                     onClick={onSubmit}
                     disabled={titleError || errorCtx.dirty()}
                   >
                     {saveText}
                   </Button>
+                  <Button
+                    floated='right'
+                    content='导入'
+                    style={{
+                      marginRight: 5
+                    }}
+                    onClick={onImport}
+                  />
                 </Grid.Column>
               </Grid.Row>
               <Grid.Row>
