@@ -4,6 +4,7 @@ import { action, makeAutoObservable } from 'mobx';
 import { observer } from 'mobx-react-lite';
 
 import { resolvePossibleAction } from './index';
+import NavButton from '../components/NavButton';
 
 class ModalState {
   title = 'Title';
@@ -17,6 +18,7 @@ class ModalState {
   onConfirmed = null;
   confirmText = '确认';
   confirmProps = null;
+  confirmNav = false;
   cancelText = '取消';
   cancelProps = null;
   noConfirm = false;
@@ -93,6 +95,23 @@ const CommonModal = observer(props => {
     else
       actions = null;
   } else {
+    let confirm;
+    if (modalState.noConfirm)
+      confirm = null;
+    else {
+      const E = modalState.confirmNav ? NavButton : Button;
+      confirm = <E
+        primary
+        content={modalState.confirmText}
+        onClick={modalState.onConfirmed}
+        {...(
+          modalState.open && modalState.confirmProps
+            ? resolvePossibleAction(modalState.confirmProps, modalState.state)
+            : {}
+        )}
+      />;
+    }
+
     actions = <Modal.Actions>
       <Button
         content={modalState.cancelText}
@@ -103,18 +122,7 @@ const CommonModal = observer(props => {
             : {}
         )}
       />
-      {!modalState.noConfirm &&
-        <Button
-          primary
-          content={modalState.confirmText}
-          onClick={modalState.onConfirmed}
-          {...(
-            modalState.open && modalState.confirmProps
-              ? resolvePossibleAction(modalState.confirmProps, modalState.state)
-              : {}
-          )}
-        />
-      }
+      {confirm}
     </Modal.Actions>;
   }
 
@@ -182,6 +190,7 @@ function createModalHandle() {
       onConfirmed = null,
       confirmText = '确认',
       confirmProps = null,
+      confirmNav = false,
       cancelText = '取消',
       cancelProps = null,
       noConfirm = false,
@@ -195,7 +204,7 @@ function createModalHandle() {
     return new Promise(resolve => {
       const n = {
         title, subtitle, description, content, size,
-        confirmText, confirmProps,
+        confirmText, confirmProps, confirmNav,
         cancelText, cancelProps, noConfirm, buttons,
         inputProps, closeOnDimmerClick,
         onConfirmed: onConfirmed ? () => {
