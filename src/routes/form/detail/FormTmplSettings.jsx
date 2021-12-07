@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Form, Message } from 'semantic-ui-react';
+import { Button, Form, Message } from 'semantic-ui-react';
+import * as FileSaver from 'file-saver';
 
 import api, { api_unwrap_fut } from 'api';
+import CopyButton from 'components/CopyButton';
 import { useAsyncResult } from 'utils';
 import { formatTimestamp } from 'utils/render';
 
@@ -15,6 +17,8 @@ function FormTmplSettings() {
     const res = await api_unwrap_fut(api.tmpl.check_form(fid));
     return res;
   });
+
+  const [exported, setExported] = useState(null);
 
   if (!form)
     return null;
@@ -34,6 +38,15 @@ function FormTmplSettings() {
   async function remove() {
     await api_unwrap_fut(api.tmpl.remove(tmpl.id));
     window.location.reload();
+  }
+
+  function onExported() {
+    setExported(JSON.stringify({title: form.title, body: form.body}));
+  }
+
+  function download() {
+    const blob = new Blob([exported], {type: 'application/json'});
+    FileSaver.saveAs(blob, form.title + '.json');
   }
 
   const msg = [];
@@ -85,9 +98,44 @@ function FormTmplSettings() {
             />
           }
         </Form.Group>
+        {exported ? <>
+          <Form.TextArea
+            label='导出问卷'
+            value={exported}
+            style={{
+              height: 200
+            }}
+          />
+          <Form.Group>
+            <CopyButton
+              content={exported}
+              btnProps={{
+                style: {marginLeft: 8}
+              }}
+            />
+            <Button
+              icon='download'
+              labelPosition='left'
+              size='small'
+              content='下载'
+              style={{
+                marginLeft: 10
+              }}
+              onClick={download}
+            />
+          </Form.Group>
+        </> : <>
+          <Form.Button
+            label='导出问卷'
+            content='导出问卷为 JSON'
+            onClick={onExported}
+          />
+        </>
+        }
       </Form>
     </DetailLayout>
   );
+
 }
 
 export default FormTmplSettings;
