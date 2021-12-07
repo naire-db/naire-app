@@ -232,23 +232,10 @@ function FormEditor(props) {
   }
 
   async function onImport() {
-    // TODO
     let text;
     const res = await showModal({
       title: '导入问卷题目',
-      cancelText: '从剪切板导入',
-      confirmText: '上传文件',
       description: '正在编辑的内容将被覆盖。',
-      confirmProps: s => ({
-        size: 'small',
-        loading: s.loading === 1,
-        disabled: s.loading !== 0,
-      }),
-      cancelProps: s => ({
-        size: 'small',
-        loading: s.loading === 2,
-        disabled: s.loading !== 0,
-      }),
       content() {
         return (
           <input
@@ -260,37 +247,54 @@ function FormEditor(props) {
           />
         );
       },
-      async onCancelled(s, close) {
-        s.loading = 2;
-        try {
-          text = await navigator.clipboard.readText();
-        } catch (e) {  // denied
-          return close(1);
-        }
-        return close(0);
-      },
-      onConfirmed(s, close) {
-        s.loading = 1;
-        const input = document.getElementById('import-input');
+      buttons(s, close) {
+        return [{
+          content: '取消',
+          size: 'small',
+          onClick: close,
+        }, {
+          content: '从剪切板导入',
+          size: 'small',
+          loading: s.loading === 2,
+          disabled: s.loading !== 0,
+          async onClick() {
+            s.loading = 2;
+            try {
+              text = await navigator.clipboard.readText();
+            } catch (e) {  // denied
+              return close(1);
+            }
+            return close(0);
+          },
+        }, {
+          content: '上传文件',
+          size: 'small',
+          loading: s.loading === 1,
+          disabled: s.loading !== 0,
+          primary: true,
+          onClick() {
+            s.loading = 1;
+            const input = document.getElementById('import-input');
 
-        function handleFile(e) {
-          text = e.target.result;
-          close(0);
-        }
+            function handleFile(e) {
+              text = e.target.result;
+              close(0);
+            }
 
-        function handler(e) {
-          const f = e.target.files[0];
-          console.log('uploaded', f);
-          if (f) {
-            const reader = new FileReader();
-            reader.onload = handleFile;
-            reader.readAsText(f);
-          }
-          input.removeEventListener('change', handler);
-        }
+            function handler(e) {
+              const f = e.target.files[0];
+              if (f) {
+                const reader = new FileReader();
+                reader.onload = handleFile;
+                reader.readAsText(f);
+              }
+              input.removeEventListener('change', handler);
+            }
 
-        input.addEventListener('change', handler);
-        input.click();
+            input.addEventListener('change', handler);
+            input.click();
+          },
+        }];
       },
       initialState: {
         loading: 0
