@@ -7,14 +7,10 @@ function DropdownView(props) {
   const q = props.question;
   const [choice, setChoice] = useAState(q);
 
-  const downOptions = [];
-
-  for (let i = 0; i < q.options.length; ++i) {
-    const item = q.options[i];
-    downOptions.push(
-      {key: parseInt(item.id, 10), text: item.text, value: item.text}
-    )
-  }
+  const downOptions = q.options.map(
+    ({id, text}) =>
+      ({key: id, text, value: id}
+    ));
 
   function onChange(_, d) {
     setChoice(d.value);
@@ -27,6 +23,7 @@ function DropdownView(props) {
         selection
         placeholder='选择...'
         options={downOptions}
+        value={choice}
         onChange={onChange}
       />
     }

@@ -1,5 +1,5 @@
 import { registerQuestionStat } from './base';
-import { RadioAnswerRenderFactory } from './radio';
+import { RadioStat, RadioAnswerRenderFactory } from './radio';
 
 // TODO: use RadioStat after dropdown view is done.
-registerQuestionStat('dropdown', null, RadioAnswerRenderFactory);
+registerQuestionStat('dropdown', RadioStat, RadioAnswerRenderFactory);
