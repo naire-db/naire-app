@@ -70,7 +70,6 @@ function OrgMembers() {
         value: member.role
       },
       confirmProps: s => ({
-        // FIXME: not working
         disabled: s.value === member.role
       })
     });
