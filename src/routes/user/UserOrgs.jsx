@@ -19,6 +19,7 @@ function UserOrgs() {
     let value = null;
     await showModal({
       title: '创建组织',
+      confirmNav: true,
       inputProps: {
         onChange: e => (value = e.target.value),
         maxLength: ORG_NAME_MAX_LENGTH,
@@ -36,6 +37,7 @@ function UserOrgs() {
       title: '退出组织',
       description: '将离开组织 ' + org.name + ' 。',
       confirmText: '退出组织',
+      confirmNav: true,
       confirmProps: {
         negative: true
       },

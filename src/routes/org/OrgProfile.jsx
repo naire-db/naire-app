@@ -36,6 +36,7 @@ function OrgProfile() {
       title: '重置邀请链接',
       description: '现有的邀请链接将失效。',
       confirmText: '重置',
+      confirmNav: true,
       confirmProps: {
         negative: true
       },
@@ -57,6 +58,7 @@ function OrgProfile() {
       description: '全部 ' + member_count + ' 位成员将离开组织。',
       // TODO: 显示将被删除的问卷数量
       confirmText: '解散',
+      confirmNav: true,
       confirmProps: {
         negative: true
       },

@@ -20,6 +20,7 @@ function FormEdit() {
       title: '警告',
       description: '若保存修改，已有的 ' + count + ' 份答卷将被删除。',
       confirmText: '保存',
+      confirmNav: true,
       confirmProps: {
         negative: true
       },

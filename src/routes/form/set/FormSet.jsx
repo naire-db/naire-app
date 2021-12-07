@@ -167,6 +167,7 @@ function FormSet() {
     let value = null;
     await showModal({
       title: '创建目录',
+      confirmNav: true,
       inputProps: {
         onChange: e => (value = e.target.value),
         maxLength: FOLDER_NAME_MAX_LENGTH,
@@ -188,6 +189,7 @@ function FormSet() {
     await showModal({
       title: '删除目录',
       confirmText: '删除',
+      confirmNav: true,
       confirmProps: {negative: true},
       subtitle: folder.name,
       description: folder.form_count ? `已有的 ${folder.form_count} 个问卷将被移动到默认目录。` : '将删除该空目录。',
@@ -207,6 +209,7 @@ function FormSet() {
     await showModal({
       title: '重命名目录',
       confirmText: '保存',
+      confirmNav: true,
       inputProps: {
         onChange: e => (value = e.target.value),
         maxLength: FOLDER_NAME_MAX_LENGTH,
@@ -215,7 +218,6 @@ function FormSet() {
       onConfirmed: async () => {
         const v = value.trim();
         if (v) {
-
           await api_unwrap_fut(api.form.rename_folder(currFolderId, v));
           folderMap.get(currFolderId).name = v;
           setFolders([...folders], rootFid);
@@ -229,6 +231,7 @@ function FormSet() {
     await showModal({
       title: '移动到目录',
       confirmText: '移动',
+      confirmNav: true,
       subtitle: form.title,
       content: s => {
         return <Form>
@@ -295,6 +298,7 @@ function FormSet() {
     await showModal({
       title: '复制问卷',
       confirmText: '复制',
+      confirmNav: true,
       subtitle: form.title,
       content: () => {
         return <Form>

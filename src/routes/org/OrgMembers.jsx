@@ -26,6 +26,7 @@ function OrgMembers() {
       title: '移除用户',
       description: '将移除' + formatRole(member.role) + ' ' + formatUser(member) + '。',
       confirmText: '移除',
+      confirmNav: true,
       confirmProps: {
         negative: true
       },
@@ -40,6 +41,7 @@ function OrgMembers() {
     await showModal({
       title: '变更用户权限',
       confirmText: '保存',
+      confirmNav: true,
       size: 'small',
       content: s => {
         return <>
@@ -68,6 +70,7 @@ function OrgMembers() {
         value: member.role
       },
       confirmProps: s => ({
+        // FIXME: not working
         disabled: s.value === member.role
       })
     });
