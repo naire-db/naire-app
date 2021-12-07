@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Button, Form } from 'semantic-ui-react';
+import { Form } from 'semantic-ui-react';
 import * as dayjs from 'dayjs';
 
 import api, { api_unwrap_fut } from 'api';
+import NavButton from 'components/NavButton';
 import { useAsyncResult } from 'utils';
 
 import { PASSPHRASE_MAX_LENGTH } from '../config';
@@ -213,7 +214,7 @@ function FormSettings() {
           */
         }
 
-        <Button
+        <NavButton
           primary
           content='保存'
           onClick={save}

@@ -5,6 +5,7 @@ import { stringify } from 'csv-stringify/lib/sync';
 import * as FileSaver from 'file-saver';
 
 import api, { api_unwrap } from 'api';
+import NavButton from 'components/NavButton';
 import { useAsyncResult } from 'utils';
 import { usePagination } from 'utils/paginate';
 import { formatTimestamp, formatUser } from 'utils/render';
@@ -43,7 +44,7 @@ function RemoveModal(props) {
           content='取消'
           onClick={onClosed}
         />
-        <Button
+        <NavButton
           negative
           content='删除'
           onClick={onSubmit}
@@ -139,7 +140,8 @@ function FormRespsInner(props) {
       <Grid.Row>
         <Grid.Column>
           {menu}
-          <Button
+          <NavButton
+            recoverable
             primary
             content='下载答卷数据'
             floated={menu && 'right'}

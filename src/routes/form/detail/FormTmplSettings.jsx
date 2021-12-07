@@ -4,13 +4,13 @@ import { Button, Form, Message } from 'semantic-ui-react';
 import * as FileSaver from 'file-saver';
 
 import api, { api_unwrap_fut } from 'api';
+import NavButton from 'components/NavButton';
 import CopyButton from 'components/CopyButton';
 import { useAsyncResult } from 'utils';
 import { formatTimestamp } from 'utils/render';
 
 import { make_signed } from '../exchange';
 import DetailLayout from './DetailLayout';
-
 
 function FormTmplSettings() {
   const fid = parseInt(useParams().fid, 10);
@@ -81,20 +81,20 @@ function FormTmplSettings() {
         <Form.Group>
           {tmpl ?
             <>
-              <Form.Button
+              <NavButton.Form
                 primary
                 content='更新模板'
                 disabled={updated === undefined}
                 onClick={update}
               />
-              <Form.Button
+              <NavButton.Form
                 negative
                 content='撤下模板'
                 onClick={remove}
               />
             </>
             :
-            <Form.Button
+            <NavButton.Form
               primary
               content='发布为模板'
               onClick={create}
