@@ -9,7 +9,10 @@ function AppLayout(props) {
     {props.offset ?
       <Container
         text={props.text}
-        style={{marginTop: props.offset === true ? '5.5em' : props.offset}}
+        style={{
+          marginTop: props.offset === true ? '5.5em' : props.offset,
+          paddingBottom: 80
+        }}
       >
         {props.children}
       </Container> :
