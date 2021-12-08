@@ -5,7 +5,7 @@ import { observer } from 'mobx-react-lite';
 import appState from 'appState';
 import api from 'api';
 
-const Nav = observer(() => {
+const Nav = observer(props => {
   console.log('Rendering nav');
 
   async function onLogout() {
@@ -16,12 +16,14 @@ const Nav = observer(() => {
 
   const info = appState.user_info;
 
+  const {menuProps = {}, hideName, inverted = false} = props;
+
   return (
-    <Menu fixed='top' className='no-print' inverted>
+    <Menu fixed='top' className='no-print' {...menuProps} inverted={inverted}>
       <Container>
         <Menu.Item header href='/'>
           <Icon name='fire' size='large' />
-          naire
+          {hideName ? null : 'naire'}
         </Menu.Item>
         {
           info ?
