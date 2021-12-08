@@ -380,6 +380,8 @@ class Api {
         tid
       }),
   };
+
+  get_feeds = () => this.get('/auth/get_feeds/');
 }
 
 const api = new Api();
