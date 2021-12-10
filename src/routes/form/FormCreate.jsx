@@ -276,7 +276,6 @@ function FormEditor(props) {
           disabled: s.loading !== 0,
           primary: true,
           onClick() {
-            s.loading = 1;
             const input = document.getElementById('import-input');
 
             function handleFile(e) {
@@ -287,6 +286,7 @@ function FormEditor(props) {
             function handler(e) {
               const f = e.target.files[0];
               if (f) {
+                s.loading = 1;
                 const reader = new FileReader();
                 reader.onload = handleFile;
                 reader.readAsText(f);
