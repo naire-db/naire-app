@@ -44,7 +44,7 @@ function InputEditor(props) {
     setRegex(v);
   };
 
-  const ddValue = regexTemplates.filter(({value}) => regexMap[value] === regex)[0]?.value;
+  const ddValue = regexTemplates.find(({value}) => regexMap[value] === regex)?.value;
 
   return (
     <Form>
