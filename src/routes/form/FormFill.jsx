@@ -116,7 +116,7 @@ function FormView(props) {
     <Header as='h2' textAlign='center'>
       <Header.Content>{title}</Header.Content>
     </Header>
-    {
+    {questions.length ?
       questions.map(q => (
         <QuestionView
           key={q.id}
@@ -124,7 +124,11 @@ function FormView(props) {
           tried={tried}
           errorCtx={errorCtx}
         />
-      ))
+      )) :
+      <Message
+        content='该问卷暂时没有题目。'
+        size='large'
+      />
     }
     <Container textAlign='center' style={{
       marginTop: 25
