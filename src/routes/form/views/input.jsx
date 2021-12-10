@@ -3,7 +3,7 @@ import { Form } from 'semantic-ui-react';
 
 import { registerQuestionView, useAState } from './base';
 import { QLabel } from './utils';
-import { regexMap } from '../RegexMap';
+import { regexMap, regexTemplates } from '../RegexMap';
 
 function InputView(props) {
   const q = props.question;
@@ -24,19 +24,9 @@ function InputView(props) {
     setValue(v);
   }
 
-  function regexQLabel() {
-    if (regex === regexMap['id']) {
-      return '身份证号码';
-    } else if (regex === regexMap['telephone']) {
-      return '固定电话号码';
-    } else if (regex === regexMap['email']) {
-      return '电子邮箱';
-    } else if (regex === regexMap['mobile']) {
-      return '移动电话号码';
-    } else if (regex === regexMap['n']) {
-      return '';
-    } else return regex;
-  }
+  const label = regex && regexTemplates.find(
+    ({value}) => regexMap[value] === regex
+  )?.text;
 
   function matchRegex(value) {
     return reg.test(value);
@@ -61,9 +51,9 @@ function InputView(props) {
       text={`最多输入 ${max_length} 个字符`}
     />
     {
-      regex !== null && regexQLabel() !== '' &&
+      label &&
       <QLabel
-        text={regexQLabel()}
+        text={label}
         error={props.tried && !matchRegex(value)}
       />
     }
