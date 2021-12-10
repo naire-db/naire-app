@@ -48,7 +48,7 @@ function TmplList() {
     const res = await api_unwrap_fut(api.tmpl.get_detail(id));
     loadBareForm(res);
     await showModal({
-      title: '模板预览',
+      title: '预览模板',
       noConfirm: true,
       cancelText: '关闭',
       size: 'small',
