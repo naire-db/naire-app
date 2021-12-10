@@ -8,7 +8,6 @@ import { regexMap, regexTemplates } from '../RegexMap';
 
 const MAX_LENGTH = 200;
 
-
 class InputQuestion extends BaseQuestion {
   type = 'input';
 
@@ -38,7 +37,6 @@ function InputEditor(props) {
   const [minProps, maxProps] = makeRangeNumberInputProps(
     minLength, setMinLength, 0, maxLength, setMaxLength, maxMaxLength, setError
   );
-  console.log(regex, '!!!!!!!!!!!!!!!!');
 
   const handleSelection = (e, d) => {
     const v = regexMap[d.value];
@@ -47,7 +45,6 @@ function InputEditor(props) {
   };
 
   const ddValue = regexTemplates.filter(({value}) => regexMap[value] === regex)[0]?.value;
-  console.log('ddv', ddValue);
 
   return (
     <Form>
