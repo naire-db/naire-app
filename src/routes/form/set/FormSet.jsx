@@ -432,7 +432,7 @@ function FormSet() {
 
   return (
     <AppLayout offset>
-      <Grid relaxed>
+      <Grid relaxed stackable>
         <Grid.Row>
           <Grid.Column width={4}>
             {ctxOptions && <Dropdown
