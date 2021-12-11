@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
   Button,
   Container,
+  Divider,
   Form,
   Grid,
   Header,
@@ -239,10 +240,14 @@ function FormEditor(props) {
     });
   }
 
+  function importData(data) {
+    loadEditorState(makeEditorState(data.body.questions, data.title));
+  }
+
   async function onImport() {
     let text;
     const res = await showModal({
-      title: '导入问卷题目',
+      title: '导入 JSON',
       description: '正在编辑的内容将被覆盖。',
       content() {
         return (
@@ -317,9 +322,9 @@ function FormEditor(props) {
         } catch (e) {  // bad json
           return '提供的问卷数据不合法。';
         }
-        if (consume_signed(data)) {
-          loadEditorState(makeEditorState(data.body.questions, data.title));
-        } else
+        if (consume_signed(data))
+          importData(data);
+        else
           return '提供的问卷数据不合法。';
       } else if (res === 2)
         return '提供的问卷数据不合法。';
@@ -337,6 +342,61 @@ function FormEditor(props) {
       });
   }
 
+  async function onCrawlImport() {
+    const res = await showModal({
+      title: '从问卷星导入',
+      size: 'small',
+      description: '正在编辑的内容将被覆盖。',
+      content: s => <>
+        <Form style={{marginTop: 20, marginBottom: 15}}>
+          <Form.Input
+            type='url'
+            label='问卷或模板 URL'
+            placeholder='https://www.wjx.cn/xz/30133265.aspx'
+            value={s.value}
+            onChange={(e, d) => s.value = d.value}
+          />
+        </Form>
+        <p>
+          当前支持以 https://www.wjx.cn/vj/ 和 https://www.wjx.cn/xz/ 开头的
+          <a
+            href='https://www.wjx.cn/newwjx/mysojump/selecttemplatelogin.aspx'
+            target='_blank'
+            rel='noreferrer'
+          >
+            问卷星模板
+          </a>
+          或问卷。
+        </p>
+      </>,
+      confirmText: '导入',
+      confirmNav: true,
+      initialState: {
+        value: ''
+      },
+      confirmProps: s => ({
+        disabled: !s.value.trim()
+      }),
+      async onConfirmed(s, close) {
+        const res = await api.crawl(s.value.trim());
+        close(res);
+      }
+    });
+
+    if (!res)
+      return;
+
+    if (res.code === 0)
+      importData(res.data);
+    else
+      await showModal({
+        title: '导入失败',
+        description: '暂时无法解析此 URL。',
+        noConfirm: true,
+        cancelText: '关闭'
+      });
+  }
+
   const ref = useRef();
 
   return (
@@ -350,11 +410,35 @@ function FormEditor(props) {
                   <Segment>
                     <Header>添加题目</Header>
                     {qTypes.map(l => (
-                      <Label key={l[0]} as='a' onClick={() => addQuestion(l[0])} style={{'margin': 3}}>
+                      <Label key={l[0]} size='tiny' as='a' onClick={() => addQuestion(l[0])} style={{'margin': 3}}>
                         <Icon name={l[2]} />
                         {l[1]}
                       </Label>
                     ))}
+                    <Divider />
+                    <div>
+                      <Button
+                        size='tiny'
+                        content='从 JSON 导入'
+                        onClick={onImport}
+                      />
+                      <Button
+                        size='tiny'
+                        content='从问卷星导入'
+                        color='orange'
+                        onClick={onCrawlImport}
+                        floated='right'
+                      />
+                    </div>
+                    <Divider />
+                    <Button
+                      loading={loading}
+                      primary
+                      onClick={onSubmit}
+                      disabled={!title.trim() || errorCtx.dirty() || loading}
+                    >
+                      {saveText}
+                    </Button>
                   </Segment>
                 </Sticky>
               </Container>
@@ -364,9 +448,6 @@ function FormEditor(props) {
                 <Grid.Row>
                   <Grid.Column>
                     <Input
-                      style={{
-                        width: 'calc(100% - 170px)'
-                      }}
                       className='qeditor-title-input-box'
                       error={titleError}
                       placeholder='问卷标题'
@@ -378,23 +459,6 @@ function FormEditor(props) {
                         setTitleError(!v.trim());
                         setTitle(v);
                       }}
-                    />
-                    <Button
-                      loading={loading}
-                      primary
-                      floated='right'
-                      onClick={onSubmit}
-                      disabled={!title.trim() || errorCtx.dirty() || loading}
-                    >
-                      {saveText}
-                    </Button>
-                    <Button
-                      floated='right'
-                      content='导入'
-                      style={{
-                        marginRight: 5
-                      }}
-                      onClick={onImport}
                     />
                   </Grid.Column>
                 </Grid.Row>

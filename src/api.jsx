@@ -391,6 +391,8 @@ class Api {
   };
 
   get_feeds = () => this.get('/auth/get_feeds/');
+
+  crawl = url => this.post('/crawl/', {url});
 }
 
 const api = new Api();
