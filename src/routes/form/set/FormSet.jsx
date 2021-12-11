@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Card, Dropdown, Form, Grid, Icon, Input, Label, Loader, Menu, Segment } from 'semantic-ui-react';
+import { Card, Dropdown, Form, Grid, Icon, Input, Label, Loader, Menu, Message, Placeholder } from 'semantic-ui-react';
 
 import api, { api_unwrap_fut } from 'api';
 import appState from 'appState';
@@ -76,6 +76,7 @@ function FormSet() {
   const [ctx, setCtx] = useState(-1);
 
   const [ctxLoading, setCtxLoading] = useState(false);
+  const [folderLoading, setFolderLoading] = useState(false);
 
   function updateFilterWord(v, withForms) {
     setFilterWord_(v);
@@ -153,17 +154,21 @@ function FormSet() {
 
   async function switchContext(ctx) {
     setCtxLoading(true);
+    setFolderLoading(true);
     await refreshOverview(ctx);
     setCtx(ctx);
+    setFolderLoading(false);
     setCtxLoading(false);
   }
 
   async function onFolderChanged(folder) {
+    setFolderLoading(true);
     const {id} = folder;
     const {forms} = await api_unwrap_fut(api.form.get_folder_all(id));
     setCurrFolderId(id);
     setForms(forms);
     updateFilterWord(filterWord, forms);
+    setFolderLoading(false);
     const url = window.location.protocol + '//' + window.location.host + window.location.pathname + '?f=' + id;
     window.history.pushState({path: url}, '', url);
   }
@@ -364,8 +369,8 @@ function FormSet() {
     updateFilterWord(v, forms);
   }
 
-  const content = filteredForms.length ? (
-    <Card.Group itemsPerRow={3}>
+  const makeContent = () => filteredForms.length ? (
+    <Card.Group itemsPerRow={3} stackable>
       {activeItems.map(form => (
         <Card
           href={getFormDetailUrl(form.id)}
@@ -430,9 +435,9 @@ function FormSet() {
       ))}
     </Card.Group>
   ) : forms.length ? (
-    <Segment>无搜索结果</Segment>
+    <Message content='无搜索结果。' />
   ) : (
-    <Segment>暂无问卷</Segment>
+    <Message content='该目录暂时没有问卷。' />
   );
 
   // FIXME: transition not working
@@ -474,7 +479,7 @@ function FormSet() {
                     <Menu.Item
                       key={f.id}
                       active={f.id === currFolderId}
-                      onClick={() => onFolderChanged(f)}
+                      onClick={f.id === currFolderId ? () => undefined : () => onFolderChanged(f)}
                     >
                       <Label>
                         {f.form_count}
@@ -546,16 +551,27 @@ function FormSet() {
               <ShareRow
                 fid={sharingFid}
               />
-              <Grid.Row>
-                <Grid.Column>
-                  {content}
-                </Grid.Column>
-              </Grid.Row>
-              <Grid.Row>
-                <Grid.Column textAlign='center'>
-                  {menu}
-                </Grid.Column>
-              </Grid.Row>
+              {folderLoading ?
+                <Grid.Row>
+                  <Grid.Column>
+                    <Card.Group itemsPerRow={3} stackable>
+                      <CardPlaceHolder />
+                    </Card.Group>
+                  </Grid.Column>
+                </Grid.Row>
+                : <>
+                  <Grid.Row>
+                    <Grid.Column>
+                      {makeContent()}
+                    </Grid.Column>
+                  </Grid.Row>
+                  <Grid.Row>
+                    <Grid.Column textAlign='center'>
+                      {menu}
+                    </Grid.Column>
+                  </Grid.Row>
+                </>
+              }
             </Grid>
           </Grid.Column>
         </Grid.Row>
@@ -563,6 +579,22 @@ function FormSet() {
       {modals}
     </AppLayout>
   );
+}
+
+function CardPlaceHolder() {
+  return <Card>
+    <Card.Content>
+      <Placeholder>
+        <Placeholder.Paragraph>
+          <Placeholder.Line />
+          <Placeholder.Line />
+          <Placeholder.Line />
+          <Placeholder.Line />
+          <Placeholder.Line />
+        </Placeholder.Paragraph>
+      </Placeholder>
+    </Card.Content>
+  </Card>;
 }
 
 export default FormSet;
