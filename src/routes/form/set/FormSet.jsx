@@ -386,7 +386,7 @@ function FormSet() {
                 >
                   <Dropdown.Menu>
                     <Dropdown.Item
-                      icon='setting' text='打开'
+                      icon='setting' text='管理'
                       onClick={() => detail(form)}
                     />
                     <Dropdown.Item
