@@ -4,10 +4,10 @@ import ReactDOM from 'react-dom';
 import { get_query_param, redirect_login } from 'utils/url';
 import ErrorFallback from './ErrorFallback';
 
-// TODO: change in production environment
-// const entry = 'http://localhost:8000';
+const entry = process.env.REACT_APP_API_ENTRY ||
+  window.location.protocol + '//' + window.location.hostname + ':8000';
 
-const entry = window.location.protocol + '//' + window.location.hostname + ':8000';
+console.log('API entry:', entry);
 
 const auth_token = get_query_param('a');
 

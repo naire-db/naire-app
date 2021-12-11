@@ -27,9 +27,10 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build && python3 tools/clean-build.py",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "deploy-build": "GENERATE_SOURCEMAP=false REACT_APP_API_ENTRY=https://k.latency.ga react-scripts build && python3 tools/clean-build.py"
   },
   "eslintConfig": {
     "extends": [
