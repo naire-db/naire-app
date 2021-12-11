@@ -84,7 +84,10 @@ function UserOrgs() {
                         {renderRoleLabel(o.role)}
                       </Table.Cell>
                       <Table.Cell width={5}>
-                        {o.member_count} 位成员
+                        {o.form_count === undefined
+                          ? `${o.member_count} 位成员`
+                          : `${o.member_count} 位成员，${o.form_count} 份问卷`
+                        }
                       </Table.Cell>
                       {/* TODO: __ 份问卷，若 >= ADMIN */}
                       <Table.Cell width={7}>
