@@ -22,6 +22,7 @@ function UserOrgs() {
       title: '创建组织',
       confirmNav: true,
       inputProps: {
+        label: '组织名称',
         onChange: e => (value = e.target.value),
         maxLength: ORG_NAME_MAX_LENGTH,
         placeholder: '新组织'
