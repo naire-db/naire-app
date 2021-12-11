@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Checkbox, Form, Message } from 'semantic-ui-react';
+import { Button, Checkbox, Form, Message } from 'semantic-ui-react';
 
 import api from 'api';
 import { checkPassword, useField } from 'utils/fieldHook';
@@ -13,11 +13,14 @@ function ChangePassword() {
   const passwordField = useField(checkPassword);
   const newPasswordField = useField(checkPassword);
 
+  const [loading, setLoading] = useState(false);
+
   const repeatedMisMatchError = newPasswordField.value !== repeatedPassword;
 
   async function onSubmit() {
     if (!passwordField.validate())
       return;
+    setLoading(true);
 
     let res;
     try {
@@ -26,11 +29,12 @@ function ChangePassword() {
       return setErrorPrompt(e.toString());
     }
     if (res.code === 0)
-      window.location = '/login';
+      return window.location = '/login';
     else if (res.code === api.ERR_FAILURE)
       setErrorPrompt('当前密码输入错误');
     else
       setErrorPrompt(res.code);
+    setLoading(false);
   }
 
   let toggle = () => setChecked(v => !v);
@@ -61,14 +65,14 @@ function ChangePassword() {
           />
         </Form.Field>
         <Message error header={'保存失败'} content={errorPrompt} />
-        <Form.Button
-          primary fluid
+        <Button
+          primary
           onClick={onSubmit}
-          disabled={repeatedMisMatchError}
-          className='profile-submit'
+          disabled={repeatedMisMatchError || loading}
+          loading={loading}
         >
           保存
-        </Form.Button>
+        </Button>
       </Form>
     </ProfileLayout>
   );

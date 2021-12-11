@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Message } from 'semantic-ui-react';
+import { Button, Form, Message } from 'semantic-ui-react';
 
 import api from 'api';
 import appState from 'appState';
@@ -28,7 +28,7 @@ function Profile() {
     }
     if (res.code === 0) {
       localStorage.setItem('user_info', JSON.stringify(res.data));
-      window.location.reload();
+      return window.location.reload();
     } else if (res.code === api.ERR_DUPL_EMAIL)
       setErrorPrompt('该邮箱已注册');
     else
@@ -52,9 +52,8 @@ function Profile() {
           {...dnameField.toProps()}
         />
         <Message error header='保存失败' content={errorPrompt} />
-        <Form.Button
+        <Button
           primary
-          className='profile-submit'
           onClick={onSubmit}
           disabled={
             !(emailField.visuallyValid() && dnameField.visuallyValid()) ||
@@ -64,7 +63,7 @@ function Profile() {
           loading={loading}
         >
           保存
-        </Form.Button>
+        </Button>
       </Form>
     </ProfileLayout>
   );
