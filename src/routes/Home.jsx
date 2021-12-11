@@ -100,14 +100,19 @@ const Home = observer(() => {
         />
         <Header
           as='h2'
-          content='The most versatile questionnaire platform ever.'
           inverted
           style={{
             fontSize: '1.8em',
             fontWeight: 'normal',
             marginTop: '2em',
           }}
-        />
+        >
+          The most versatile question
+          <b style={{
+            color: '#2185d0'
+          }}>naire</b>
+          &nbsp;platform ever.
+        </Header>
       </Container>
     </Segment>
   );
