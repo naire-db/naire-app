@@ -1,13 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import { redirect_login } from 'utils/url';
+import { get_query_param, redirect_login } from 'utils/url';
 import ErrorFallback from './ErrorFallback';
 
 // TODO: change in production environment
 // const entry = 'http://localhost:8000';
 
 const entry = window.location.protocol + '//' + window.location.hostname + ':8000';
+
+const auth_token = get_query_param('a');
 
 function api_unwrap(res) {
   if (res.code !== 0) {
@@ -28,6 +30,8 @@ async function api_fetch(path, options) {
     console.log(`${method}ing ${path}`);
   else
     console.log(`${method}ing ${path} with ${body}`);
+  if (auth_token)
+    options.headers.Authorization = auth_token;
   let resp;
   try {
     resp = await fetch(entry + path, options);
