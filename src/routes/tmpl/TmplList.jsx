@@ -113,7 +113,7 @@ function TmplList() {
                 {filteredTmpls.map(t => (
                   <Table.Row key={t.id}>
                     <Table.Cell>
-                      <a onClick={() => preview(t)} href='#'>
+                      <a onClick={() => preview(t)} href='/#'>
                         {t.title}
                       </a>
                     </Table.Cell>
