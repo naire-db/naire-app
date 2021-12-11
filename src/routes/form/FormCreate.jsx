@@ -125,6 +125,7 @@ function FormEditor(props) {
         const q = qMap[qid];
         if (q.onSave)
           q.onSave();
+        q.title = q.title.trim();
         return q;
       })
     };
