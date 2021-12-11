@@ -258,6 +258,11 @@ class Api {
       this.post('/form/get_org_overview/', {
         oid
       }),
+
+    get_org_folders: oid =>
+      this.post('/form/get_org_folders/', {
+        oid
+      }),
   };
 
   user = {

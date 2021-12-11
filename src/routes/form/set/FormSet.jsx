@@ -228,6 +228,49 @@ function FormSet() {
     });
   }
 
+  function makeContextFolderDropdowns(s) {
+    return <>
+      {ctxOptions &&
+        <Form.Dropdown
+          label='个人或组织'
+          defaultValue={ctx}
+          selection
+          options={ctxOptions}
+          onChange={async (e, d) => {
+            s.loading = true;
+            const res = await api_unwrap_fut(api.form.get_org_folders(d.value));
+            s.folders = res.folders;
+            s.value = res.root_fid;
+            s.loading = false;
+          }}
+        />
+      }
+      <Form.Dropdown
+        label='目标目录'
+        value={s.value}
+        selection
+        loading={s.loading}
+        disabled={s.loading}
+        options={s.folders.map(f => ({
+          key: f.id,
+          value: f.id,
+          text: f.name
+        }))}
+        onChange={(e, d) => {
+          s.value = d.value;
+        }}
+      />
+    </>;
+  }
+
+  function makeContextFolderDropdownsInitialState() {
+    return {
+      value: currFolderId,
+      folders,
+      loading: false
+    };
+  }
+
   async function moveToFolder(form) {
     await showModal({
       title: '移动到目录',
@@ -236,27 +279,13 @@ function FormSet() {
       subtitle: form.title,
       content: s => {
         return <Form>
-          <Form.Dropdown
-            label='新目录'
-            defaultValue={currFolderId}
-            selection
-            options={folders.map(f => ({
-              key: f.id,
-              value: f.id,
-              text: f.name
-            }))}
-            onChange={(e, d) => {
-              s.value = d.value;
-            }}
-          />
+          {makeContextFolderDropdowns(s)}
         </Form>;
       },
+      initialState: makeContextFolderDropdownsInitialState(),
       onConfirmed: async s => {
         await api_unwrap_fut(api.form.move_to_folder(form.id, s.value));
         reload();
-      },
-      initialState: {
-        value: currFolderId
       },
       confirmProps: s => ({
         disabled: s.value === currFolderId
@@ -295,28 +324,14 @@ function FormSet() {
   //  to have a form created from a template as an org.
   async function copy(form) {
     let newTitle = null;
-    let newFolderId = currFolderId;
     await showModal({
       title: '复制问卷',
       confirmText: '复制',
       confirmNav: true,
       subtitle: form.title,
-      content: () => {
+      content: s => {
         return <Form>
-          <Form.Dropdown
-            label='目标目录'
-            defaultValue={currFolderId}
-            compact
-            selection
-            options={folders.map(f => ({
-              key: f.id,
-              value: f.id,
-              text: f.name
-            }))}
-            onChange={(e, d) => {
-              newFolderId = d.value;
-            }}
-          />
+          {makeContextFolderDropdowns(s)}
           <Form.Input
             label='问卷标题'
             onChange={(e, d) => {
@@ -327,9 +342,10 @@ function FormSet() {
           />
         </Form>;
       },
-      onConfirmed: async () => {
+      initialState: makeContextFolderDropdownsInitialState(),
+      onConfirmed: async s => {
         const title = newTitle?.trim() || form.title;
-        await api_unwrap_fut(api.form.copy(form.id, newFolderId, title));
+        await api_unwrap_fut(api.form.copy(form.id, s.value, title));
         reload();
       }
     });
