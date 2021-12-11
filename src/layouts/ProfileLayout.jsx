@@ -8,7 +8,7 @@ import './profile.css';
 function ProfileLayout(props) {
   return (
     <AppLayout offset>
-      <Grid>
+      <Grid stackable>
         <Grid.Row>
           <Grid.Column width={3}>
             <Menu secondary vertical fluid>

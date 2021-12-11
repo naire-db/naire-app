@@ -11,7 +11,7 @@ function OrgLayout(props) {
 
   return (
     <AppLayout offset>
-      <Grid>
+      <Grid stackable>
         <Grid.Row>
           <Grid.Column width={3}>
             <Header>
