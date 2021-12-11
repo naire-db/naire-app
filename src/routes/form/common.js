@@ -8,7 +8,8 @@ async function onEditForm(url, warn, subtitle = null) {
   return await showModal({
     title: '编辑问卷',
     subtitle,
-    description: '保存问卷时，将删除其所有已有答卷。',
+    size: 'tiny',
+    description: '该问卷正在接受答卷。保存问卷时，将删除所有已有的答卷。',
     confirmText: '编辑',
     confirmProps: {
       negative: true
