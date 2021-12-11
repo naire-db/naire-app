@@ -9,8 +9,6 @@ const entry = process.env.REACT_APP_API_ENTRY ||
 
 const DEBUG = !process.env.REACT_APP_API_ENTRY;
 
-console.log('API entry:', entry);
-
 const auth_token = get_query_param('a');
 
 function api_unwrap(res) {
