@@ -14,6 +14,7 @@ import {
   Ref,
   Segment,
   Sticky,
+  TextArea,
   Transition
 } from 'semantic-ui-react';
 import _ from 'lodash';
@@ -491,16 +492,29 @@ function FormEditor(props) {
                             <Grid>
                               <Grid.Row className='qeditor-meta-row'>
                                 <Grid.Column>
-                                  <Input
-                                    className='qeditor-title-input-box'
-                                    placeholder={q.type === 'comment' ? '内容' : '问题'}
-                                    maxLength={QUESTION_TITLE_MAX_LENGTH}
-                                    value={title}
-                                    onChange={e => {
-                                      q.title = e.target.value;
-                                      setQids([...qids]);  // dirty way to make this part rerendered
-                                    }}
-                                  />
+                                  {q.type === 'comment' ?
+                                    <Form>
+                                      <TextArea
+                                        placeholder={q.type === 'comment' ? '内容' : '问题'}
+                                        maxLength={QUESTION_TITLE_MAX_LENGTH}
+                                        value={title}
+                                        onChange={e => {
+                                          q.title = e.target.value;
+                                          setQids([...qids]);
+                                        }}
+                                      />
+                                    </Form> :
+                                    <Input
+                                      className='qeditor-title-input-box'
+                                      placeholder={q.type === 'comment' ? '内容' : '问题'}
+                                      maxLength={QUESTION_TITLE_MAX_LENGTH}
+                                      value={title}
+                                      onChange={e => {
+                                        q.title = e.target.value;
+                                        setQids([...qids]);  // dirty way to make this part rerendered
+                                      }}
+                                    />
+                                  }
                                 </Grid.Column>
                               </Grid.Row>
                               <Grid.Row className='question-image-group-row'>
