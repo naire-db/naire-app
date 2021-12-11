@@ -4,6 +4,7 @@ import { Button, Grid, Segment, Table } from 'semantic-ui-react';
 import api, { api_unwrap_fut } from 'api';
 import { useAsyncResult } from 'utils';
 import { showModal } from 'utils/modal';
+import NavButton from 'components/NavButton';
 import ProfileLayout from 'layouts/ProfileLayout';
 
 import { renderRoleLabel } from '../org/utils';
@@ -73,7 +74,13 @@ function UserOrgs() {
                   {orgs.map(o => (
                     <Table.Row key={o.id}>
                       <Table.Cell width={4}>
-                        {o.name}
+                        <a
+                          href={'/org/' + o.id + '/members'}
+                          target='_blank'
+                          rel='noreferrer'
+                        >
+                          {o.name}
+                        </a>
                         {renderRoleLabel(o.role)}
                       </Table.Cell>
                       <Table.Cell width={5}>
@@ -81,7 +88,7 @@ function UserOrgs() {
                       </Table.Cell>
                       {/* TODO: __ 份问卷，若 >= ADMIN */}
                       <Table.Cell width={7}>
-                        <Button
+                        <NavButton
                           icon='setting'
                           size='mini'
                           content='详情'
