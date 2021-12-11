@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Button, Form, Grid, Header, Message, Segment } from 'semantic-ui-react';
 
-import AppLayout from 'layouts/AppLayout';
 import api from 'api';
-import { get_query_param } from '../utils/url';
+import { get_query_param } from 'utils/url';
+import AppLayout from 'layouts/AppLayout';
 
 function Login() {
   const [usernameOrEmail, setUsernameOrEmail] = useState('');
@@ -12,6 +12,8 @@ function Login() {
   const [usernameError, setUsernameError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
 
+  const [loading, setLoading] = useState(false);
+
   async function onLogin() {
     const usernameOk = usernameOrEmail && /^[0-9a-zA-Z_.\-@]*$/.test(usernameOrEmail);
     const ok = usernameOk && password;
@@ -19,6 +21,7 @@ function Login() {
     setPasswordError(!password);
     if (!ok)
       return;
+    setLoading(true);
     let res;
     try {
       res = await api.login(usernameOrEmail, password);
@@ -32,6 +35,7 @@ function Login() {
       window.location = target || '/';
     } else
       setErrorPrompt('用户名或密码错误');
+    setLoading(false);
   }
 
   console.log(usernameOrEmail, password, errorPrompt);
@@ -61,6 +65,8 @@ function Login() {
               <Button
                 primary fluid size='large'
                 onClick={onLogin}
+                loading={loading}
+                disabled={loading}
               >
                 登录
               </Button>

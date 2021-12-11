@@ -14,9 +14,12 @@ function Profile() {
 
   const [errorPrompt, setErrorPrompt] = useState(null);
 
+  const [loading, setLoading] = useState(false);
+
   async function onSubmit() {
     if (!validateFields(emailField, dnameField))
       return;
+    setLoading(true);
     let res;
     try {
       res = await api.user.save_profile(emailField.value, dnameField.value);
@@ -30,6 +33,7 @@ function Profile() {
       setErrorPrompt('该邮箱已注册');
     else
       setErrorPrompt(res.code);
+    setLoading(false);
   }
 
   return (
@@ -49,13 +53,15 @@ function Profile() {
         />
         <Message error header='保存失败' content={errorPrompt} />
         <Form.Button
-          primary fluid
+          primary
           className='profile-submit'
           onClick={onSubmit}
           disabled={
             !(emailField.visuallyValid() && dnameField.visuallyValid()) ||
-            (currentInfo.email === emailField.value && currentInfo.dname === dnameField.value)
+            (currentInfo.email === emailField.value && currentInfo.dname === dnameField.value) ||
+            loading
           }
+          loading={loading}
         >
           保存
         </Form.Button>

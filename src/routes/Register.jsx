@@ -13,6 +13,8 @@ function Register() {
   const [repeatedPassword, setRepeatedPassword] = useState('');
   const [errorPrompt, setErrorPrompt] = useState(null);
 
+  const [loading, setLoading] = useState(false);
+
   const repeatedPasswordError = passwordField.value !== repeatedPassword;
 
   async function onSubmit() {
@@ -22,6 +24,7 @@ function Register() {
     if (!ok || repeatedPasswordError)
       return;
 
+    setLoading(true);
     let res;
     try {
       res = await api.register(usernameField.value, emailField.value, passwordField.value, usernameField.value);
@@ -36,6 +39,7 @@ function Register() {
       setErrorPrompt('该邮箱已注册');
     else
       setErrorPrompt(res.code);
+    setLoading(false);
   }
 
   return (
@@ -73,6 +77,8 @@ function Register() {
               <Button
                 primary fluid size='large'
                 onClick={onSubmit}
+                loading={loading}
+                disabled={loading}
               >
                 注册
               </Button>
