@@ -90,7 +90,7 @@ const CommonModal = observer(props => {
     const btns = resolvePossibleAction(buttons, modalState.state, modalState.stop);
     if (btns.length)
       actions = <Modal.Actions>
-        {btns.map(props => <Button {...props} />)}
+        {btns.map((props, i) => <Button key={i} {...props} />)}
       </Modal.Actions>;
     else
       actions = null;
