@@ -52,7 +52,7 @@ function TmplList() {
       title: '预览模板',
       noConfirm: true,
       cancelText: '关闭',
-      size: 'small',
+      size: 'large',
       content: () =>
         <RespView
           form={res}
