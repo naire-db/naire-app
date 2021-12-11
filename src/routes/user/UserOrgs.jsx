@@ -69,7 +69,7 @@ function UserOrgs() {
         <Grid.Row>
           <Grid.Column>
             {orgs.length ?
-              <Table size='large' basic>
+              <Table basic compact>
                 <Table.Body>
                   {orgs.map(o => (
                     <Table.Row key={o.id}>
