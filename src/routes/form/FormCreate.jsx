@@ -72,6 +72,8 @@ function FormEditor(props) {
 
   const [loading, setLoading] = useState(false);
 
+  const [formToken, setFormToken] = useState('x');
+
   const {onSaved, saveText, initialStateFn} = props;
 
   const ctx = {
@@ -244,6 +246,7 @@ function FormEditor(props) {
 
   function importData(data) {
     loadEditorState(makeEditorState(data.body.questions, data.title));
+    setFormToken(String(Math.random()));
   }
 
   async function onImport() {
@@ -471,7 +474,7 @@ function FormEditor(props) {
                         const q = qMap[qid];
                         const {type, title} = q;
                         const E = editorMap[type];
-                        return <Segment.Group key={qid}>
+                        return <Segment.Group key={qid + formToken}>
                           <Segment>
                             <Grid>
                               <Grid.Row>
