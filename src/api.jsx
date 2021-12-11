@@ -7,6 +7,8 @@ import ErrorFallback from './ErrorFallback';
 const entry = process.env.REACT_APP_API_ENTRY ||
   window.location.protocol + '//' + window.location.hostname + ':8000';
 
+const DEBUG = !process.env.REACT_APP_API_ENTRY;
+
 console.log('API entry:', entry);
 
 const auth_token = get_query_param('a');
@@ -26,10 +28,12 @@ async function api_unwrap_fut(fut) {
 
 async function api_fetch(path, options) {
   const {method, body} = options;
-  if (body === undefined)
-    console.log(`${method}ing ${path}`);
-  else
-    console.log(`${method}ing ${path} with ${body}`);
+  if (DEBUG) {
+    if (body === undefined)
+      console.log(`${method}ing ${path}`);
+    else
+      console.log(`${method}ing ${path} with ${body}`);
+  }
   if (auth_token)
     options.headers.Authorization = auth_token;
   let resp;
@@ -50,7 +54,8 @@ async function api_fetch(path, options) {
     throw new Error(`API ${path}: ${resp.status} ${resp.statusText}`);
   }
   const res = await resp.json();
-  console.log(`${method} ${path} responded ${JSON.stringify(res)}`);
+  if (DEBUG)
+    console.log(`${method} ${path} responded ${JSON.stringify(res)}`);
   if (res.code === 2)
     return redirect_login();
   return res;
