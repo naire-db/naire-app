@@ -47,24 +47,27 @@ function QuestionView(props) {
             {q.title}
           </Grid.Column>
         </Grid.Row>
-        <Grid.Row className='question-image-group-row' style={{
-          marginTop: -16
-        }}>
-          <Grid.Column>
-            <Image.Group size='small'>
-              {q.images?.map(iid => (
-                <Image
-                  key={iid}
-                  bordered rounded
-                  src={api.file.image_url(iid)}
-                  as='a' href='#'
-                  onClick={() => openImage(iid)}
-                />
-              ))}
-            </Image.Group>
-          </Grid.Column>
-        </Grid.Row>
-        <Grid.Row>
+        {q.images &&
+          <Grid.Row className='question-image-group-row' style={{
+            marginTop: -16,
+            marginBottom: -5
+          }}>
+            <Grid.Column>
+              <Image.Group size='small'>
+                {q.images.map(iid => (
+                  <Image
+                    key={iid}
+                    bordered rounded
+                    src={api.file.image_url(iid)}
+                    as='a' href='#'
+                    onClick={() => openImage(iid)}
+                  />
+                ))}
+              </Image.Group>
+            </Grid.Column>
+          </Grid.Row>
+        }
+        <Grid.Row style={{marginTop: -10}}>
           <Grid.Column>
             {E && <E
               question={q}
