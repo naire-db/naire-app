@@ -67,6 +67,8 @@ function FormEditor(props) {
   const [titleError, setTitleError] = useState(false);
   const errorCtx = useErrorContext();
 
+  const [loading, setLoading] = useState(false);
+
   const {onSaved, saveText, initialStateFn} = props;
 
   const ctx = {
@@ -112,8 +114,9 @@ function FormEditor(props) {
   async function onSubmit() {
     const titleValue = title.trim();
     if (!titleValue)
-      return setTitleError(true);
+      return;
 
+    setLoading(true);
     const body = {
       questions: qids.map(qid => {
         const q = qMap[qid];
@@ -124,7 +127,8 @@ function FormEditor(props) {
     };
     // TODO: Recover the flags?
     window.qidsNonEmpty = window.titleNonEmpty = false;
-    onSaved(body, titleValue);
+    await onSaved(body, titleValue);
+    setLoading(false);
   }
 
   function onRemoved(qid) {
@@ -370,16 +374,16 @@ function FormEditor(props) {
                       onChange={e => {
                         const v = e.target.value;
                         window.titleNonEmpty = v.trim();
-                        setTitleError(false);
+                        setTitleError(!v.trim());
                         setTitle(v);
                       }}
                     />
-                    {/* FIXME: Cannot use NavButton here since submit can fail when title is empty.  */}
                     <Button
+                      loading={loading}
                       primary
                       floated='right'
                       onClick={onSubmit}
-                      disabled={titleError || errorCtx.dirty()}
+                      disabled={!title.trim() || errorCtx.dirty() || loading}
                     >
                       {saveText}
                     </Button>
