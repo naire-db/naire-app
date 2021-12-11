@@ -96,7 +96,7 @@ function OrgMembers() {
         }
         <Grid.Row>
           <Grid.Column>
-            <Table size='large' basic>
+            <Table basic>
               <Table.Body>
                 {users.map(u => (
                   <Table.Row key={u.id}>
