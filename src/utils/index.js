@@ -33,4 +33,12 @@ function int_or_null(x) {
   return isNaN(r) ? null : r;
 }
 
-export { useAsyncResult, useAsyncEffect, resolvePossibleAction, int_or_null };
+function unwrap_nullable(v, d) {
+  return v == null ? d : v;
+}
+
+function wrap_nullable(v, d) {
+  return v === d ? null : v;
+}
+
+export { useAsyncResult, useAsyncEffect, resolvePossibleAction, int_or_null, wrap_nullable, unwrap_nullable };

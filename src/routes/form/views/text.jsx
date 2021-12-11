@@ -1,6 +1,8 @@
 import React from 'react';
 import { Form } from 'semantic-ui-react';
 
+import { unwrap_nullable } from 'utils';
+import { MAX_LENGTH } from '../types/text';
 import { registerQuestionView, useAState } from './base';
 import { QLabel } from './utils';
 
@@ -8,8 +10,9 @@ function TextView(props) {
   const q = props.question;
   const [resp, setResp] = useAState(q);
 
-  const {min_length, max_length} = q;
-  const [error, setError] = props.useErrorState(() => min_length > 0);
+  const min_length = unwrap_nullable(q.min_length, 0);
+  const max_length = unwrap_nullable(q.max_length, MAX_LENGTH);
+  const [, setError] = props.useErrorState(() => min_length > 0);
 
   function onChange(e) {
     const v = e.target.value;
@@ -22,21 +25,21 @@ function TextView(props) {
   return <Form>
     <Form.TextArea
       maxLength={max_length}
-      placeholder='输入...'
       onChange={onChange}
       value={resp}
     />
-    {
-      min_length !== 0 &&
+    {min_length !== 0 &&
       <QLabel
         text={`至少输入 ${min_length} 个字符`}
         error={props.tried && resp.length < min_length}
       />
     }
-    <QLabel
-      text={`最多输入 ${max_length} 个字符`}
-    />
-  </Form>
+    {max_length !== MAX_LENGTH &&
+      <QLabel
+        text={`最多输入 ${max_length} 个字符`}
+      />
+    }
+  </Form>;
 }
 
 registerQuestionView('text', TextView, () => '');

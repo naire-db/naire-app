@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Button, Checkbox, Form, Input, Radio, Table } from 'semantic-ui-react';
 
+import { unwrap_nullable, wrap_nullable } from 'utils';
 import NumberInput from 'components/NumberInput';
 
 import { BaseQuestion, registerQuestionType, useQState } from './base';
-import { makeRangeNumberInputProps, unwrap_nullable, wrap_nullable } from './utils';
+import { makeRangeNumberInputProps } from './utils';
 
 class CheckboxQuestion extends BaseQuestion {
   type = 'checkbox';

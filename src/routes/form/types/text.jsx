@@ -1,8 +1,8 @@
 import React from 'react';
 
+import { unwrap_nullable, wrap_nullable } from 'utils';
 import { BaseQuestion, registerQuestionType } from './base';
 import { InputEditor } from './input';
-import { unwrap_nullable, wrap_nullable } from './utils';
 
 const MAX_LENGTH = 20000;
 
@@ -28,3 +28,5 @@ function TextQuestionEditor(props) {
 }
 
 registerQuestionType('text', TextQuestion, TextQuestionEditor);
+
+export { MAX_LENGTH };

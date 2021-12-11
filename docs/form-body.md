@@ -20,14 +20,14 @@ interface Question { // abstract
 }
 
 interface InputQuestion extends Question {
-  min_length: int;
-  max_length: int;
+  min_length?: int | null;
+  max_length?: int | null;
   regex?: string;
 }
 
 interface TextQuestion extends Question {
-  min_length: int;
-  max_length: int;
+  min_length?: int | null;
+  max_length?: int | null;
 }
 
 interface RadioQuestion extends Question {
@@ -36,8 +36,8 @@ interface RadioQuestion extends Question {
 
 interface CheckboxQuestion extends Question {
   options: Option[];  // Non-empty
-  min_choices: int;
-  max_choices: int;
+  min_choices?: int | null;
+  max_choices?: int | null;
 }
 
 interface DropdownQuestion extends Question {

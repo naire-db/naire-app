@@ -1,13 +1,16 @@
 import React from 'react';
 import { Form } from 'semantic-ui-react';
 
+import { unwrap_nullable } from 'utils';
 import { registerQuestionView, useAState } from './base';
 import { QLabel } from './utils';
 
 function CheckboxView(props) {
   const q = props.question;
   const [selectedOids, setSelectedOids] = useAState(q);
-  const {min_choices, max_choices} = q;
+  const {options} = q;
+  const min_choices = unwrap_nullable(q.min_choices, 0);
+  const max_choices = unwrap_nullable(q.max_choices, options.length);
 
   const [error, setError] = props.useErrorState(() => min_choices > 0);
 
@@ -34,7 +37,7 @@ function CheckboxView(props) {
 
   return <Form>
     {
-      q.options.map(o => (
+      options.map(o => (
         <Form.Checkbox
           key={o.id}
           label={o.text}
@@ -50,7 +53,7 @@ function CheckboxView(props) {
       text={`至少选择 ${min_choices} 项`}
       error={props.tried && selectedOids.length < min_choices}
     />}
-    {max_choices !== q.options.length && <QLabel
+    {max_choices !== options.length && <QLabel
       text={`最多选择 ${max_choices} 项`}
       error={props.tried && selectedOids.length > max_choices}
     />}

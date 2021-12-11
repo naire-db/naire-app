@@ -2,8 +2,10 @@ import React from 'react';
 import { Form } from 'semantic-ui-react';
 
 import NumberInput from 'components/NumberInput';
+import { unwrap_nullable, wrap_nullable } from 'utils';
+
 import { BaseQuestion, registerQuestionType, useQState } from './base';
-import { makeRangeNumberInputProps, unwrap_nullable, wrap_nullable } from './utils';
+import { makeRangeNumberInputProps } from './utils';
 import { regexMap, regexTemplates } from '../RegexMap';
 
 const MAX_LENGTH = 200;
@@ -77,4 +79,4 @@ function InputEditor(props) {
 
 registerQuestionType('input', InputQuestion, InputEditor);
 
-export { InputQuestion, InputEditor };
+export { InputQuestion, InputEditor, MAX_LENGTH };
