@@ -32,9 +32,9 @@ function Login() {
       const user = res.data;
       localStorage.setItem('user_info', JSON.stringify(user));
       const target = get_query_param('r');
-      window.location = target || '/';
-    } else
-      setErrorPrompt('用户名或密码错误');
+      return window.location = target || '/';
+    }
+    setErrorPrompt('用户名或密码错误');
     setLoading(false);
   }
 

@@ -32,7 +32,7 @@ function Register() {
       return setErrorPrompt(e.toString());
     }
     if (res.code === 0)
-      window.location = '/login' + window.location.search;
+      return window.location = '/login' + window.location.search;
     else if (res.code === api.ERR_DUPL_USERNAME)
       setErrorPrompt('该用户名已注册');
     else if (res.code === api.ERR_DUPL_EMAIL)
