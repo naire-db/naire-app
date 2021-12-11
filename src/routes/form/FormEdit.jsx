@@ -15,8 +15,8 @@ function FormEdit() {
 
   const {title, body} = stat;
 
-  async function confirm(count, onConfirmed) {
-    return await showModal({
+  async function confirm(count, onConfirmed, onCancelled) {
+    const r = await showModal({
       title: '警告',
       description: '若保存修改，已有的 ' + count + ' 份答卷将被删除。',
       confirmText: '保存',
@@ -26,9 +26,11 @@ function FormEdit() {
       },
       onConfirmed
     });
+    if (!r)
+      onCancelled();
   }
 
-  async function onSaved(body, title) {
+  async function onSaved(body, title, resolve) {
     async function submit() {
       await api_unwrap_fut(api.form.remake(fid, title, body));  // TODO: concurrently unsafe
       window.location = '/form/all' + window.location.search;
@@ -36,7 +38,7 @@ function FormEdit() {
 
     const respCount = await api_unwrap_fut(api.form.get_resp_count(fid));
     if (respCount)
-      await confirm(respCount, submit);
+      await confirm(respCount, submit, resolve);
     else
       await submit();
   }

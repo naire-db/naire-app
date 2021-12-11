@@ -133,8 +133,7 @@ function FormEditor(props) {
     };
     // TODO: Recover the flags?
     window.qidsNonEmpty = window.titleNonEmpty = false;
-    await onSaved(body, titleValue);
-    setLoading(false);
+    onSaved(body, titleValue, () => setLoading(false));
   }
 
   function onRemoved(qid) {
