@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Card, Dropdown, Form, Grid, Icon, Input, Label, Menu, Segment } from 'semantic-ui-react';
+import { Card, Dropdown, Form, Grid, Icon, Input, Label, Loader, Menu, Segment } from 'semantic-ui-react';
 
 import api, { api_unwrap_fut } from 'api';
 import appState from 'appState';
@@ -74,6 +74,8 @@ function FormSet() {
   const [rootFid, setRootFid] = useState(null);
   const [orgs, setOrgs] = useState(null);
   const [ctx, setCtx] = useState(-1);
+
+  const [ctxLoading, setCtxLoading] = useState(false);
 
   function updateFilterWord(v, withForms) {
     setFilterWord_(v);
@@ -150,8 +152,10 @@ function FormSet() {
   }, [orgs]);
 
   async function switchContext(ctx) {
+    setCtxLoading(true);
     await refreshOverview(ctx);
     setCtx(ctx);
+    setCtxLoading(false);
   }
 
   async function onFolderChanged(folder) {
@@ -458,35 +462,44 @@ function FormSet() {
               options={ctxOptions}
               onChange={(e, d) => switchContext(d.value)}
             />}
-            <Menu vertical pointing fluid>
-              {folders.map(f => (
-                <Menu.Item
-                  key={f.id}
-                  active={f.id === currFolderId}
-                  onClick={() => onFolderChanged(f)}
-                >
-                  <Label>
-                    {f.form_count}
-                  </Label>
-                  {f.name}
+            {ctxLoading ?
+              <Menu vertical pointing fluid>
+                <Menu.Item style={{height: 100}}>
+                  <Loader active />
                 </Menu.Item>
-              ))}
-            </Menu>
-            <Menu icon size='mini' compact style={{
-              float: 'right',
-            }}>
-              {currFolderId !== rootFid &&
-                <Menu.Item onClick={removeFolder}>
-                  <Icon name='delete' />
-                </Menu.Item>
-              }
-              <Menu.Item onClick={renameFolder}>
-                <Icon name='edit' />
-              </Menu.Item>
-              <Menu.Item onClick={addFolder}>
-                <Icon name='add' />
-              </Menu.Item>
-            </Menu>
+              </Menu>
+              : <>
+                <Menu vertical pointing fluid>
+                  {folders.map(f => (
+                    <Menu.Item
+                      key={f.id}
+                      active={f.id === currFolderId}
+                      onClick={() => onFolderChanged(f)}
+                    >
+                      <Label>
+                        {f.form_count}
+                      </Label>
+                      {f.name}
+                    </Menu.Item>
+                  ))}
+                </Menu>
+                <Menu icon size='mini' compact style={{
+                  float: 'right',
+                }}>
+                  {currFolderId !== rootFid &&
+                    <Menu.Item onClick={removeFolder}>
+                      <Icon name='delete' />
+                    </Menu.Item>
+                  }
+                  <Menu.Item onClick={renameFolder}>
+                    <Icon name='edit' />
+                  </Menu.Item>
+                  <Menu.Item onClick={addFolder}>
+                    <Icon name='add' />
+                  </Menu.Item>
+                </Menu>
+              </>
+            }
           </Grid.Column>
           <Grid.Column width={12}>
             <Grid>
