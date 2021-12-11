@@ -4,6 +4,7 @@ import { Button, Checkbox, Form, Input, Radio, Table } from 'semantic-ui-react';
 import { unwrap_nullable, wrap_nullable } from 'utils';
 import NumberInput from 'components/NumberInput';
 
+import { OPTION_TEXT_MAX_LENGTH } from '../config';
 import { BaseQuestion, registerQuestionType, useQState } from './base';
 import { makeRangeNumberInputProps } from './utils';
 
@@ -66,6 +67,7 @@ function CheckboxOptionTable(props) {
               <Input
                 size='small' placeholder='选项'
                 value={o.text}
+                maxLength={OPTION_TEXT_MAX_LENGTH}
                 fluid
                 onChange={e => {
                   o.text = e.target.value;
