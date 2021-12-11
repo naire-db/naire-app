@@ -20,10 +20,10 @@ function mount(path, f) {
 }
 
 function AppRouter() {
-  console.log('Rendering router');
+  // console.log('Rendering router');
 
   useAsyncEffect(async () => {
-    console.log('old user info', appState.user_info);
+    // console.log('old user info', appState.user_info);
     const res = await api.user_info();
     if (res.code === 0) {
       appState.user_info = res.data;
@@ -32,7 +32,7 @@ function AppRouter() {
       appState.user_info = null;
       localStorage.removeItem('user_info');
     }
-    console.log('new user info', appState.user_info);
+    // console.log('new user info', appState.user_info);
   });
 
   return <>
