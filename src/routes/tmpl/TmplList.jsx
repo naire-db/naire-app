@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Button, Grid, Input, Table } from 'semantic-ui-react';
+import { Grid, Input, Table } from 'semantic-ui-react';
 
 import api, { api_unwrap_fut } from 'api';
 import appState from 'appState';
@@ -7,6 +7,7 @@ import { useAsyncEffect } from 'utils';
 import { formatTimestamp, formatUser } from 'utils/render';
 import { useSorted } from 'utils/data';
 import { CommonModal, createModalHandle } from 'utils/modal';
+import NavButton from 'components/NavButton';
 import AppLayout from 'layouts/AppLayout';
 
 import { loadBareForm } from '../form/FormFill';
@@ -126,7 +127,7 @@ function TmplList() {
                       {formatTimestamp(t.mtime)}
                     </Table.Cell>
                     <Table.Cell>
-                      <Button
+                      <NavButton
                         primary
                         icon='edit'
                         size='mini'
@@ -135,7 +136,7 @@ function TmplList() {
                         onClick={() => create(t)}
                       />
                       {me && t.user.id === me.id &&
-                        <Button
+                        <NavButton
                           icon='delete'
                           negative
                           size='mini'
