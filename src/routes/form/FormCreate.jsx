@@ -425,13 +425,13 @@ function FormEditor(props) {
                         size='tiny'
                         content='从 JSON 导入'
                         onClick={onImport}
+                        style={{marginRight: 10, marginBottom: 5}}
                       />
                       <Button
                         size='tiny'
                         content='从问卷星导入'
                         color='orange'
                         onClick={onCrawlImport}
-                        floated='right'
                       />
                     </div>
                     <Divider />
