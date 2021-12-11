@@ -48,53 +48,50 @@ function CheckboxOptionTable(props) {
   }
 
   return (
-    <Table className='no-table-border' basic='very' compact='very' collapsing>
+    <Table className='no-table-border' basic='very' compact='very'>
       <Table.Body>
-        {
-          options.map((o, ind) => (
-            <Table.Row key={o.id}>
-              <Table.Cell>
-                {
-                  props.radio ?
-                    <Radio
-                      checked={o.id === checkedOid}
-                      onChange={() => {
-                        setCheckedOid(o.id);
-                      }}
-                    /> : <Checkbox />
-                }
-              </Table.Cell>
-              <Table.Cell>
-                <Input
-                  size='small' placeholder='选项'
-                  value={o.text}
-                  onChange={e => {
-                    o.text = e.target.value;
-                    setOptions([...options]);
+        {options.map((o, ind) => (
+          <Table.Row key={o.id}>
+            <Table.Cell width={1} style={{width: 18}}>
+              {props.radio ?
+                <Radio
+                  checked={o.id === checkedOid}
+                  onChange={() => {
+                    setCheckedOid(o.id);
                   }}
+                /> : <Checkbox />
+              }
+            </Table.Cell>
+            <Table.Cell width={12}>
+              <Input
+                size='small' placeholder='选项'
+                value={o.text}
+                fluid
+                onChange={e => {
+                  o.text = e.target.value;
+                  setOptions([...options]);
+                }}
+              />
+            </Table.Cell>
+            <Table.Cell>
+              {options.length > 1 &&
+                <Button
+                  icon='delete' size='mini'
+                  onClick={() => {
+                    removeOption(o.id);
+                  }}
+                  style={{marginRight: 5}}
                 />
-              </Table.Cell>
-              <Table.Cell>
-                {
-                  options.length > 1 &&
-                  <Button
-                    icon='delete' size='mini'
-                    onClick={() => {
-                      removeOption(o.id);
-                    }}
-                    style={{marginRight: 5}}
-                  />
-                }
-                {
-                  ind === options.length - 1 &&
-                  <Button
-                    primary icon='add' size='mini'
-                    onClick={addOption}
-                  />
-                }
-              </Table.Cell>
-            </Table.Row>
-          ))
+              }
+              {ind === options.length - 1 &&
+                <Button
+                  primary icon='add' size='mini'
+                  onClick={addOption}
+                />
+              }
+            </Table.Cell>
+          </Table.Row>
+        ))
         }
       </Table.Body>
     </Table>
