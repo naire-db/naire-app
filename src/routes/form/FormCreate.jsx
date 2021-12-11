@@ -54,7 +54,8 @@ const qTypes = [
   ['input', '填空题', 'text cursor'],
   ['text', '简答题', 'file text'],
   ['dropdown', '下拉列表', 'dropdown'],
-  ['file', '文件上传', 'file']
+  ['file', '文件上传', 'file'],
+  ['comment', '注释', 'content'],
 ];
 
 // TODO: save state in localStorage / IndexedDB? to restore after leaving the page (not a priority)
@@ -428,7 +429,7 @@ function FormEditor(props) {
                                 <Grid.Column>
                                   <Input
                                     className='qeditor-title-input-box'
-                                    placeholder='问题'
+                                    placeholder={q.type === 'comment' ? '内容' : '问题'}
                                     maxLength={QUESTION_TITLE_MAX_LENGTH}
                                     value={title}
                                     onChange={e => {
