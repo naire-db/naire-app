@@ -6,6 +6,7 @@ import AppRouter from './AppRouter';
 import ErrorFallback from './ErrorFallback';
 
 import './index.css';
+import './fonts.css';
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
