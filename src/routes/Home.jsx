@@ -108,9 +108,7 @@ const Home = observer(() => {
           }}
         >
           The most versatile question
-          <b style={{
-            color: '#2185d0'
-          }}>naire</b>
+          <a href='/'><b>naire</b></a>
           &nbsp;platform ever.
         </Header>
       </Container>
