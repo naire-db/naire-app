@@ -46,10 +46,12 @@ function Profile() {
         <Form.Input
           label='邮箱'
           {...emailField.toProps()}
+          maxLength={50}
         />
         <Form.Input
           label='显示名称'
           {...dnameField.toProps()}
+          maxLength={50}
         />
         <Message error header='保存失败' content={errorPrompt} />
         <Button

@@ -54,12 +54,14 @@ function Login() {
                 error={usernameError}
                 value={usernameOrEmail}
                 onChange={e => setUsernameOrEmail(e.target.value)}
+                maxLength={50}
               />
               <Form.Input
                 fluid icon='lock' iconPosition='left' placeholder='密码' type='password'
                 error={passwordError}
                 value={password}
                 onChange={e => setPassword(e.target.value)}
+                maxLength={500}
               />
               <Message error header='登录失败' content={errorPrompt} />
               <Button

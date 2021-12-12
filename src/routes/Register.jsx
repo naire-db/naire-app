@@ -56,22 +56,26 @@ function Register() {
                 error={usernameField.renderError()}
                 value={usernameField.value}
                 onChange={usernameField.handler}
+                maxLength={50}
               />
               <Form.Input
                 fluid icon='lock' iconPosition='left' placeholder='密码' type='password' required
                 {...passwordField.toProps()}
+                maxLength={500}
               />
               <Form.Input
                 fluid icon='lock' iconPosition='left' placeholder='确认密码' type='password' required
                 error={repeatedPasswordError}
                 value={repeatedPassword}
                 onChange={e => setRepeatedPassword(e.target.value)}
+                maxLength={500}
               />
               <Form.Input
                 fluid icon='mail' iconPosition='left' placeholder='邮箱' required
                 error={emailField.renderError()}
                 value={emailField.value}
                 onChange={emailField.handler}
+                maxLength={50}
               />
               <Message error header='注册失败' content={errorPrompt} />
               <Button
