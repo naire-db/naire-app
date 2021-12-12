@@ -62,7 +62,7 @@ function FormStats() {
   return (
     <DetailLayout
       offset='stats' fid={fid} form={form}
-      respCount={resps.count}
+      respCount={resps.length}
     >
       <Header className='print-only' as='h1' content={form.title} style={{
         textAlign: 'center'
