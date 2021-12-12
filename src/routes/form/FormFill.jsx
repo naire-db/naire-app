@@ -90,6 +90,8 @@ function FormView(props) {
   const [submitted, setSubmitted] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
 
+  const [loading, setLoading] = useState(false);
+
   const errorCtx = useErrorContext();
   const {title} = props;
   const {questions} = props.body;
@@ -98,6 +100,7 @@ function FormView(props) {
   async function onSubmit() {
     if (errorCtx.dirty())
       return setTried(true);
+    setLoading(true);
     const answers = [];
     for (const q of questions) {
       let v = aMap[q.id];
@@ -113,6 +116,7 @@ function FormView(props) {
     else
       failedPrompt = getErrorPrompt(code, true) + '。';
     setModalOpen(true);
+    setLoading(false);
   }
 
   return <>
@@ -138,8 +142,9 @@ function FormView(props) {
     }}>
       <Button
         primary
-        disabled={submitted}
+        disabled={submitted || loading}
         onClick={onSubmit}
+        loading={loading}
       >
         提交
       </Button>
