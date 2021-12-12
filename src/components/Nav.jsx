@@ -6,8 +6,6 @@ import appState from 'appState';
 import api from 'api';
 
 const Nav = observer(props => {
-  console.log('Rendering nav');
-
   async function onLogout() {
     await api.logout();
     localStorage.removeItem('user_info');
