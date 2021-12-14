@@ -5,7 +5,7 @@ $ git clone git@github.com:naire-db/naire-app.git
 $ cd naire-app
 $ yarn
 $ mkdir src/fonts
-$ unzip tools/lato-v20-latin-ext_latin.zip src/fonts
+$ unzip tools/lato-v20-latin-ext_latin.zip -d src/fonts
 ```
 
 ## Contributing
