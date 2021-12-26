@@ -39,9 +39,12 @@ function Profile() {
   return (
     <ProfileLayout page='profile'>
       <Form error={errorPrompt !== null}>
-        <Form.Input
+        <Form.Field
           label='用户名'
-          value={currentInfo.username}
+        />
+        <Message
+          size='tiny'
+          content={currentInfo.username}
         />
         <Form.Input
           label='邮箱'
