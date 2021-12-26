@@ -84,6 +84,15 @@ function FormEditor(props) {
     },
     newOption() {
       return new Option(this.getOid());
+    },
+    makeOptions(texts) {
+      const res = texts.map((s, i) => {
+        const o = new Option(nextOid + i);
+        o.text = s;
+        return o;
+      });
+      setNextOid(nextOid + texts.length);
+      return res;
     }
   };
 
