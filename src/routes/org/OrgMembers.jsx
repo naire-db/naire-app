@@ -78,7 +78,7 @@ function OrgMembers() {
   return (
     <OrgLayout offset='members' oid={oid} org={res}>
       <Grid>
-        {role > 0 &&
+        {role >= ROLE_OWNER &&
           <Grid.Row style={{
             paddingBottom: 0,
             marginBottom: -5
