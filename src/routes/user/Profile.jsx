@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Form, Message } from 'semantic-ui-react';
+import { Button, Form, Input, Message } from 'semantic-ui-react';
 
 import api from 'api';
 import appState from 'appState';
@@ -41,10 +41,12 @@ function Profile() {
       <Form error={errorPrompt !== null}>
         <Form.Field
           label='用户名'
-        />
-        <Message
-          size='tiny'
-          content={currentInfo.username}
+          control={() => <Input
+            value={currentInfo.username}
+            fluid
+            disabled
+            style={{opacity: 1}}
+          />}
         />
         <Form.Input
           label='邮箱'
