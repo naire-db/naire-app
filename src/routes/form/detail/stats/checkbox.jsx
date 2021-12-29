@@ -42,9 +42,16 @@ function CheckboxStat(props) {
 
 function CheckboxAnswerRenderFactory(q) {
   const m = new Map();
+  let i = 0;
   for (const o of q.options)
-    m.set(o.id, o.text);
-  return oids => oids.map(oid => m.get(oid)).join('；');
+    m.set(o.id, [o.text, i++]);
+  return oids => {
+    return oids
+      .map(id => m.get(id))
+      .sort((a, b) => a[1] - b[1])
+      .map(a => a[0])
+      .join('；');
+  };
 }
 
 registerQuestionStat('checkbox', CheckboxStat, CheckboxAnswerRenderFactory);
