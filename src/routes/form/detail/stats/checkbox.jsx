@@ -44,7 +44,7 @@ function CheckboxAnswerRenderFactory(q) {
   const m = new Map();
   for (const o of q.options)
     m.set(o.id, o.text);
-  return oids => oids.map(oid => m.get(oid)).join('; ');
+  return oids => oids.map(oid => m.get(oid)).join('；');
 }
 
 registerQuestionStat('checkbox', CheckboxStat, CheckboxAnswerRenderFactory);

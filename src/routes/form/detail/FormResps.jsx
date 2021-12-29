@@ -133,7 +133,7 @@ function FormRespsInner(props) {
       }
       rows.push(row);
     }
-    const csv = stringify(rows);
+    const csv = stringify(rows, {quoted: true});  // FIXME: csv-stringify doesn't quote when it should
     const blob = new Blob([csv], {type: 'text/csv;charset=utf-8'});
     FileSaver.saveAs(blob, form.title + '.csv');  // TODO: sanitize the filename
   }
