@@ -171,7 +171,8 @@ function FormRespsInner(props) {
                   <Table.Cell>{formatTimestamp(r.ctime)}</Table.Cell>
                   <Table.Cell>{formatUser(r.user)}</Table.Cell>
                   <Table.Cell width={4}>
-                    <Button
+                    <NavButton
+                      recoverable
                       icon='eye' content='查看' size='mini'
                       onClick={() => openView(r.id, i + activeOffset)}
                     />
