@@ -10,6 +10,11 @@ dayjs.extend(relativeTime);
 const now = dayjs();
 const now_year = now.year();
 
+function formatTimestampFull(ts) {
+  const t = dayjs.unix(ts);
+  return t.format('YYYY-MM-DD HH:mm:ss');
+}
+
 function formatTimestamp(ts) {
   // const dt = new Date(ts * 1000);
   // return dt.toLocaleString();
@@ -32,4 +37,4 @@ function formatUser(user) {
   return `${dname} (${username})`;
 }
 
-export { formatTimestamp, formatUser, formatTimestampToRelative };
+export { formatTimestamp, formatUser, formatTimestampToRelative, formatTimestampFull };

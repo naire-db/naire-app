@@ -8,7 +8,7 @@ import api, { api_unwrap } from 'api';
 import NavButton from 'components/NavButton';
 import { useAsyncResult } from 'utils';
 import { usePagination } from 'utils/paginate';
-import { formatTimestamp, formatUser } from 'utils/render';
+import { formatTimestamp, formatTimestampFull, formatUser } from 'utils/render';
 
 import { loadResp } from '../FormFill';
 import { renderMap } from './stats';
@@ -119,15 +119,18 @@ function FormRespsInner(props) {
     const renderers = [];
     for (const q of form.body.questions) {
       header.push(q.title);
-      renderers.push(renderMap[q.type](q));
+      renderers.push(renderMap[q.type]?.(q));
     }
     const rows = [header];
     const details = api_unwrap(await fut);
     for (const r of details) {
-      const row = [formatTimestamp(r.ctime), formatUser(r.user)];
+      const row = [formatTimestampFull(r.ctime), formatUser(r.user)];
       const {answers} = r.body;
-      for (let i = 0; i < answers.length; ++i)
-        row.push(renderers[i](answers[i]));
+      for (let i = 0; i < answers.length; ++i) {
+        const r = renderers[i];
+        if (r)
+          row.push(r(answers[i]));
+      }
       rows.push(row);
     }
     const csv = stringify(rows);
