@@ -1,5 +1,15 @@
 import { registerQuestionStat } from './base';
-import { RadioStat, RadioAnswerRenderFactory } from './radio';
+import { RadioAnswerRenderFactory, RadioStat } from './radio';
+import { chartOptions } from './utils';
 
-// TODO: use RadioStat after dropdown view is done.
-registerQuestionStat('dropdown', RadioStat, RadioAnswerRenderFactory);
+function RadioDropdownStat(props) {
+  return <RadioStat
+    {...props}
+    chartOptions={{
+      ...chartOptions,
+      maintainAspectRatio: props.question.options.length >= 5,
+    }}
+  />;
+}
+
+registerQuestionStat('dropdown', RadioDropdownStat, RadioAnswerRenderFactory);

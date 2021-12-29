@@ -29,7 +29,7 @@ function RadioStat(props) {
     >
       <Pie
         data={stat.toChartData()}
-        options={chartOptions}
+        options={props.chartOptions || chartOptions}
       />
     </OptionStatLayout>
   );
