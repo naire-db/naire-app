@@ -9,7 +9,16 @@ const entry = process.env.REACT_APP_API_ENTRY ||
 
 const DEBUG = !process.env.REACT_APP_API_ENTRY;
 
-const auth_token = get_query_param('a');
+function get_auth_token() {
+  const param = get_query_param('a');
+  if (param) {
+    localStorage.setItem('naire_auth_token', param);
+    return param;
+  }
+  return localStorage.getItem('naire_auth_token');
+}
+
+const auth_token = get_auth_token();
 
 function api_unwrap(res) {
   if (res.code !== 0) {
