@@ -54,6 +54,19 @@ const CommonModal = observer(props => {
   const {state: modalState} = props;
   const {closeOnDimmerClick, buttons} = modalState;
 
+  const confirmRef = useRef();
+  useEffect(() => {
+    function handler(e) {
+      if (e.keyCode === 13 && confirmRef.current) {
+        e.preventDefault();
+        confirmRef.current.click();
+      }
+    }
+
+    document.addEventListener('keyup', handler);
+    return () => document.removeEventListener('keyup', handler);
+  });
+
   // closeOnDimmerClick is somehow broken, so we do it on our own
   const ref = useRef();
   useEffect(() => {
@@ -100,16 +113,19 @@ const CommonModal = observer(props => {
       confirm = null;
     else {
       const E = modalState.confirmNav ? NavButton : Button;
-      confirm = <E
-        primary
-        content={modalState.confirmText}
-        onClick={modalState.onConfirmed}
-        {...(
-          modalState.open && modalState.confirmProps
-            ? resolvePossibleAction(modalState.confirmProps, modalState.state)
-            : {}
-        )}
-      />;
+      confirm =
+        <Ref innerRef={confirmRef}>
+          <E
+            primary
+            content={modalState.confirmText}
+            onClick={modalState.onConfirmed}
+            {...(
+              modalState.open && modalState.confirmProps
+                ? resolvePossibleAction(modalState.confirmProps, modalState.state)
+                : {}
+            )}
+          />
+        </Ref>;
     }
 
     actions = <Modal.Actions>
